@@ -31,7 +31,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         RecyclerView.ViewHolder viewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         if(viewType == NEWS_LIST_ITEM){
-            View v1 = inflater.inflate(R.layout.layout_scheduleitem, viewGroup, false);
+            View v1 = inflater.inflate(R.layout.layout_newsitem, viewGroup, false);
             viewHolder = new NewsRecyclerViewAdapter.ViewHolder1(v1);
         }
         return viewHolder;
@@ -72,6 +72,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (newsModel != null) {
             vh1.getTitle().setText(newsModel.get_title());
             vh1.getSubtitle().setText(newsModel.get_description());
+            vh1.getDate().setText(newsModel.get_date());
             //  vh1.bind(scheduleModel, listener);
         }
     }
@@ -79,7 +80,17 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     class ViewHolder1 extends RecyclerView.ViewHolder {
 
-        private TextView title, subtitle;
+        private TextView title;
+        private TextView subtitle;
+        private TextView date;
+
+        public TextView getDate() {
+            return date;
+        }
+
+        public void setDate(TextView date) {
+            this.date = date;
+        }
 
         public TextView getTitle() {
             return title;
@@ -101,6 +112,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             super(v);
             title = (TextView) v.findViewById(R.id.title);
             subtitle = (TextView) v.findViewById(R.id.subtitle);
+            date = (TextView)v.findViewById(R.id.date);
         }
         public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {

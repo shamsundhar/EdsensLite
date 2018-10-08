@@ -62,7 +62,7 @@ public class EventsFragment extends BaseFragment {
         items.add(new Event("indipendence day", "lorem ipsum","12-12-1991"));
         items.add(new Event("policia", "lorem ipsum","12-12-1995"));
         items.add(new Event("Basasndh", "lorem ipsum","12-12-1997"));
-        items.add(new Event("divali", "lorem ipsum","12-12-1994"));
+        items.add(new Event("divadsdsd dsdsd li", "lorem ipsum","12-12-1994"));
         items.add(new Event("dusserah", "lorem ipsum","12-12-1999"));
         items.add(new Event("ganesh", "lorem ipsum","12-12-1990"));
         items.add(new Event("bharath bandh", "lorem ipsum","12-12-1993"));

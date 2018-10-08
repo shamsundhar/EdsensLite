@@ -31,7 +31,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         RecyclerView.ViewHolder viewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         if(viewType == EVENTS_LIST_ITEM){
-            View v1 = inflater.inflate(R.layout.layout_scheduleitem, viewGroup, false);
+            View v1 = inflater.inflate(R.layout.layout_eventitem, viewGroup, false);
             viewHolder = new EventsRecyclerViewAdapter.ViewHolder1(v1);
         }
         return viewHolder;
@@ -71,7 +71,8 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         Event eventModel = (Event) items.get(position);
         if (eventModel != null) {
             vh1.getTitle().setText(eventModel.get_title());
-            vh1.getSubtitle().setText(eventModel.get_description());
+            vh1.getSubtitle().setText(eventModel.get_date());
+            vh1.getDate().setText(eventModel.get_description());
             //  vh1.bind(scheduleModel, listener);
         }
     }
@@ -79,7 +80,17 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     class ViewHolder1 extends RecyclerView.ViewHolder {
 
-        private TextView title, subtitle;
+        private TextView title;
+        private TextView subtitle;
+        private TextView date;
+
+        public TextView getDate() {
+            return date;
+        }
+
+        public void setDate(TextView date) {
+            this.date = date;
+        }
 
         public TextView getTitle() {
             return title;
@@ -101,6 +112,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             super(v);
             title = (TextView) v.findViewById(R.id.title);
             subtitle = (TextView) v.findViewById(R.id.subtitle);
+            date = (TextView) v.findViewById(R.id.date);
         }
         public void bind(final Event event, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
