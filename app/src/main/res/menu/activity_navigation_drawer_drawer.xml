@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_today"
+            android:icon="@drawable/today_white"
+            android:title="@string/text_today" />
+        <item
+            android:id="@+id/nav_attendance"
+            android:icon="@drawable/attendance_white"
+            android:title="@string/text_attendance" />
+        <item
+            android:id="@+id/nav_notes"
+            android:icon="@drawable/notes_white"
+            android:title="@string/text_notes" />
+        <item
+            android:id="@+id/nav_recomendation"
+            android:icon="@drawable/recommendations_white"
+            android:title="@string/text_recomendation" />
+        <item
+            android:id="@+id/nav_messages"
+            android:icon="@drawable/messages_white"
+            android:title="@string/text_messages" />
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_menu_share"
+            android:title="@string/text_share" />
+        <item
+            android:id="@+id/nav_rateapp"
+            android:icon="@drawable/ic_menu_send"
+            android:title="@string/text_rate_app" />
+        <item
+            android:id="@+id/nav_signout"
+            android:icon="@drawable/signout_white"
+            android:title="@string/text_signout" />
+    </group>
+
+</menu>

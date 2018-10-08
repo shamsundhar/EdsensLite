@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Edsense - Lite</string>
+
+    <string name="crash_toast_text">Oops Crashe Occurred</string>
+
+    <string name="text_please_wait">Please wait...</string>
+    <string name="text_authenticating">Authenticating...</string>
+
+    <string name="text_today">Today</string>
+    <string name="text_messages">Messages</string>
+    <string name="text_recomendation">Recommendations</string>
+    <string name="text_attendance">Attendance</string>
+    <string name="text_notes">Notes</string>
+    <string name="text_share">Share</string>
+    <string name="text_rate_app">Rate App</string>
+    <string name="text_signout">Signout</string>
+
+    <string name="text_profile">Profile</string>
+
+
+    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+</resources>
