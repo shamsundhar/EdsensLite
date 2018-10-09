@@ -1,12 +1,14 @@
 package com.school.edsense_lite.today;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.school.edsense_lite.AWFActivity;
 import com.school.edsense_lite.BaseFragment;
@@ -27,6 +29,12 @@ public class TodayFragment extends BaseFragment {
     RecyclerView scheduleRecyclerView;
     @BindView(R.id.assignmentsRecyclerview)
     RecyclerView assignmentRecyclerView;
+    @BindView(R.id.pagetitle)
+    TextView titleTV;
+    @BindView(R.id.textMySchedule)
+    TextView myScheduleTV;
+    @BindView(R.id.date)
+    TextView dateTV;
 
     private ScheduleRecyclerViewAdapter scheduleRecyclerViewAdapter;
     private AssignmentRecyclerViewAdapter assignmentRecyclerViewAdapter;
@@ -64,7 +72,7 @@ public class TodayFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_today, null);
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
-
+       applyFonts();
 
      //   scheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter();
      //   scheduleRecyclerView.setAdapter(scheduleRecyclerViewAdapter);
@@ -81,6 +89,16 @@ public class TodayFragment extends BaseFragment {
       //  assignmentRecyclerViewAdapter.notifyDataSetChanged();
 
         return view;
+    }
+    private void applyFonts(){
+        // Font path
+        String fontPath = "fonts/bariol_bold-webfont.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), fontPath);
+
+        titleTV.setTypeface(tf);
+        dateTV.setTypeface(tf);
+        myScheduleTV.setTypeface(tf);
     }
     private ArrayList<Object> getScheduleList() {
         ArrayList<Object> items = new ArrayList<>();
