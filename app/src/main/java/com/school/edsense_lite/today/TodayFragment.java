@@ -66,19 +66,19 @@ public class TodayFragment extends BaseFragment {
         fragmentComponent().inject(this);
 
 
-        scheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter();
-        scheduleRecyclerView.setAdapter(scheduleRecyclerViewAdapter);
-        scheduleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+     //   scheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter();
+     //   scheduleRecyclerView.setAdapter(scheduleRecyclerViewAdapter);
+     //   scheduleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        assignmentRecyclerViewAdapter = new AssignmentRecyclerViewAdapter();
-        assignmentRecyclerView.setAdapter(assignmentRecyclerViewAdapter);
-        assignmentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+     //   assignmentRecyclerViewAdapter = new AssignmentRecyclerViewAdapter();
+      //  assignmentRecyclerView.setAdapter(assignmentRecyclerViewAdapter);
+     //   assignmentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        scheduleRecyclerViewAdapter.setItems(getScheduleList());
-        scheduleRecyclerViewAdapter.notifyDataSetChanged();
+     //   scheduleRecyclerViewAdapter.setItems(getScheduleList());
+     //   scheduleRecyclerViewAdapter.notifyDataSetChanged();
 
-        assignmentRecyclerViewAdapter.setItems(getAssignmentList());
-        assignmentRecyclerViewAdapter.notifyDataSetChanged();
+      //  assignmentRecyclerViewAdapter.setItems(getAssignmentList());
+      //  assignmentRecyclerViewAdapter.notifyDataSetChanged();
 
         return view;
     }
