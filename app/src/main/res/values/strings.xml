@@ -22,4 +22,13 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string-array name="sections_array">
+        <item>VII - A, B</item>
+        <item>VI - A</item>
+        <item>IX - B</item>
+        <item>V - A</item>
+        <item>IV - B</item>
+        <item>III - A</item>
+    </string-array>
 </resources>

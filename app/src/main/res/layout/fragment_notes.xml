@@ -42,6 +42,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:id="@+id/sectionLayout"
             android:padding="5dp"
             android:background="@drawable/layout_corners_yellow"
             android:layout_weight="9">
