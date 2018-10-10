@@ -69,7 +69,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_notes, null);
+        View view = inflater.inflate(R.layout.fragment_notes, container, false);
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
 

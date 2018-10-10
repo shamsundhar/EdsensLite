@@ -48,7 +48,7 @@ public class NewsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_news, null);
+        View view = inflater.inflate(R.layout.fragment_news, container, false);
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
 

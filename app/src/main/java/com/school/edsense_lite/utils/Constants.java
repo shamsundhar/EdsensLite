@@ -17,6 +17,7 @@ public class Constants {
     public static final String BUNDLE_KEY_DISPLAY_FRAGMENT = "DISPLAY_FRAGMENT";
     public static final String BUNDLE_VALUE_NEWS = "NEWS";
     public static final String BUNDLE_VALUE_EVENTS = "EVENTS";
+    public static final String BUNDLE_VALUE_COMPOSE_MESSAGE = "COMPOSE_MESSAGE";
 
     public static final String PREF_KEY_LOGIN_ID = "KEY_LOGIN_ID";
     public static final String PREF_KEY_TOKEN = "KEY_TOKEN";

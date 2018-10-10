@@ -70,7 +70,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_attendance, null);
+        View view = inflater.inflate(R.layout.fragment_attendance, container, false);
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
 

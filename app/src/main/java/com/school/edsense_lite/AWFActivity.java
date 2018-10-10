@@ -11,12 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.school.edsense_lite.events.EventsFragment;
+import com.school.edsense_lite.messages.NewMessageFragment;
 import com.school.edsense_lite.news.NewsFragment;
 import com.school.edsense_lite.today.TodayFragment;
 
 import butterknife.ButterKnife;
 
 import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
+import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_COMPOSE_MESSAGE;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_EVENTS;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
 
@@ -27,6 +29,7 @@ import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
 public class AWFActivity extends BaseActivity {
 
     private static final String NEWS_FRAGMENT_TAG = "NEWS_FRAGMENT";
+    private static final String COMPOSE_MESSAGE_FRAGMENT_TAG = "COMPOSE_MESSAGE_FRAGMENT";
     private static final String EVENTS_FRAGMENT_TAG = "EVENST_FRAGMENT";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,9 @@ public class AWFActivity extends BaseActivity {
                 case BUNDLE_VALUE_EVENTS :
                     displayEventsFragment();
                     break;
+                case BUNDLE_VALUE_COMPOSE_MESSAGE :
+                    displayComposeMessageFragment();
+                    break;
             }
         }
 
@@ -57,6 +63,13 @@ public class AWFActivity extends BaseActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  NewsFragment.newInstance(), NEWS_FRAGMENT_TAG)
+                .commit();
+    }
+    public void displayComposeMessageFragment(){
+        setTitle(null);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  NewMessageFragment.newInstance(), COMPOSE_MESSAGE_FRAGMENT_TAG)
                 .commit();
     }
     public void displayEventsFragment(){

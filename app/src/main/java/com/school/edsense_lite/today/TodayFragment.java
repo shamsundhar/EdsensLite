@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.school.edsense_lite.AWFActivity;
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.messages.MessagesModel;
+import com.school.edsense_lite.messages.MessagesRecyclerViewAdapter;
 
 import java.util.ArrayList;
 
@@ -69,24 +71,24 @@ public class TodayFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_today, null);
+        View view = inflater.inflate(R.layout.fragment_today, container, false);
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
        applyFonts();
 
-     //   scheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter();
-     //   scheduleRecyclerView.setAdapter(scheduleRecyclerViewAdapter);
-     //   scheduleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        scheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter();
+        scheduleRecyclerView.setAdapter(scheduleRecyclerViewAdapter);
+        scheduleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-     //   assignmentRecyclerViewAdapter = new AssignmentRecyclerViewAdapter();
-      //  assignmentRecyclerView.setAdapter(assignmentRecyclerViewAdapter);
-     //   assignmentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        assignmentRecyclerViewAdapter = new AssignmentRecyclerViewAdapter();
+        assignmentRecyclerView.setAdapter(assignmentRecyclerViewAdapter);
+        assignmentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-     //   scheduleRecyclerViewAdapter.setItems(getScheduleList());
-     //   scheduleRecyclerViewAdapter.notifyDataSetChanged();
+        scheduleRecyclerViewAdapter.setItems(getScheduleList());
+        scheduleRecyclerViewAdapter.notifyDataSetChanged();
 
-      //  assignmentRecyclerViewAdapter.setItems(getAssignmentList());
-      //  assignmentRecyclerViewAdapter.notifyDataSetChanged();
+        assignmentRecyclerViewAdapter.setItems(getAssignmentList());
+        assignmentRecyclerViewAdapter.notifyDataSetChanged();
 
         return view;
     }
@@ -99,6 +101,21 @@ public class TodayFragment extends BaseFragment {
         titleTV.setTypeface(tf);
         dateTV.setTypeface(tf);
         myScheduleTV.setTypeface(tf);
+    }
+    private ArrayList<Object> getMessagesList() {
+        ArrayList<Object> items = new ArrayList<>();
+        items.add(new MessagesModel("Aanya Rajeev Kumar", "Lorem Ipsum is simply dummy text","12-12-1998"));
+        items.add(new MessagesModel("Maanvi Mittal", "Lorem Ipsum is simply dummy text","12-12-1994"));
+        items.add(new MessagesModel("Ridhisri Chowdhary Vajendla", "Lorem Ipsum is simply dummy text","12-12-1991"));
+        items.add(new MessagesModel("Ravi Sarayu Reddy", "Lorem Ipsum is simply dummy text","12-12-1995"));
+        items.add(new MessagesModel("Aanya Rajeev Kumar", "Lorem Ipsum is simply dummy text","12-12-1997"));
+        items.add(new MessagesModel("Ridhisri Chowdhary Vajendla", "Lorem Ipsum is simply dummy text","12-12-1994"));
+        items.add(new MessagesModel("Maanvi Mittal", "Lorem Ipsum is simply dummy text","12-12-1999"));
+        items.add(new MessagesModel("Aanya Rajeev Kumar", "Lorem Ipsum is simply dummy text","12-12-1990"));
+        items.add(new MessagesModel("Maanvi Mittal", "Lorem Ipsum is simply dummy text","12-12-1993"));
+        items.add(new MessagesModel("Ravi Sarayu Reddy", "Lorem Ipsum is simply dummy text","12-12-1996"));
+
+        return items;
     }
     private ArrayList<Object> getScheduleList() {
         ArrayList<Object> items = new ArrayList<>();
