@@ -16,6 +16,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions "devBackend", "productionBackend"
+    productFlavors {
+        devBackend {
+            dimension 'devBackend'
+            applicationIdSuffix ".dev"
+            buildConfigField "String", "BASE_URL", "\"https://edsensewebtst.azurewebsites.net/api/\""
+        }
+        productionBackend {
+            dimension 'productionBackend'
+            buildConfigField "String", "BASE_URL", "\"https://edsensewebtst.azurewebsites.net/api/\""
+        }
+    }
 }
 ext.supportLibVersion = '26.1.0'
 ext.retrofitVersion = '2.2.0'

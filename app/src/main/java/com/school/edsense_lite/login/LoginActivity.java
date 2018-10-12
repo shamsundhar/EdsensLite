@@ -12,10 +12,17 @@ import android.widget.Toast;
 import com.school.edsense_lite.BaseActivity;
 import com.school.edsense_lite.NavigationDrawerActivity;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.utils.CustomAlertDialog;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -30,8 +37,8 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_signin) Button _loginButton;
 
-  //  @Inject
-  //  LoginApi loginApi;
+    @Inject
+    LoginApi loginApi;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +49,9 @@ public class LoginActivity extends BaseActivity {
      //   if(loginToken.isEmpty()){
             setContentView(R.layout.activity_login);
             ButterKnife.bind(this);
-            onLoginSuccess();
+        _emailText.setText("GLA468");
+        _passwordText.setText("EdSense1@3");
+         //   onLoginSuccess();
    //     }
    //     else{
           //  startActivity(new Intent(LoginActivity.this, BottomTabActivity.class));
@@ -63,7 +72,7 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
-    //    _loginButton.setEnabled(false);
+        _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
@@ -73,49 +82,51 @@ public class LoginActivity extends BaseActivity {
 
         String username = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
-        onLoginSuccess();
-//        LoginRequest request = new LoginRequest();
-//        request.setUsername(username);
-//        request.setPassword(password);
-//
-//        loginApi.login(request)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<LoginResponse>() {
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        progressDialog.dismiss();
-//                        onLoginFailed();
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(LoginResponse loginResponse){
-//                        progressDialog.dismiss();
-//                        _loginButton.setEnabled(true);
-//                        if(loginResponse.getStatus().equals("200")) {
-//                            onLoginSuccess(loginResponse);
-//                        }
-//                        else if(loginResponse.getStatus().equals("206")){
-//                            //display error.
-//                            new CustomAlertDialog().showAlert1(
-//                                    LoginActivity.this,
-//                                    R.string.text_login_failed,
-//                                    loginResponse.getError(),
-//                                    null);
-//                        }
-//
-//                    }
-//                });
+        LoginRequest request = new LoginRequest();
+        request.setUserkey(username);
+        request.setPassword(password);
+        request.setSubscriptionId("4");
+        request.setKeepAlive("false");
+        request.setLogintype("0");
+
+        loginApi.login(request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<LoginResponse>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        progressDialog.dismiss();
+                        onLoginFailed();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(LoginResponse loginResponse){
+                        progressDialog.dismiss();
+                        _loginButton.setEnabled(true);
+                        if(loginResponse.getIsSuccess().equals("true")) {
+                            onLoginSuccess(loginResponse);
+                        }
+                        else if(!loginResponse.getErrorCode().equals("200")){
+                            //display error.
+                            new CustomAlertDialog().showAlert1(
+                                    LoginActivity.this,
+                                    R.string.text_login_failed,
+                                    loginResponse.getErrorMessage(),
+                                    null);
+                        }
+
+                    }
+                });
     }
 
     @Override
@@ -148,8 +159,8 @@ public class LoginActivity extends BaseActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess() {
-    //    _loginButton.setEnabled(true);
+    public void onLoginSuccess(LoginResponse loginResponse) {
+        _loginButton.setEnabled(true);
 //        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
 //        preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_LOGIN_ID, loginResponse.getId());
 //        preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_TOKEN, loginResponse.getToken());
@@ -159,7 +170,7 @@ public class LoginActivity extends BaseActivity {
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-  //      _loginButton.setEnabled(true);
+        _loginButton.setEnabled(true);
     }
 
     public boolean validate() {
@@ -167,15 +178,14 @@ public class LoginActivity extends BaseActivity {
 
         String username = _emailText.getText().toString().trim();
         String password = _passwordText.getText().toString().trim();
-       // if (mobileNumber.isEmpty() || mobileNumber.length() != 10) {
-        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()){
-            _emailText.setError("Enter a valid Email address");
+        if (username.isEmpty() || username.length() < 4) {
+            _emailText.setError("Enter a valid Username");
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+        if (password.isEmpty()) {
             _passwordText.setError("between 4 and 10 alphanumeric characters");
             valid = false;
         } else {

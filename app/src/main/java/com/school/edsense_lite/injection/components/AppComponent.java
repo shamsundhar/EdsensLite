@@ -6,13 +6,15 @@ import android.content.res.Resources;
 import com.school.edsense_lite.injection.modules.AppModule;
 import com.school.edsense_lite.injection.modules.DataModule;
 //import com.school.edsense_lite.injection.modules.NetModule;
+import com.school.edsense_lite.injection.modules.NetModule;
 import com.school.edsense_lite.injection.qualifier.AppContext;
 import com.school.edsense_lite.injection.scopes.PerApplication;
+import com.school.edsense_lite.login.LoginApi;
 
 import dagger.Component;
 
 @PerApplication
-@Component(modules={AppModule.class, DataModule.class})
+@Component(modules={AppModule.class, DataModule.class, NetModule.class})
 public interface AppComponent {
     @AppContext
     Context appContext();
@@ -21,6 +23,6 @@ public interface AppComponent {
 //
 //    Realm realm();
 //    CountryRepo countryRepo();
-//    LoginApi loginApi();
+    LoginApi loginApi();
 //    ShopApi shopApi();
 }
