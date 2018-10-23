@@ -3,6 +3,7 @@ package com.school.edsense_lite.notes;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,7 @@ import com.school.edsense_lite.attendance.Attendance;
 import com.school.edsense_lite.attendance.AttendanceFragment;
 import com.school.edsense_lite.attendance.AttendanceRecyclerViewAdapter;
 import com.school.edsense_lite.fragment.DatePickerFragment;
+import com.school.edsense_lite.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,6 +35,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
+
 public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     @BindView(R.id.notesRecyclerview)
     RecyclerView notesRecyclerView;
@@ -40,6 +44,10 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     TextView sectionTV;
     @BindView(R.id.date)
     TextView dateTV;
+    @BindView(R.id.pagetitle)
+    TextView titleTV;
+    @BindView(R.id.textChooseSection)
+    TextView chooseSection;
 
     @OnClick(R.id.sectionLayout)
     public void ClickOnSectionLayout(){
@@ -72,8 +80,8 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
-
-
+        applyFonts();
+        setCurrentDate();
         notesRecyclerViewAdapter = new NotesRecyclerViewAdapter();
         notesRecyclerView.setAdapter(notesRecyclerViewAdapter);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -82,6 +90,16 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         notesRecyclerViewAdapter.notifyDataSetChanged();
 
         return view;
+    }
+    private void applyFonts(){
+        // Font path
+        String fontPath = "fonts/bariol_bold-webfont.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), fontPath);
+
+        titleTV.setTypeface(tf);
+        dateTV.setTypeface(tf);
+        chooseSection.setTypeface(tf);
     }
     private ArrayList<Object> getNotesList() {
         ArrayList<Object> items = new ArrayList<>();
@@ -103,6 +121,9 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         items.add(new Note("Shyam15", "Calm, Caring","Going to home town",""));
 
         return items;
+    }
+    private void setCurrentDate(){
+        dateTV.setText(DateTimeUtils.getCurrentDateInString(DATE_FORMAT1));
     }
     private void displaySectionsPopup()
     {

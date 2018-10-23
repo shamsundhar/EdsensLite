@@ -17,7 +17,8 @@
     <color name="yellow">#FCBA2E</color>
     <color name="light_red">#F0005B</color>
 
-
+    <color name="dark_blue">#0971b2</color>
+    <color name="light_blue">#81d5fa</color>
     <color name="holo_green_dark">#ff669900</color>
 
     <color name="colorPrimary">#A62857</color>

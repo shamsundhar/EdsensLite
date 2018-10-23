@@ -7,8 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
+
 
 public class DateTimeUtils {
+    public static String getCurrentDateInString(String dateFormat){
+       return new SimpleDateFormat(dateFormat).format(new Date());
+    }
 
     public static String parseDateTime(String dateString, String originalFormat, String outputFromat){
 

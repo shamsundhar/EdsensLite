@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 
 public interface LoginApi {
 
-    @POST("account/Login?device=desktop&browserPlatform=Win32")
+    @POST("account/Login?device=mobile&browserPlatform=AndroidEdSenseLite")
     @Headers({"Content-Type: application/json"})
     Observable<LoginResponse> login(@Body LoginRequest loginRequest);
 

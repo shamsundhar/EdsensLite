@@ -2,7 +2,9 @@ package com.school.edsense_lite.attendance;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,13 +28,27 @@ import com.school.edsense_lite.events.Event;
 import com.school.edsense_lite.events.EventsRecyclerViewAdapter;
 import com.school.edsense_lite.fragment.DatePickerFragment;
 import com.school.edsense_lite.today.TodayFragment;
+import com.school.edsense_lite.utils.Constants;
+import com.school.edsense_lite.utils.CustomAlertDialog;
+import com.school.edsense_lite.utils.DateTimeUtils;
+import com.school.edsense_lite.utils.PreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
 
 public class AttendanceFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     @BindView(R.id.attendanceRecyclerview)
@@ -41,6 +57,10 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
     TextView sectionTV;
     @BindView(R.id.date)
     TextView dateTV;
+    @BindView(R.id.pagetitle)
+    TextView titleTV;
+    @BindView(R.id.textChooseSection)
+    TextView chooseSection;
 
     @OnClick(R.id.sectionLayout)
     public void ClickOnSectionLayout(){
@@ -51,6 +71,9 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         displayDateDialog();
     }
     AttendanceRecyclerViewAdapter attendanceRecyclerViewAdapter;
+    @Inject
+    AttendanceApi attendanceApi;
+    ArrayList<SectionResponse.Response> sectionResponseList;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -73,8 +96,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         View view = inflater.inflate(R.layout.fragment_attendance, container, false);
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
-
-
+        applyFonts();
+        setCurrentDate();
         attendanceRecyclerViewAdapter = new AttendanceRecyclerViewAdapter();
         attendanceRecyclerView.setAdapter(attendanceRecyclerViewAdapter);
         attendanceRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -82,7 +105,60 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         attendanceRecyclerViewAdapter.setItems(getAttendanceList());
         attendanceRecyclerViewAdapter.notifyDataSetChanged();
 
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.text_please_wait));
+        progressDialog.show();
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
+     //   if(!bearerToken.isEmpty()) {
+            attendanceApi.getSectionsForAttendance(bearerToken)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<SectionResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(SectionResponse sectionResponse) {
+                            progressDialog.dismiss();
+                            if (sectionResponse.getIsSuccess().equals("true")) {
+                                sectionResponseList = new ArrayList<SectionResponse.Response>(sectionResponse.getResponse());
+                            } else if (!sectionResponse.getErrorCode().equals("200")) {
+                                //display error.
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_login_failed,
+                                        sectionResponse.getErrorMessage(),
+                                        null);
+                            }
+                        }
+                    });
+    //    }
         return view;
+    }
+    private void applyFonts(){
+        // Font path
+        String fontPath = "fonts/bariol_bold-webfont.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), fontPath);
+
+        titleTV.setTypeface(tf);
+        dateTV.setTypeface(tf);
+        chooseSection.setTypeface(tf);
     }
     private ArrayList<Object> getAttendanceList() {
         ArrayList<Object> items = new ArrayList<>();
@@ -118,6 +194,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
         listView.setTextFilterEnabled(true);
         listView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, hospitals));
+        listView.setAdapter(new SectionsListAdapter(sectionResponseList, getActivity().getBaseContext()));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -130,6 +207,9 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         });
         builder.setCanceledOnTouchOutside(true);
         builder.show();
+    }
+    private void setCurrentDate(){
+        dateTV.setText(DateTimeUtils.getCurrentDateInString(DATE_FORMAT1));
     }
     private void displayDateDialog(){
         DatePickerFragment date = new DatePickerFragment();

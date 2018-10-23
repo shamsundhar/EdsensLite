@@ -1,18 +1,22 @@
 package com.school.edsense_lite.login;
 
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.school.edsense_lite.BaseActivity;
 import com.school.edsense_lite.NavigationDrawerActivity;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
+import com.school.edsense_lite.utils.PreferenceHelper;
 
 import javax.inject.Inject;
 
@@ -36,6 +40,8 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.input_username) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_signin) Button _loginButton;
+    @BindView(R.id.link_forgotpassword)
+    TextView _forgotPasswordTV;
 
     @Inject
     LoginApi loginApi;
@@ -44,19 +50,26 @@ public class LoginActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityComponent().inject(this);
-    //    PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-    //    String loginToken = preferenceHelper.getString(LoginActivity.this, Constants.PREF_KEY_TOKEN, "");
-     //   if(loginToken.isEmpty()){
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String loginToken = preferenceHelper.getString(LoginActivity.this, Constants.PREF_KEY_BEARER_TOKEN, "");
+        if(loginToken.isEmpty()){
             setContentView(R.layout.activity_login);
             ButterKnife.bind(this);
-        _emailText.setText("GLA468");
-        _passwordText.setText("EdSense1@3");
-         //   onLoginSuccess();
-   //     }
-   //     else{
-          //  startActivity(new Intent(LoginActivity.this, BottomTabActivity.class));
-          //  finish();
-   //     }
+            _emailText.setText("GLA468");
+            _passwordText.setText("Joselives199*");
+        }
+        else{
+            displayNavigationActivity();
+        }
+    }
+    private void applyFonts(){
+        // Font path
+        String fontPath = "fonts/bariol_bold-webfont.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
+
+        _forgotPasswordTV.setTypeface(tf);
+        _loginButton.setTypeface(tf);
     }
     @OnClick(R.id.link_forgotpassword)
     public void forgotPassword(){
@@ -74,6 +87,8 @@ public class LoginActivity extends BaseActivity {
 
         _loginButton.setEnabled(false);
 
+      //  displayNavigationActivity();
+
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -85,9 +100,9 @@ public class LoginActivity extends BaseActivity {
         LoginRequest request = new LoginRequest();
         request.setUserkey(username);
         request.setPassword(password);
-        request.setSubscriptionId("4");
+        request.setSubscriptionId("5");
         request.setKeepAlive("false");
-        request.setLogintype("0");
+        request.setLogintype("1");
 
         loginApi.login(request)
                 .subscribeOn(Schedulers.io())
@@ -161,9 +176,13 @@ public class LoginActivity extends BaseActivity {
 
     public void onLoginSuccess(LoginResponse loginResponse) {
         _loginButton.setEnabled(true);
-//        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-//        preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_LOGIN_ID, loginResponse.getId());
-//        preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_TOKEN, loginResponse.getToken());
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        //  preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_LOGIN_ID, loginResponse.getRespon);
+        preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_BEARER_TOKEN, loginResponse.getResponse().getBearerToken());
+        displayNavigationActivity();
+    }
+    private void displayNavigationActivity()
+    {
         startActivity(new Intent(LoginActivity.this, NavigationDrawerActivity.class));
         finish();
     }

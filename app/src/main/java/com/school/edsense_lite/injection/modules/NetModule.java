@@ -1,7 +1,9 @@
 package com.school.edsense_lite.injection.modules;
 import com.school.edsense_lite.BuildConfig;
+import com.school.edsense_lite.attendance.AttendanceApi;
 import com.school.edsense_lite.injection.scopes.PerApplication;
 import com.school.edsense_lite.login.LoginApi;
+import com.school.edsense_lite.today.TodayApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -69,16 +71,26 @@ public class NetModule {
                 .callFactory(httpClientBuilder.build())
                 .build().create(LoginApi.class);
     }
-//    @Provides
-//    @PerApplication
-//    static AddressApi provideAddressApi(OkHttpClient.Builder httpClientBuilder){
-//        return new Retrofit.Builder()
-//                .baseUrl(BuildConfig.BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-//                .callFactory(httpClientBuilder.build())
-//                .build().create(AddressApi.class);
-//    }
+    @Provides
+    @PerApplication
+    static TodayApi provideTodayApi(OkHttpClient.Builder httpClientBuilder){
+        return new Retrofit.Builder()
+                .baseUrl(BuildConfig.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .callFactory(httpClientBuilder.build())
+                .build().create(TodayApi.class);
+    }
+    @Provides
+    @PerApplication
+    static AttendanceApi provideAttendanceApi(OkHttpClient.Builder httpClientBuilder){
+        return new Retrofit.Builder()
+                .baseUrl(BuildConfig.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .callFactory(httpClientBuilder.build())
+                .build().create(AttendanceApi.class);
+    }
 //    @Provides
 //    @PerApplication
 //    static ShopApi provideShopApi(OkHttpClient.Builder httpClientBuilder){

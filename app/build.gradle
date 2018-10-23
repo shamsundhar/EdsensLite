@@ -21,11 +21,11 @@ android {
         devBackend {
             dimension 'devBackend'
             applicationIdSuffix ".dev"
-            buildConfigField "String", "BASE_URL", "\"https://edsensewebtst.azurewebsites.net/api/\""
+            buildConfigField "String", "BASE_URL", "\"https://apitst.edsense.co.in/api/\""
         }
         productionBackend {
             dimension 'productionBackend'
-            buildConfigField "String", "BASE_URL", "\"https://edsensewebtst.azurewebsites.net/api/\""
+            buildConfigField "String", "BASE_URL", "\"https://apitst.edsense.co.in/api/\""
         }
     }
 }

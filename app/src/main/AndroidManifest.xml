@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".login.LoginActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".login.ForgotPasswordActivity"/>
         <activity android:name=".NavigationDrawerActivity"/>
         <activity android:name=".AWFActivity"/>
