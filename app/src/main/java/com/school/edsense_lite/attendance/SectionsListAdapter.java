@@ -13,7 +13,7 @@ import com.school.edsense_lite.R;
 
 import java.util.ArrayList;
 
-public class SectionsListAdapter extends ArrayAdapter<SectionResponse.Response> implements View.OnClickListener{
+public class SectionsListAdapter extends ArrayAdapter<SectionResponse.Response>{
 
     private ArrayList<SectionResponse.Response> dataSet;
     Context mContext;
@@ -30,21 +30,21 @@ public class SectionsListAdapter extends ArrayAdapter<SectionResponse.Response> 
 
     }
 
-    @Override
-    public void onClick(View v) {
-
-        int position=(Integer) v.getTag();
-        Object object= getItem(position);
-        SectionResponse.Response dataModel=(SectionResponse.Response)object;
-
-        switch (v.getId())
-        {
-            case R.id.title:
-                Snackbar.make(v, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
-                break;
-        }
-    }
+//    @Override
+//    public void onClick(View v) {
+//
+//        int position=(Integer) v.getTag();
+//        Object object= getItem(position);
+//        SectionResponse.Response dataModel=(SectionResponse.Response)object;
+//
+//        switch (v.getId())
+//        {
+//            case R.id.title:
+//                Snackbar.make(v, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
+//                        .setAction("No action", null).show();
+//                break;
+//        }
+//    }
 
     private int lastPosition = -1;
 
@@ -76,7 +76,7 @@ public class SectionsListAdapter extends ArrayAdapter<SectionResponse.Response> 
         lastPosition = position;
 
         viewHolder.title.setText(dataModel.getCompositeTagName());
-        viewHolder.title.setOnClickListener(this);
+     //   viewHolder.title.setOnClickListener(this);
         viewHolder.title.setTag(position);
         // Return the completed view to render on screen
         return convertView;

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -74,6 +75,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
     @Inject
     AttendanceApi attendanceApi;
     ArrayList<SectionResponse.Response> sectionResponseList;
+    List<Object> userResponseList;
+    private String selectedSectionId;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -102,8 +105,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         attendanceRecyclerView.setAdapter(attendanceRecyclerViewAdapter);
         attendanceRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        attendanceRecyclerViewAdapter.setItems(getAttendanceList());
-        attendanceRecyclerViewAdapter.notifyDataSetChanged();
+//        attendanceRecyclerViewAdapter.setItems(getAttendanceList());
+//        attendanceRecyclerViewAdapter.notifyDataSetChanged();
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                 R.style.AppTheme_Dark_Dialog);
@@ -112,7 +115,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         progressDialog.show();
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
-     //   if(!bearerToken.isEmpty()) {
+        if(!bearerToken.isEmpty()) {
             attendanceApi.getSectionsForAttendance(bearerToken)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -147,7 +150,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                             }
                         }
                     });
-    //    }
+        }
         return view;
     }
     private void applyFonts(){
@@ -193,8 +196,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
 
         final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
         listView.setTextFilterEnabled(true);
-        listView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, hospitals));
-        listView.setAdapter(new SectionsListAdapter(sectionResponseList, getActivity().getBaseContext()));
+        SectionsListAdapter adapter = new SectionsListAdapter(sectionResponseList, getActivity().getBaseContext());
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -203,10 +206,65 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                 // TODO Auto-generated method stub
                 builder.dismiss();
                 sectionTV.setText(hospitals[position]);
+                SectionResponse.Response dataModel = sectionResponseList.get(position);
+                selectedSectionId = dataModel.getCompositeTagId();
+                        Snackbar.make(view, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
+                                .setAction("No action", null).show();
+
+                        getUsersBasedOnSection();
+
             }
         });
         builder.setCanceledOnTouchOutside(true);
         builder.show();
+    }
+    private void getUsersBasedOnSection(){
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.text_please_wait));
+        progressDialog.show();
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
+        if(!bearerToken.isEmpty()) {
+            GetUserRequest request = new GetUserRequest(selectedSectionId, "");
+            attendanceApi.getUsersBasedOnSection(bearerToken,request)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<GetUserResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(GetUserResponse getUserResponse) {
+                            progressDialog.dismiss();
+                            if (getUserResponse.getIsSuccess().equals("true")) {
+                                userResponseList = new ArrayList<Object>(getUserResponse.getResponse());
+                                attendanceRecyclerViewAdapter.setItems(userResponseList);
+                                attendanceRecyclerViewAdapter.notifyDataSetChanged();
+                            } else if (!getUserResponse.getErrorCode().equals("200")) {
+                                //display error.
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_login_failed,
+                                        getUserResponse.getErrorMessage(),
+                                        null);
+                            }
+                        }
+                    });
+        }
     }
     private void setCurrentDate(){
         dateTV.setText(DateTimeUtils.getCurrentDateInString(DATE_FORMAT1));

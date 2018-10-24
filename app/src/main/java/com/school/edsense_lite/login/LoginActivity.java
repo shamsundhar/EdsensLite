@@ -178,8 +178,10 @@ public class LoginActivity extends BaseActivity {
         _loginButton.setEnabled(true);
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         //  preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_LOGIN_ID, loginResponse.getRespon);
-        preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_BEARER_TOKEN, loginResponse.getResponse().getBearerToken());
-        displayNavigationActivity();
+        if(!loginResponse.getResponse().getBearerToken().isEmpty()){
+            preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_BEARER_TOKEN, "Bearer "+loginResponse.getResponse().getBearerToken());
+        }
+          displayNavigationActivity();
     }
     private void displayNavigationActivity()
     {

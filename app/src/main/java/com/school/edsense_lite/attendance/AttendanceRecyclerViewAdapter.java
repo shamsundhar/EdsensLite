@@ -61,17 +61,17 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof Attendance) {
+        if (items.get(position) instanceof GetUserResponse.Response) {
             return ATTENDANCE_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(AttendanceRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        Attendance attendanceModel = (Attendance) items.get(position);
+        GetUserResponse.Response attendanceModel = (GetUserResponse.Response) items.get(position);
         if (attendanceModel != null) {
-            vh1.getName().setText(attendanceModel.get_name());
-            vh1.getReason().setText(attendanceModel.get_reason());
-            vh1.getStatus().setText(attendanceModel.get_status());
+            vh1.getName().setText(attendanceModel.getDisplayName());
+            vh1.getReason().setText(attendanceModel.getIsAttended());
+            vh1.getStatus().setText(attendanceModel.getStudentUserId());
             //  vh1.bind(scheduleModel, listener);
         }
     }
