@@ -35,14 +35,14 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
             return;
 
         // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
+        if (remoteMessage.getNotification() != null && remoteMessage.getNotification().getBody() != null) {
             Log.e(TAG, "Notification Body: " + remoteMessage.getNotification().getBody());
 
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
 
-            String channelId = "Sample Message"; //getString(R.string.default_notification_channel_id);
+            String channelId = "Message"; //getString(R.string.default_notification_channel_id);
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, channelId)
@@ -103,12 +103,12 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
         try {
             JSONObject data = json.getJSONObject("data");
 
-            String title = data.getString("title");
-            String message = data.getString("message");
-            boolean isBackground = data.getBoolean("is_background");
-            String imageUrl = data.getString("image");
-            String timestamp = data.getString("timestamp");
-            JSONObject payload = data.getJSONObject("payload");
+            String title = data.optString("title");
+            String message = data.optString("message");
+            boolean isBackground = data.optBoolean("is_background");
+            String imageUrl = data.optString("image");
+            String timestamp = data.optString("timestamp");
+            JSONObject payload = data.optJSONObject("payload");
 
             Log.e(TAG, "title: " + title);
             Log.e(TAG, "message: " + message);
