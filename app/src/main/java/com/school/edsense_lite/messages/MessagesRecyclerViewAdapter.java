@@ -1,29 +1,35 @@
 package com.school.edsense_lite.messages;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.model.MessagesResponseModel;
 import com.school.edsense_lite.today.Schedule;
 
 import java.util.List;
 
 public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private List<Object> items;
+    private List<MessagesResponseModel> items;
     private AdapterView.OnItemClickListener listener;
+    private Context context;
 
-    public MessagesRecyclerViewAdapter(){
-
+    public MessagesRecyclerViewAdapter(Context applicationContext){
+        context = applicationContext;
     }
     public void setOnItemClickListener(AdapterView.OnItemClickListener clickListener){
         this.listener = clickListener;
     }
-    public void setItems(List<Object> items) {
+    public void setItems(List<MessagesResponseModel> items) {
         this.items = items;
     }
     @Override
@@ -58,11 +64,16 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         return position;
     }
     private void configureViewHolder1(ViewHolder1 vh1, int position) {
-        MessagesModel messagesModel = (MessagesModel) items.get(position);
+        MessagesResponseModel messagesModel = (MessagesResponseModel) items.get(position);
         if (messagesModel != null) {
-            vh1.getTitle().setText(messagesModel.get_title());
-            vh1.getMessage().setText(messagesModel.get_message());
-            //vh1.getDate().setText(messagesModel.get_date());
+            vh1.getTitle().setText(messagesModel.getContextDisplayName());
+            vh1.getMessage().setText(messagesModel.getMessageBody());
+            Glide.with(context)
+                    .load(messagesModel.getOriginatorImageUrl())
+                    .into(vh1.image);
+            vh1.getDate().setText(messagesModel.getTransactionDate());
+            vh1.messageTime.setText(messagesModel.getTimeStampMsg());
+            //vh1.favoriteCheck;
             //  vh1.bind(scheduleModel, listener);
         }
     }
@@ -72,15 +83,46 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         private TextView title;
         private TextView message;
-        //private TextView date;
+        private TextView date;
+        private TextView messageTime;
+        private CheckBox favoriteCheck;
 
-//        public TextView getDate() {
-//            return date;
-//        }
-//
-//        public void setDate(TextView date) {
-//            this.date = date;
-//        }
+        public CheckBox getFavoriteCheck() {
+            return favoriteCheck;
+        }
+
+        public void setFavoriteCheck(CheckBox favoriteCheck) {
+            this.favoriteCheck = favoriteCheck;
+        }
+
+        public TextView getMessageTime() {
+            return messageTime;
+        }
+
+        public void setMessageTime(TextView messageTime) {
+            this.messageTime = messageTime;
+        }
+
+
+
+
+        public ImageView getImage() {
+            return image;
+        }
+
+        public void setImage(ImageView image) {
+            this.image = image;
+        }
+
+        private ImageView image;
+
+        public TextView getDate() {
+            return date;
+        }
+
+        public void setDate(TextView date) {
+            this.date = date;
+        }
 
         public TextView getTitle() {
             return title;
@@ -102,7 +144,9 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             super(v);
             title = (TextView) v.findViewById(R.id.title);
             message = (TextView) v.findViewById(R.id.message);
-            //date = (TextView)v.findViewById(R.id.date);
+            date = (TextView)v.findViewById(R.id.date);
+            image = (ImageView)v.findViewById(R.id.imageView);
+            messageTime = (TextView) v.findViewById(R.id.message_time);
         }
         public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
