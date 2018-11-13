@@ -13,9 +13,10 @@
     <string name="text_notes">Notes</string>
     <string name="text_share">Share</string>
     <string name="text_rate_app">Rate App</string>
-    <string name="text_signout">Signout</string>
+    <string name="text_signout">Signout &amp; Reset</string>
 
     <string name="text_assignments">Assignments</string>
+    <string name="text_myschedule">My Schedule</string>
     <string name="text_profile">Profile</string>
 
 

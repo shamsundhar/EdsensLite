@@ -43,6 +43,8 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.school.edsense_lite.today.Header.ASSIGNMENT_HEADER;
+import static com.school.edsense_lite.today.Header.SCHEDULE_HEADER;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_EVENTS;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
@@ -142,13 +144,14 @@ public class TodayFragment extends BaseFragment {
                                 public void accept(ScheduleAndAssignment scheduleAndAssignment) throws Exception {
                                     //Do something on successful completion of all requests
                                     List<Object> objectList = new ArrayList<Object>();
+                                    objectList.add(new Header("My Schedule", SCHEDULE_HEADER));
                                     List<Row> scheduleRows = scheduleAndAssignment.getScheduleResponse().getResponse().getRows();
                                     for(int i = 0; i<scheduleRows.size(); i++){
                                         objectList.add(scheduleRows.get(i));
                                     }
                                  //   objectList.add(scheduleAndAssignment.getScheduleResponse());
                                     objectList.add(new NewsEvents());
-                                    objectList.add(new Header("Assignments"));
+                                    objectList.add(new Header("Assignments", ASSIGNMENT_HEADER));
                                     List<AssignmentResponse.Response> assignmentResponseList = scheduleAndAssignment.getAssignmentResponse().getResponse();
                                     for(int i = 0; i<assignmentResponseList.size(); i++){
                                         objectList.add(assignmentResponseList.get(i));
@@ -269,96 +272,96 @@ public class TodayFragment extends BaseFragment {
         dateTV.setTypeface(tf);
         myScheduleTV.setTypeface(tf);
     }
-    private ArrayList<Object> prepareList(ScheduleResponse scheduleResponse){
-        ArrayList<Object> items = new ArrayList<>();
-        items.addAll(scheduleResponse.getResponse().getRows());
-
-        items.add(new NewsEvents());
-
-        items.add(new Header("Assignments"));
-
-        items.add(new Assignment("12-1-2018", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2013", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2015", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2019", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-        return items;
-    }
-    private ArrayList<Object> prepareList2(AssignmentResponse assignmentResponse){
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new Schedule("9:30", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:31", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:32", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:33", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:34", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:35", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:36", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:37", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:38", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:39", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:40", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:41", "French","IX","Lorem Ipsum"));
-
-        items.add(new NewsEvents());
-
-        items.add(new Header("Assignments"));
-        items.addAll(assignmentResponse.getResponse());
-
-        return items;
-    }
-    private ArrayList<Object> getScheduleList() {
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new Schedule("9:30", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:31", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:32", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:33", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:34", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:35", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:36", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:37", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:38", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:39", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:40", "French","IX","Lorem Ipsum"));
-        items.add(new Schedule("9:41", "French","IX","Lorem Ipsum"));
-
-        items.add(new NewsEvents());
-
-        items.add(new Header("Assignments"));
-
-        items.add(new Assignment("12-1-2018", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2013", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2015", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2019", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-        return items;
-    }
-    private ArrayList<Object> getAssignmentList(){
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new Assignment("12-1-2018", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2013", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2015", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2019", "12-12-2014","Pending","Lorem Ipsum"));
-        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-
-        return items;
-    }
+//    private ArrayList<Object> prepareList(ScheduleResponse scheduleResponse){
+//        ArrayList<Object> items = new ArrayList<>();
+//        items.addAll(scheduleResponse.getResponse().getRows());
+//
+//        items.add(new NewsEvents());
+//
+//        items.add(new Header("Assignments"));
+//
+//        items.add(new Assignment("12-1-2018", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2013", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2015", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2019", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
+//        return items;
+//    }
+//    private ArrayList<Object> prepareList2(AssignmentResponse assignmentResponse){
+//        ArrayList<Object> items = new ArrayList<>();
+//        items.add(new Schedule("9:30", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:31", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:32", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:33", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:34", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:35", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:36", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:37", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:38", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:39", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:40", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:41", "French","IX","Lorem Ipsum"));
+//
+//        items.add(new NewsEvents());
+//
+//        items.add(new Header("Assignments"));
+//        items.addAll(assignmentResponse.getResponse());
+//
+//        return items;
+//    }
+//    private ArrayList<Object> getScheduleList() {
+//        ArrayList<Object> items = new ArrayList<>();
+//        items.add(new Schedule("9:30", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:31", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:32", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:33", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:34", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:35", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:36", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:37", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:38", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:39", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:40", "French","IX","Lorem Ipsum"));
+//        items.add(new Schedule("9:41", "French","IX","Lorem Ipsum"));
+//
+//        items.add(new NewsEvents());
+//
+//        items.add(new Header("Assignments"));
+//
+//        items.add(new Assignment("12-1-2018", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2013", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2015", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2019", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
+//        return items;
+//    }
+//    private ArrayList<Object> getAssignmentList(){
+//        ArrayList<Object> items = new ArrayList<>();
+//        items.add(new Assignment("12-1-2018", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2013", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2015", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2019", "12-12-2014","Pending","Lorem Ipsum"));
+//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
+//
+//        return items;
+//    }
 
 }

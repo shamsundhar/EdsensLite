@@ -15,6 +15,7 @@ import com.school.edsense_lite.utils.DateTimeUtils;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import static com.school.edsense_lite.today.Header.ASSIGNMENT_HEADER;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT4;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT5;
 
@@ -28,6 +29,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private final int ASSIGNMENT_LIST_ITEM = 1;
     private final int ASSIGNMENT_HEADER_ITEM = 2;
     private final int NEWS_EVENTS_LIST_ITEM = 3;
+    private final int SCHEDULE_HEADER_ITEM = 4;
     //  private AdapterView.OnItemClickListener listener;
     private ClickListener clickListener;
 
@@ -47,6 +49,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             View v1 = inflater.inflate(R.layout.layout_scheduleitem, viewGroup, false);
             viewHolder = new ViewHolder1(v1);
         }
+        else if(viewType == SCHEDULE_HEADER_ITEM){
+            View v1 = inflater.inflate(R.layout.layout_schedule_header_item, viewGroup, false);
+            viewHolder = new ViewHolder3(v1);
+        }
         else if(viewType == ASSIGNMENT_LIST_ITEM){
             View v1 = inflater.inflate(R.layout.layout_assignmentitem, viewGroup, false);
             viewHolder = new ViewHolder2(v1);
@@ -65,6 +71,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         switch (viewHolder.getItemViewType()) {
+            case SCHEDULE_HEADER_ITEM:
+                ViewHolder5 vh5 = (ViewHolder5)viewHolder;
+                configureViewHolder5(vh5, position);
+                break;
             case SCHEDULE_LIST_ITEM:
                 ViewHolder1 vh1 = (ViewHolder1) viewHolder;
                 configureViewHolder1(vh1, position);
@@ -106,7 +116,12 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             return ASSIGNMENT_LIST_ITEM;
         }
         else if(items.get(position) instanceof Header){
-            return ASSIGNMENT_HEADER_ITEM;
+            if(((Header)items.get(position)).getHeaderType() == ASSIGNMENT_HEADER){
+                return ASSIGNMENT_HEADER_ITEM;
+            }
+            else{
+                return SCHEDULE_HEADER_ITEM;
+            }
         }
         else if(items.get(position) instanceof NewsEvents){
             return NEWS_EVENTS_LIST_ITEM;
@@ -147,6 +162,13 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         Header headerModel = (Header) items.get(position);
         if (headerModel != null) {
             vh3.getTitle().setText(headerModel.getTitle());
+
+        }
+    }
+    private void configureViewHolder5(ViewHolder5 vh5, int position) {
+        Header headerModel = (Header) items.get(position);
+        if (headerModel != null) {
+            vh5.getTitle().setText(headerModel.getTitle());
 
         }
     }
@@ -256,6 +278,30 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         public ViewHolder3(View v) {
+            super(v);
+            title = (TextView) v.findViewById(R.id.headerTitle);
+        }
+        public void bind(final Header header, final AdapterView.OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
+                }
+            });
+        }
+    }
+    class ViewHolder5 extends RecyclerView.ViewHolder {
+
+        private TextView title;
+
+        public TextView getTitle() {
+            return title;
+        }
+
+        public void setTitle(TextView title) {
+            this.title = title;
+        }
+
+        public ViewHolder5(View v) {
             super(v);
             title = (TextView) v.findViewById(R.id.headerTitle);
         }
