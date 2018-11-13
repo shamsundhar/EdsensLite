@@ -1,6 +1,7 @@
 package com.school.edsense_lite.attendance;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.school.edsense_lite.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SectionsListAdapter extends ArrayAdapter<SectionResponse.Response>{
 
@@ -22,14 +24,27 @@ public class SectionsListAdapter extends ArrayAdapter<SectionResponse.Response>{
     private static class ViewHolder {
         TextView title;
     }
+    public void setItems(ArrayList<SectionResponse.Response> items) {
+        this.dataSet = items;
+    }
 
-    public SectionsListAdapter(ArrayList<SectionResponse.Response> data, Context context) {
-        super(context, R.layout.layout_sectionitem, data);
-        this.dataSet = data;
+    public SectionsListAdapter( ArrayList<SectionResponse.Response> items, Context context) {
+        super(context, R.layout.layout_sectionitem);
         this.mContext=context;
+        this.dataSet = items;
 
     }
 
+    @Nullable
+    @Override
+    public SectionResponse.Response getItem(int position) {
+        return dataSet.get(position);
+    }
+
+    @Override
+    public int getCount() {
+        return (dataSet == null) ? 0 : dataSet.size();
+    }
 //    @Override
 //    public void onClick(View v) {
 //

@@ -46,4 +46,17 @@ public class DateTimeUtils {
             return "";
         }
     }
+    public static String parseDate(String dateString, String inputFormat, String outputFormat){
+        SimpleDateFormat dateFormat = new SimpleDateFormat(inputFormat);
+        Date sourceDate = null;
+        try {
+            sourceDate = dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        SimpleDateFormat targetFormat = new SimpleDateFormat(outputFormat);
+        String targetdatevalue= targetFormat.format(sourceDate);
+        return targetdatevalue;
+    }
 }

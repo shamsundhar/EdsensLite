@@ -14,10 +14,9 @@ import retrofit2.http.Query;
 public interface TodayApi {
 
    // https://edsensewebtst.azurewebsites.net/api/Academic/GetDayWiseScheduleByUser?currentDate=08-20-2018
-    @GET("Academic/GetDayWiseScheduleByUser")
+    @GET("Academic/GetDayWiseScheduleByUser?currentDate=2018-11-12")
     @Headers({"Content-Type: application/json"})
-    Observable<ScheduleResponse> getSchedules(@Header("Authorization") String token,
-                                           @Query("currentDate") String currentDate);
+    Observable<ScheduleResponse> getSchedules(@Header("Authorization") String token);
 
     //https://edsensewebtst.azurewebsites.net/api/Assignment/GetAssignmentDetails?value=1
     @GET("Assignment/GetAssignmentDetails?value=1")

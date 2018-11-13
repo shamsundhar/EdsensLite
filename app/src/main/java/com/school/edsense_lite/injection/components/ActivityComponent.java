@@ -4,6 +4,7 @@ package com.school.edsense_lite.injection.components;
 import com.school.edsense_lite.injection.modules.ActivityModule;
 import com.school.edsense_lite.injection.scopes.PerActivity;
 import com.school.edsense_lite.login.LoginActivity;
+import com.school.edsense_lite.subscription.SubscriptionActivity;
 
 import dagger.Component;
 
@@ -19,6 +20,6 @@ public interface ActivityComponent extends AppComponent {
 
   //  void inject(SignupActivity activity);
     void inject(LoginActivity activity);
-  //  void inject(ProductListActivity activity);
+    void inject(SubscriptionActivity activity);
 
 }

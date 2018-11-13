@@ -25,17 +25,22 @@ import com.school.edsense_lite.utils.PreferenceHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
@@ -96,70 +101,141 @@ public class TodayFragment extends BaseFragment {
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
         String currentDate = DateTimeUtils.getCurrentDateInString(DATE_FORMAT2);
         if(!bearerToken.isEmpty()) {
-            todayApi.getSchedules(bearerToken, currentDate)
+
+            List<Observable<?>> requests = new ArrayList<>();
+
+            // Make a collection of all requests you need to call at once, there can be any number of requests, not only 3. You can have 2 or 5, or 100.
+            requests.add(todayApi.getSchedules(bearerToken));
+            requests.add(todayApi.getAssignmentsForLoginUser(bearerToken));
+
+//            Observable<ScheduleResponse> scheduleResponseObservable = todayApi.getSchedules(bearerToken)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread());
+//
+//            Observable<AssignmentResponse> assignmentResponseObservable = todayApi.getAssignmentsForLoginUser(bearerToken)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread());
+
+
+            // Zip all requests with the Function, which will receive the results.
+            Observable.zip(
+                    requests,
+                    new Function<Object[], ScheduleAndAssignment>() {
+                        @Override
+                        public ScheduleAndAssignment apply(Object[] objects) throws Exception {
+                            // Objects[] is an array of combined results of completed requests
+
+                            // do something with those results and emit new event
+
+                            List<Object> objectList = Arrays.asList(objects);
+
+                            return new ScheduleAndAssignment(objects[0], objects[1]);
+                        }
+                    })
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ScheduleResponse>() {
-                        @Override
-                        public void onError(Throwable e) {
-                            progressDialog.dismiss();
-                        }
-                        @Override
-                        public void onComplete() {
+                    // After all requests had been performed the next observer will receive the Object, returned from Function
+                    .subscribe(
+                            // Will be triggered if all requests will end successfully (4xx and 5xx also are successful requests too)
+                            new Consumer<ScheduleAndAssignment>() {
+                                @Override
+                                public void accept(ScheduleAndAssignment scheduleAndAssignment) throws Exception {
+                                    //Do something on successful completion of all requests
+                                    List<Object> objectList = new ArrayList<Object>();
+                                    List<Row> scheduleRows = scheduleAndAssignment.getScheduleResponse().getResponse().getRows();
+                                    for(int i = 0; i<scheduleRows.size(); i++){
+                                        objectList.add(scheduleRows.get(i));
+                                    }
+                                 //   objectList.add(scheduleAndAssignment.getScheduleResponse());
+                                    objectList.add(new NewsEvents());
+                                    objectList.add(new Header("Assignments"));
+                                    List<AssignmentResponse.Response> assignmentResponseList = scheduleAndAssignment.getAssignmentResponse().getResponse();
+                                    for(int i = 0; i<assignmentResponseList.size(); i++){
+                                        objectList.add(assignmentResponseList.get(i));
+                                    }
+                                 //   objectList.add(scheduleAndAssignment.getAssignmentResponse());
+                                    progressDialog.dismiss();
+                                    scheduleRecyclerViewAdapter.setItems(objectList);
+                                    scheduleRecyclerViewAdapter.notifyDataSetChanged();
 
-                        }
-                        @Override
-                        public void onSubscribe(Disposable d) {
+                                }
+                            },
 
-                        }
-                        @Override
-                        public void onNext(ScheduleResponse scheduleResponse) {
-                            progressDialog.dismiss();
-                            if (scheduleResponse.getIsSuccess().equals("true")) {
-                                scheduleRecyclerViewAdapter.setItems(prepareList(scheduleResponse));
-                                scheduleRecyclerViewAdapter.notifyDataSetChanged();
-                            } else if (!scheduleResponse.getErrorCode().equals("200")) {
-                                //display error.
-                                new CustomAlertDialog().showAlert1(
-                                        getActivity(),
-                                        R.string.text_login_failed,
-                                        scheduleResponse.getErrorMessage(),
-                                        null);
+                            // Will be triggered if any error during requests will happen
+                            new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable e) throws Exception {
+                                    progressDialog.dismiss();
+                                    //Do something on error completion of requests
+                                }
                             }
-                        }
-                    });
-            todayApi.getAssignmentsForLoginUser(bearerToken)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<AssignmentResponse>() {
-                        @Override
-                        public void onError(Throwable e) {
-                            progressDialog.dismiss();
-                        }
-                        @Override
-                        public void onComplete() {
+                    );
 
-                        }
-                        @Override
-                        public void onSubscribe(Disposable d) {
 
-                        }
-                        @Override
-                        public void onNext(AssignmentResponse assignmentResponse) {
-                            progressDialog.dismiss();
-                            if (assignmentResponse.getIsSuccess().equals("true")) {
-                              //  scheduleRecyclerViewAdapter.setItems(prepareList(assignmentResponse));
-                                scheduleRecyclerViewAdapter.notifyDataSetChanged();
-                            } else if (!assignmentResponse.getErrorCode().equals("200")) {
-                                //display error.
-                                new CustomAlertDialog().showAlert1(
-                                        getActivity(),
-                                        R.string.text_login_failed,
-                                        assignmentResponse.getErrorMessage(),
-                                        null);
-                            }
-                        }
-                    });
+//            todayApi.getSchedules(bearerToken)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<ScheduleResponse>() {
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            progressDialog.dismiss();
+//                        }
+//                        @Override
+//                        public void onComplete() {
+//
+//                        }
+//                        @Override
+//                        public void onSubscribe(Disposable d) {
+//
+//                        }
+//                        @Override
+//                        public void onNext(ScheduleResponse scheduleResponse) {
+//                            progressDialog.dismiss();
+//                            if (scheduleResponse.getIsSuccess().equals("true")) {
+//                                scheduleRecyclerViewAdapter.setItems(prepareList(scheduleResponse));
+//                                scheduleRecyclerViewAdapter.notifyDataSetChanged();
+//                            } else if (!scheduleResponse.getErrorCode().equals("200")) {
+//                                //display error.
+//                                new CustomAlertDialog().showAlert1(
+//                                        getActivity(),
+//                                        R.string.text_login_failed,
+//                                        scheduleResponse.getErrorMessage(),
+//                                        null);
+//                            }
+//                        }
+//                    });
+//            todayApi.getAssignmentsForLoginUser(bearerToken)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<AssignmentResponse>() {
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            progressDialog.dismiss();
+//                        }
+//                        @Override
+//                        public void onComplete() {
+//
+//                        }
+//                        @Override
+//                        public void onSubscribe(Disposable d) {
+//
+//                        }
+//                        @Override
+//                        public void onNext(AssignmentResponse assignmentResponse) {
+//                            progressDialog.dismiss();
+//                            if (assignmentResponse.getIsSuccess().equals("true")) {
+//                                scheduleRecyclerViewAdapter.setItems(prepareList2(assignmentResponse));
+//                                scheduleRecyclerViewAdapter.notifyDataSetChanged();
+//                            } else if (!assignmentResponse.getErrorCode().equals("200")) {
+//                                //display error.
+//                                new CustomAlertDialog().showAlert1(
+//                                        getActivity(),
+//                                        R.string.text_login_failed,
+//                                        assignmentResponse.getErrorMessage(),
+//                                        null);
+//                            }
+//                        }
+//                    });
         }
 
         scheduleRecyclerViewAdapter.setOnClickListener(new ClickListener() {
@@ -214,6 +290,28 @@ public class TodayFragment extends BaseFragment {
         items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
         return items;
     }
+    private ArrayList<Object> prepareList2(AssignmentResponse assignmentResponse){
+        ArrayList<Object> items = new ArrayList<>();
+        items.add(new Schedule("9:30", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:31", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:32", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:33", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:34", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:35", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:36", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:37", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:38", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:39", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:40", "French","IX","Lorem Ipsum"));
+        items.add(new Schedule("9:41", "French","IX","Lorem Ipsum"));
+
+        items.add(new NewsEvents());
+
+        items.add(new Header("Assignments"));
+        items.addAll(assignmentResponse.getResponse());
+
+        return items;
+    }
     private ArrayList<Object> getScheduleList() {
         ArrayList<Object> items = new ArrayList<>();
         items.add(new Schedule("9:30", "French","IX","Lorem Ipsum"));
@@ -262,4 +360,5 @@ public class TodayFragment extends BaseFragment {
 
         return items;
     }
+
 }

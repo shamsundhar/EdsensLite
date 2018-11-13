@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/date"
             android:textSize="14sp"
+            android:textColor="@color/aluminum"
             android:text="Monday, 08 October"/>
         <TextView
             android:layout_width="wrap_content"

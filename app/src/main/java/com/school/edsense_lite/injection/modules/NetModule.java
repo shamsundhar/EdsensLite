@@ -1,8 +1,11 @@
 package com.school.edsense_lite.injection.modules;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.school.edsense_lite.BuildConfig;
 import com.school.edsense_lite.attendance.AttendanceApi;
 import com.school.edsense_lite.injection.scopes.PerApplication;
 import com.school.edsense_lite.login.LoginApi;
+import com.school.edsense_lite.subscription.SubsciptionApi;
 import com.school.edsense_lite.today.TodayApi;
 
 import dagger.Module;
@@ -91,6 +94,17 @@ public class NetModule {
                 .callFactory(httpClientBuilder.build())
                 .build().create(AttendanceApi.class);
     }
+    @Provides
+    @PerApplication
+    static SubsciptionApi provideSubscriptionApi(OkHttpClient.Builder httpClientBuilder){
+        return new Retrofit.Builder()
+                .baseUrl(BuildConfig.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .callFactory(httpClientBuilder.build())
+                .build().create(SubsciptionApi.class);
+    }
+
 //    @Provides
 //    @PerApplication
 //    static ShopApi provideShopApi(OkHttpClient.Builder httpClientBuilder){

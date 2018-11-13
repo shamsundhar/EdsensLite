@@ -8,15 +8,18 @@ import android.util.Log;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.school.edsense_lite.BaseActivity;
+import com.school.edsense_lite.MainActivity;
 import com.school.edsense_lite.NavigationDrawerActivity;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -42,6 +45,8 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.btn_signin) Button _loginButton;
     @BindView(R.id.link_forgotpassword)
     TextView _forgotPasswordTV;
+    @BindView(R.id.logo)
+    ImageView _logoImageView;
 
     @Inject
     LoginApi loginApi;
@@ -52,11 +57,18 @@ public class LoginActivity extends BaseActivity {
         activityComponent().inject(this);
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String loginToken = preferenceHelper.getString(LoginActivity.this, Constants.PREF_KEY_BEARER_TOKEN, "");
+        String logoUrl = preferenceHelper.getString(LoginActivity.this, Constants.PREF_KEY_LOGO_URL, "");
         if(loginToken.isEmpty()){
             setContentView(R.layout.activity_login);
             ButterKnife.bind(this);
             _emailText.setText("GLA468");
             _passwordText.setText("Joselives199*");
+            // Picasso.with(LoginActivity.this).load(logoUrl).into(_logoImageView);
+            applyFonts();
+            Picasso.with(LoginActivity.this).load(logoUrl).fit()
+                    .placeholder(R.drawable.logo)
+                    .error(R.drawable.logo)
+                    .into(_logoImageView);
         }
         else{
             displayNavigationActivity();
@@ -73,8 +85,9 @@ public class LoginActivity extends BaseActivity {
     }
     @OnClick(R.id.link_forgotpassword)
     public void forgotPassword(){
-        Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-        startActivityForResult(intent, REQUEST_FORGOT_PASSWORD);
+        //  Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+        //   startActivityForResult(intent, REQUEST_FORGOT_PASSWORD);
+        comingSoon();
     }
     @OnClick(R.id.btn_signin)
     public void login() {
@@ -87,7 +100,7 @@ public class LoginActivity extends BaseActivity {
 
         _loginButton.setEnabled(false);
 
-      //  displayNavigationActivity();
+        //  displayNavigationActivity();
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
@@ -100,7 +113,10 @@ public class LoginActivity extends BaseActivity {
         LoginRequest request = new LoginRequest();
         request.setUserkey(username);
         request.setPassword(password);
-        request.setSubscriptionId("5");
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String subscriptionId = preferenceHelper.getString(LoginActivity.this,
+                Constants.PREF_KEY_SUBSCRIPTION_ID, "");
+        request.setSubscriptionId(subscriptionId);
         request.setKeepAlive("false");
         request.setLogintype("1");
 
@@ -181,7 +197,7 @@ public class LoginActivity extends BaseActivity {
         if(!loginResponse.getResponse().getBearerToken().isEmpty()){
             preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_BEARER_TOKEN, "Bearer "+loginResponse.getResponse().getBearerToken());
         }
-          displayNavigationActivity();
+        displayNavigationActivity();
     }
     private void displayNavigationActivity()
     {
@@ -192,6 +208,9 @@ public class LoginActivity extends BaseActivity {
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
+    }
+    public void comingSoon(){
+        Toast.makeText(getBaseContext(), "Coming Soon", Toast.LENGTH_LONG).show();
     }
 
     public boolean validate() {

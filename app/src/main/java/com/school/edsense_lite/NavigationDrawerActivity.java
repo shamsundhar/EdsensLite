@@ -211,7 +211,7 @@ public class NavigationDrawerActivity extends BaseActivity
     private void doLogout(){
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         preferenceHelper.clear(NavigationDrawerActivity.this);
-        Intent in = new Intent(NavigationDrawerActivity.this, LoginActivity.class);
+        Intent in = new Intent(NavigationDrawerActivity.this, MainActivity.class);
         in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(in);
         finish();

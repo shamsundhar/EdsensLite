@@ -1,6 +1,8 @@
 package com.school.edsense_lite.today;
 
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +10,13 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.utils.DateTimeUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT4;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT5;
 
 /**
  * Created by shyam on 2/25/2018.
@@ -22,7 +28,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private final int ASSIGNMENT_LIST_ITEM = 1;
     private final int ASSIGNMENT_HEADER_ITEM = 2;
     private final int NEWS_EVENTS_LIST_ITEM = 3;
-  //  private AdapterView.OnItemClickListener listener;
+    //  private AdapterView.OnItemClickListener listener;
     private ClickListener clickListener;
 
     public ScheduleRecyclerViewAdapter(){}
@@ -93,10 +99,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof Schedule) {
+        if (items.get(position) instanceof Row) {
             return SCHEDULE_LIST_ITEM;
         }
-        else if(items.get(position) instanceof Assignment){
+        else if(items.get(position) instanceof AssignmentResponse.Response){
             return ASSIGNMENT_LIST_ITEM;
         }
         else if(items.get(position) instanceof Header){
@@ -108,20 +114,32 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         return -1;
     }
     private void configureViewHolder1(ViewHolder1 vh1, int position) {
-        Schedule scheduleModel = (Schedule) items.get(position);
+        Row scheduleModel = (Row) items.get(position);
         if (scheduleModel != null) {
-            vh1.getClas().setText(scheduleModel.get_time());
-            vh1.getSubject().setText(scheduleModel.get_section());
-            vh1.getTopic().setText("fdfd");
+            vh1.getClas().setText(scheduleModel.getSubject());
+            vh1.getSubject().setText(scheduleModel.getSectionName());
+            vh1.getTopic().setText(scheduleModel.getTimePeriod());
             //  vh1.bind(scheduleModel, listener);
         }
     }
     private void configureViewHolder2(ViewHolder2 vh2, int position) {
-        Assignment assignmentModel = (Assignment) items.get(position);
+        AssignmentResponse.Response assignmentModel = (AssignmentResponse.Response) items.get(position);
         if (assignmentModel != null) {
-            vh2.getTitle().setText(assignmentModel.get_title());
-            vh2.getDueDate().setText(assignmentModel.get_dueDate());
-            vh2.getStatus().setText(assignmentModel.get_status());
+            vh2.getTitle().setText(assignmentModel.getName());
+
+            String endDate = assignmentModel.getEndDate();
+            if(endDate != null && endDate.trim().length() > 0) {
+                endDate = DateTimeUtils.parseDate(endDate, DATE_FORMAT5, DATE_FORMAT4);
+                vh2.getDueDate().setText("Due :"+endDate);
+            }
+
+            if(assignmentModel.getDescription() != null && assignmentModel.getDescription().trim().length() > 0) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    vh2.getDescription().setText(Html.fromHtml(assignmentModel.getDescription(), Html.FROM_HTML_MODE_COMPACT));
+                } else {
+                    vh2.getDescription().setText(Html.fromHtml(assignmentModel.getDescription()));
+                }
+            }
             //  vh1.bind(scheduleModel, listener);
         }
     }
@@ -185,7 +203,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         private TextView title;
         private TextView dueDate;
-        private TextView status;
+        private TextView description;
 
         public TextView getTitle() {
             return title;
@@ -203,19 +221,19 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             this.dueDate = dueDate;
         }
 
-        public TextView getStatus() {
-            return status;
+        public TextView getDescription() {
+            return description;
         }
 
-        public void setStatus(TextView status) {
-            this.status = status;
+        public void setDescription(TextView description) {
+            this.description = description;
         }
 
         public ViewHolder2(View v) {
             super(v);
             title = (TextView) v.findViewById(R.id.title);
             dueDate = (TextView) v.findViewById(R.id.duedate);
-            status = (TextView)v.findViewById(R.id.status);
+            description = (TextView)v.findViewById(R.id.description);
         }
         public void bind(final Assignment assignment, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {

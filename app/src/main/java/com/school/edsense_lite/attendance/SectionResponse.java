@@ -1,16 +1,40 @@
 package com.school.edsense_lite.attendance;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.school.edsense_lite.today.AssignmentResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SectionResponse {
 
-    private List<SectionResponse.Response> response = null;
+    public List<Response> getResponseList() {
+        return responseList;
+    }
+
+    public void setResponseList(List<Response> responseList) {
+        this.responseList = responseList;
+    }
+
+    private List<SectionResponse.Response> responseList = null;
+    @SerializedName("response")
+    private String responseString;
     private String isSuccess;
     private String errorMessage;
     private String errorCode;
     private String isUserActive;
+
+    public String getResponseString() {
+        return responseString;
+    }
+
+    public void setResponseString(String responseString) {
+        this.responseString = responseString;
+        ArrayList<Response> yourArray = new Gson().fromJson(responseString, new TypeToken<List<Response>>(){}.getType());
+        setResponse(yourArray);
+    }
 
     public String getIsSuccess() {
         return isSuccess;
@@ -24,11 +48,11 @@ public class SectionResponse {
         return errorMessage;
     }
     public List<SectionResponse.Response> getResponse() {
-        return response;
+        return responseList;
     }
 
-    public void setResponse(List<SectionResponse.Response> response) {
-        this.response = response;
+    public void setResponse(List<SectionResponse.Response> responseList) {
+        this.responseList = responseList;
     }
 
     public void setErrorMessage(String errorMessage) {

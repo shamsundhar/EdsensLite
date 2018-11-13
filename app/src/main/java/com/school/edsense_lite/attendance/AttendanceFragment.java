@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.events.Event;
@@ -50,6 +52,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT3;
 
 public class AttendanceFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     @BindView(R.id.attendanceRecyclerview)
@@ -72,10 +75,12 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         displayDateDialog();
     }
     AttendanceRecyclerViewAdapter attendanceRecyclerViewAdapter;
+    SectionsListAdapter sectionsListAdapter;
     @Inject
     AttendanceApi attendanceApi;
     ArrayList<SectionResponse.Response> sectionResponseList;
     List<Object> userResponseList;
+    private String selectedDate;
     private String selectedSectionId;
     /**
      * Use this factory method to create a new instance of
@@ -122,24 +127,31 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                     .subscribe(new Observer<SectionResponse>() {
                         @Override
                         public void onError(Throwable e) {
+                            System.out.println("error called::"+e.fillInStackTrace());
                             progressDialog.dismiss();
                         }
 
                         @Override
                         public void onComplete() {
-
+System.out.println("complete called");
                         }
 
                         @Override
                         public void onSubscribe(Disposable d) {
-
+                            System.out.println("onsubscribe called");
                         }
 
                         @Override
                         public void onNext(SectionResponse sectionResponse) {
                             progressDialog.dismiss();
                             if (sectionResponse.getIsSuccess().equals("true")) {
-                                sectionResponseList = new ArrayList<SectionResponse.Response>(sectionResponse.getResponse());
+                                String responseString = sectionResponse.getResponseString();
+                                ArrayList<SectionResponse.Response> yourArray = new Gson().
+                                        fromJson(responseString,
+                                                new TypeToken<List<SectionResponse.Response>>(){}.getType());
+
+                                sectionResponseList = new ArrayList<SectionResponse.Response>(yourArray);
+
                             } else if (!sectionResponse.getErrorCode().equals("200")) {
                                 //display error.
                                 new CustomAlertDialog().showAlert1(
@@ -188,31 +200,28 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         Window window = builder.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        wlp.gravity = Gravity.TOP;
+        wlp.gravity = Gravity.CENTER;
         window.setAttributes(wlp);
         builder.setContentView(R.layout.popup_listview);
 
-        final String[] hospitals = getResources().getStringArray(R.array.sections_array);
-
         final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
         listView.setTextFilterEnabled(true);
-        SectionsListAdapter adapter = new SectionsListAdapter(sectionResponseList, getActivity().getBaseContext());
-        listView.setAdapter(adapter);
-
+        if(sectionResponseList != null) {
+            sectionsListAdapter = new SectionsListAdapter(sectionResponseList, getActivity().getBaseContext());
+            listView.setAdapter(sectionsListAdapter);
+        }
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // TODO Auto-generated method stub
                 builder.dismiss();
-                sectionTV.setText(hospitals[position]);
                 SectionResponse.Response dataModel = sectionResponseList.get(position);
+                sectionTV.setText(dataModel.getCompositeTagName());
                 selectedSectionId = dataModel.getCompositeTagId();
-                        Snackbar.make(view, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
-                                .setAction("No action", null).show();
-
+                      //  Snackbar.make(view, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
+                      //          .setAction("No action", null).show();
                         getUsersBasedOnSection();
-
             }
         });
         builder.setCanceledOnTouchOutside(true);
@@ -227,7 +236,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
         if(!bearerToken.isEmpty()) {
-            GetUserRequest request = new GetUserRequest(selectedSectionId, "");
+            String date = DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT1, DATE_FORMAT3);
+            GetUserRequest request = new GetUserRequest(selectedSectionId, date);
             attendanceApi.getUsersBasedOnSection(bearerToken,request)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -267,7 +277,9 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         }
     }
     private void setCurrentDate(){
-        dateTV.setText(DateTimeUtils.getCurrentDateInString(DATE_FORMAT1));
+        String date = DateTimeUtils.getCurrentDateInString(DATE_FORMAT1);
+        selectedDate = date;
+        dateTV.setText(date);
     }
     private void displayDateDialog(){
         DatePickerFragment date = new DatePickerFragment();
@@ -289,7 +301,9 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
 
     @Override
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
-        String strDate = padding(i2)+" - "+padding(i1)+" - "+padding(i);
+        String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
+        strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
+        selectedDate = strDate;
         dateTV.setText(strDate);
     }
     String padding(int value)
