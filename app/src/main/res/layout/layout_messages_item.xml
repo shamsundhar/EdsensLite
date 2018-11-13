@@ -20,8 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_launcher"
-
-
+            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"/>
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,15 +29,31 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@id/imageView">
-            <TextView
-                android:id="@+id/title"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:text="title"
-                android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                android:gravity="center_vertical"/>
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:text="title"
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:gravity="center_vertical"/>
+                <CheckBox
+                    android:button="@android:drawable/btn_star"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/favorite"
+                    android:background="@android:color/transparent"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
             <TextView
                 android:id="@+id/message"
                 android:layout_width="match_parent"
@@ -48,7 +63,33 @@
                 android:text="Message"
                 android:layout_centerVertical="true"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                android:lines="2"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/message_day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Message"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"/>
+                <TextView
+                    android:id="@+id/message_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Message"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"/>
+
+            </RelativeLayout>
         </LinearLayout>
 
 
