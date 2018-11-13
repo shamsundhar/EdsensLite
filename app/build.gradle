@@ -69,6 +69,15 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.0'
 
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    //Glide configuration
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    //Room database configuration
+    def room_version = "2.1.0-alpha02"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+//    implementation "androidx.core:core:2.0.0"
 
 
 }
