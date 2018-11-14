@@ -1,5 +1,6 @@
 package com.school.edsense_lite.today;
 
+import com.school.edsense_lite.model.Row;
 import com.school.edsense_lite.model.Subscription;
 
 import java.util.List;

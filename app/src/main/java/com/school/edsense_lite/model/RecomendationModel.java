@@ -1,8 +1,18 @@
-package com.school.edsense_lite.recomendations;
+package com.school.edsense_lite.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+@Entity(tableName = "table_recomendations")
 public class RecomendationModel {
 
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "recomendations_name")
     private String name;
+    @ColumnInfo(name = "recomendations_image_path")
     private String imagePath;
 
     public RecomendationModel(String name, String imagePath) {

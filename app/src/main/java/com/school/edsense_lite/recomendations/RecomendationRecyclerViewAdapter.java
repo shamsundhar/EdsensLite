@@ -2,6 +2,7 @@ package com.school.edsense_lite.recomendations;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.messages.MessagesModel;
+import com.school.edsense_lite.messages.MessagesRecyclerViewAdapter;
+import com.school.edsense_lite.model.RecomendationModel;
+import com.school.edsense_lite.today.Schedule;
 
 import java.util.List;
 

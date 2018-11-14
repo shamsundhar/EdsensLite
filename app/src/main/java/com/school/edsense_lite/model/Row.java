@@ -1,19 +1,42 @@
-package com.school.edsense_lite.today;
+package com.school.edsense_lite.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+@Entity(tableName = "table_schedule_row")
 public class Row {
-    private String startTimeSlot;
-    private Object endTimeSlot;
-    private String timePeriod;
-    private String gradeName;
-    private String subject;
-    private String sectionName;
+
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "schedlue_row_title")
     private String title;
+    @ColumnInfo(name = "schedlue_row_learningObjectID")
     private Integer learningObjectID;
+    @ColumnInfo(name = "schedlue_row_parentId")
     private Integer parentId;
-    private Object eventId;
-    private Object cSSClass;
-    private Object tagCategory;
-    private Object teacherName;
+    @ColumnInfo(name = "schedlue_row_eventId")
+    private String eventId;
+    @ColumnInfo(name = "schedlue_row_cSSClass")
+    private String cSSClass;
+    @ColumnInfo(name = "schedlue_row_tagCategory")
+    private String tagCategory;
+    @ColumnInfo(name = "schedlue_row_teacherName")
+    private String teacherName;
+    @ColumnInfo(name = "schedlue_row_startTimeSlot")
+    private String startTimeSlot;
+    @ColumnInfo(name = "schedlue_row_endTimeSlot")
+    private String endTimeSlot;
+    @ColumnInfo(name = "schedlue_row_timePeriod")
+    private String timePeriod;
+    @ColumnInfo(name = "schedlue_row_gradeName")
+    private String gradeName;
+    @ColumnInfo(name = "schedlue_row_subject")
+    private String subject;
+    @ColumnInfo(name = "schedlue_row_sectionName")
+    private String sectionName;
+
 
     public String getStartTimeSlot() {
         return startTimeSlot;
@@ -23,11 +46,11 @@ public class Row {
         this.startTimeSlot = startTimeSlot;
     }
 
-    public Object getEndTimeSlot() {
+    public String getEndTimeSlot() {
         return endTimeSlot;
     }
 
-    public void setEndTimeSlot(Object endTimeSlot) {
+    public void setEndTimeSlot(String endTimeSlot) {
         this.endTimeSlot = endTimeSlot;
     }
 
@@ -87,35 +110,35 @@ public class Row {
         this.parentId = parentId;
     }
 
-    public Object getEventId() {
+    public String getEventId() {
         return eventId;
     }
 
-    public void setEventId(Object eventId) {
+    public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 
-    public Object getCSSClass() {
+    public String getCSSClass() {
         return cSSClass;
     }
 
-    public void setCSSClass(Object cSSClass) {
+    public void setCSSClass(String cSSClass) {
         this.cSSClass = cSSClass;
     }
 
-    public Object getTagCategory() {
+    public String getTagCategory() {
         return tagCategory;
     }
 
-    public void setTagCategory(Object tagCategory) {
+    public void setTagCategory(String tagCategory) {
         this.tagCategory = tagCategory;
     }
 
-    public Object getTeacherName() {
+    public String getTeacherName() {
         return teacherName;
     }
 
-    public void setTeacherName(Object teacherName) {
+    public void setTeacherName(String teacherName) {
         this.teacherName = teacherName;
     }
 

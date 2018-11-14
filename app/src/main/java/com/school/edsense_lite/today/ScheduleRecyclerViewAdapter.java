@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.model.AssignmentResponseModel;
+import com.school.edsense_lite.model.Row;
 import com.school.edsense_lite.utils.DateTimeUtils;
 
 import org.w3c.dom.Text;
@@ -114,7 +116,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (items.get(position) instanceof Row) {
             return SCHEDULE_LIST_ITEM;
         }
-        else if(items.get(position) instanceof AssignmentResponse.Response){
+        else if(items.get(position) instanceof AssignmentResponseModel){
             return ASSIGNMENT_LIST_ITEM;
         }
         else if(items.get(position) instanceof Header){
@@ -141,7 +143,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
     private void configureViewHolder2(ViewHolder2 vh2, int position) {
-        AssignmentResponse.Response assignmentModel = (AssignmentResponse.Response) items.get(position);
+        AssignmentResponseModel assignmentModel = (AssignmentResponseModel) items.get(position);
         if (assignmentModel != null) {
             vh2.getTitle().setText(assignmentModel.getName());
 
