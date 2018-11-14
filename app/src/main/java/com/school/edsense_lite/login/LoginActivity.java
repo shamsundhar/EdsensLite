@@ -63,7 +63,6 @@ public class LoginActivity extends BaseActivity {
             ButterKnife.bind(this);
             _emailText.setText("GLA468");
             _passwordText.setText("Joselives199*");
-            // Picasso.with(LoginActivity.this).load(logoUrl).into(_logoImageView);
             applyFonts();
             Picasso.with(LoginActivity.this).load(logoUrl).fit()
                     .placeholder(R.drawable.logo)

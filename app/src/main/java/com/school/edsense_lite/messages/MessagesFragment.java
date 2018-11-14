@@ -1,6 +1,7 @@
 package com.school.edsense_lite.messages;
 
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import androidx.room.Room;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -46,6 +47,7 @@ public class MessagesFragment extends BaseFragment {
     FloatingActionButton newMessageButton;
 
     private MessagesRecyclerViewAdapter messagesRecyclerViewAdapter;
+    public static EdsenseDatabase mEdsenseDatabase;
 
     @Inject
     MessagesApi messagesApi;
@@ -66,6 +68,9 @@ public class MessagesFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, "EdsenseDB")
+                .allowMainThreadQueries()
+                .build();
         }
 
     @Override
@@ -138,16 +143,16 @@ public class MessagesFragment extends BaseFragment {
 
 //                            if(getMessagesList() != null) {
 //                                for (MessagesResponseModel message : getMessagesList()) {
-////                            if(messagesResponse.getResponse() != null) {
-////                                for (MessagesResponseModel message : messagesResponse.getResponse()) {
-//                                    if (message != null) {
-//                                        MainActivity.mEdsenseDatabase.messagesDao().insert(message);
-//                                    }
-//                                }
-//                            }
-//                            messagesResponseList =  (ArrayList<MessagesResponseModel>) MainActivity.mEdsenseDatabase.messagesDao().getAllMessages();
+                            if(messagesResponse.getResponse() != null) {
+                                for (MessagesResponseModel message : messagesResponse.getResponse()) {
+                                    if (message != null) {
+                                        mEdsenseDatabase.messagesDao().insert(message);
+                                    }
+                                }
+                            }
+                            messagesResponseList =  (ArrayList<MessagesResponseModel>) mEdsenseDatabase.messagesDao().getAllMessages();
 
-                            messagesResponseList = new ArrayList<MessagesResponseModel>(messagesResponse.getResponse());
+//                            messagesResponseList = new ArrayList<MessagesResponseModel>(messagesResponse.getResponse());
                             messagesRecyclerViewAdapter.setItems(messagesResponseList);
 
                             messagesRecyclerView.setAdapter(messagesRecyclerViewAdapter);
