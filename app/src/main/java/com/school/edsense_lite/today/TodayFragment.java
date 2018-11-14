@@ -56,8 +56,6 @@ public class TodayFragment extends BaseFragment {
     RecyclerView todayRecyclerView;
     @BindView(R.id.pagetitle)
     TextView titleTV;
-    @BindView(R.id.textMySchedule)
-    TextView myScheduleTV;
     @BindView(R.id.date)
     TextView dateTV;
 
@@ -270,7 +268,6 @@ public class TodayFragment extends BaseFragment {
 
         titleTV.setTypeface(tf);
         dateTV.setTypeface(tf);
-        myScheduleTV.setTypeface(tf);
     }
 //    private ArrayList<Object> prepareList(ScheduleResponse scheduleResponse){
 //        ArrayList<Object> items = new ArrayList<>();

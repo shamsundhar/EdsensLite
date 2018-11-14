@@ -47,8 +47,9 @@ public class MessagesFragment extends BaseFragment {
 
     private MessagesRecyclerViewAdapter messagesRecyclerViewAdapter;
 
-@Inject
-MessagesApi messagesApi;
+    @Inject
+    MessagesApi messagesApi;
+
     private ArrayList<MessagesResponseModel> messagesResponseList;
 
     /**
@@ -156,7 +157,7 @@ MessagesApi messagesApi;
                             //display error.
                             new CustomAlertDialog().showAlert1(
                                     getActivity(),
-                                    R.string.failed,
+                                    R.string.text_failed,
                                     messagesResponse.getErrorMessage(),
                                     null);
                         }

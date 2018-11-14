@@ -56,7 +56,6 @@ public class DateTimeUtils {
         }
 
         SimpleDateFormat targetFormat = new SimpleDateFormat(outputFormat);
-        String targetdatevalue= targetFormat.format(sourceDate);
-        return targetdatevalue;
+        return targetFormat.format(sourceDate);
     }
 }

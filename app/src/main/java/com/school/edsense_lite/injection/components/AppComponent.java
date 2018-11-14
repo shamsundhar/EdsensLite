@@ -11,6 +11,7 @@ import com.school.edsense_lite.injection.modules.NetModule;
 import com.school.edsense_lite.injection.qualifier.AppContext;
 import com.school.edsense_lite.injection.scopes.PerApplication;
 import com.school.edsense_lite.login.LoginApi;
+import com.school.edsense_lite.messages.MessagesApi;
 import com.school.edsense_lite.subscription.SubsciptionApi;
 import com.school.edsense_lite.today.TodayApi;
 
@@ -30,4 +31,5 @@ public interface AppComponent {
     TodayApi todayApi();
     AttendanceApi attendanceApi();
     SubsciptionApi subscriptionApi();
+    MessagesApi messagesApi();
 }

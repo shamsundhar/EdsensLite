@@ -26,6 +26,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="text_login_failed">Login Failed</string>
+    <string name="text_failed">Failed</string>
 
     <string-array name="sections_array">
         <item>VII - A, B</item>

@@ -103,9 +103,6 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             this.messageTime = messageTime;
         }
 
-
-
-
         public ImageView getImage() {
             return image;
         }
@@ -144,7 +141,7 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             super(v);
             title = (TextView) v.findViewById(R.id.title);
             message = (TextView) v.findViewById(R.id.message);
-            date = (TextView)v.findViewById(R.id.date);
+            date = (TextView)v.findViewById(R.id.message_date);
             image = (ImageView)v.findViewById(R.id.imageView);
             messageTime = (TextView) v.findViewById(R.id.message_time);
         }

@@ -51,7 +51,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
         else if(viewType == SCHEDULE_HEADER_ITEM){
             View v1 = inflater.inflate(R.layout.layout_schedule_header_item, viewGroup, false);
-            viewHolder = new ViewHolder3(v1);
+            viewHolder = new ViewHolder5(v1);
         }
         else if(viewType == ASSIGNMENT_LIST_ITEM){
             View v1 = inflater.inflate(R.layout.layout_assignmentitem, viewGroup, false);
@@ -144,8 +144,9 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
             String endDate = assignmentModel.getEndDate();
             if(endDate != null && endDate.trim().length() > 0) {
-                endDate = DateTimeUtils.parseDate(endDate, DATE_FORMAT5, DATE_FORMAT4);
-                vh2.getDueDate().setText("Due :"+endDate);
+                //endDate = DateTimeUtils.parseDate(endDate, DATE_FORMAT5, DATE_FORMAT4);
+                String[] date = endDate.split("T");
+                vh2.getDueDate().setText("Due :"+date[0].replace('-','/'));
             }
 
             if(assignmentModel.getDescription() != null && assignmentModel.getDescription().trim().length() > 0) {
