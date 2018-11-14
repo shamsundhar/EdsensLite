@@ -14,7 +14,7 @@ import java.util.List;
 @Dao
 public interface MessagesDao {
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MessagesResponseModel messagesResponseModel);
 
     @Query("DELETE FROM table_messages")
