@@ -1,10 +1,9 @@
 package com.school.edsense_lite.model.db;
 
-
+import com.school.edsense_lite.model.AssignmentResponseModel;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 
-import com.school.edsense_lite.model.AssignmentResponseModel;
 import com.school.edsense_lite.model.MessagesResponseModel;
 import com.school.edsense_lite.model.RecomendationModel;
 import com.school.edsense_lite.model.Row;
@@ -20,6 +19,7 @@ import com.school.edsense_lite.news.News;
 
 @Database(entities = {MessagesResponseModel.class,AssignmentResponseModel.class,
         RecomendationModel.class,Row.class,Subscription.class,News.class},version = 1)
+
 public abstract class EdsenseDatabase extends RoomDatabase {
     public abstract MessagesDao messagesDao();
     public abstract AssignmentDao assignmentDao();

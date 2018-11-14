@@ -3,6 +3,8 @@ package com.school.edsense_lite.model.dao;
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
+
 import android.arch.persistence.room.Query;
 
 import com.school.edsense_lite.model.MessagesResponseModel;
@@ -13,7 +15,7 @@ import java.util.List;
 @Dao
 public interface MessagesDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MessagesResponseModel messagesResponseModel);
 
     @Query("DELETE FROM table_messages")

@@ -1,6 +1,7 @@
 package com.school.edsense_lite.messages;
 
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +18,7 @@ import com.school.edsense_lite.MainActivity;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.model.MessagesResponseModel;
 import com.school.edsense_lite.model.db.EdsenseDatabase;
+import com.school.edsense_lite.utils.Common;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
@@ -24,7 +26,6 @@ import com.school.edsense_lite.utils.PreferenceHelper;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,6 +46,7 @@ public class MessagesFragment extends BaseFragment {
     FloatingActionButton newMessageButton;
 
     private MessagesRecyclerViewAdapter messagesRecyclerViewAdapter;
+    public static EdsenseDatabase mEdsenseDatabase;
 
     @Inject
     MessagesApi messagesApi;
@@ -65,7 +67,10 @@ public class MessagesFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        }
+        mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, "EdsenseDB")
+                .allowMainThreadQueries()
+                .build();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,59 +115,54 @@ public class MessagesFragment extends BaseFragment {
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), String.valueOf(jsonObject));
         //String jsonString = gson.toJson(request);//"{\"value\":{\"filters\":\" \",\"levelId\":\"2\",\"pageSize\":\"10\",\"pageStartIndex\":\"1\"}}";
         //Log.d("----",""+jsonString);
+        if(Common.isNetworkAvailable(getActivity())) {
+            messagesApi.fetch(bearerToken, request)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<MessagesResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            progressDialog.dismiss();
+                        }
 
-        messagesApi.fetch(bearerToken, request)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MessagesResponse>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        progressDialog.dismiss();
-                    }
+                        @Override
+                        public void onComplete() {
 
-                    @Override
-                    public void onComplete() {
+                        }
 
-                    }
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                        }
 
-                    }
-
-                    @Override
-                    public void onNext(MessagesResponse messagesResponse) {
-                        progressDialog.dismiss();
-                        if (messagesResponse.isIsSuccess()) {
+                        @Override
+                        public void onNext(MessagesResponse messagesResponse) {
+                            if (messagesResponse.isIsSuccess()) {
 
 //                            if(getMessagesList() != null) {
 //                                for (MessagesResponseModel message : getMessagesList()) {
-////                            if(messagesResponse.getResponse() != null) {
-////                                for (MessagesResponseModel message : messagesResponse.getResponse()) {
-//                                    if (message != null) {
-//                                        MainActivity.mEdsenseDatabase.messagesDao().insert(message);
-//                                    }
-//                                }
-//                            }
-//                            messagesResponseList =  (ArrayList<MessagesResponseModel>) MainActivity.mEdsenseDatabase.messagesDao().getAllMessages();
-
-                            messagesResponseList = new ArrayList<MessagesResponseModel>(messagesResponse.getResponse());
-                            messagesRecyclerViewAdapter.setItems(messagesResponseList);
-
-                            messagesRecyclerView.setAdapter(messagesRecyclerViewAdapter);
-                            messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                            messagesRecyclerViewAdapter.notifyDataSetChanged();
-                        } else if (messagesResponse.getErrorCode() != 200) {
-                            //display error.
-                            new CustomAlertDialog().showAlert1(
-                                    getActivity(),
-                                    R.string.text_failed,
-                                    messagesResponse.getErrorMessage(),
-                                    null);
+                                if (messagesResponse.getResponse() != null) {
+                                    for (MessagesResponseModel message : messagesResponse.getResponse()) {
+                                        if (message != null) {
+                                            mEdsenseDatabase.messagesDao().insert(message);
+                                        }
+                                    }
+                                }
+                                displayMessagesFromDB(progressDialog);
+                            } else if (messagesResponse.getErrorCode() != 200) {
+                                //display error.
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_failed,
+                                        messagesResponse.getErrorMessage(),
+                                        null);
+                            }
                         }
-                    }
-                });
-
+                    });
+        }
+        else{
+            displayMessagesFromDB(progressDialog);
+        }
 
 
         return view;
@@ -174,7 +174,14 @@ public class MessagesFragment extends BaseFragment {
         in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_COMPOSE_MESSAGE);
         getActivity().startActivity(in);
     }
-
+    private void displayMessagesFromDB(ProgressDialog progressDialog){
+        messagesResponseList =  (ArrayList<MessagesResponseModel>) mEdsenseDatabase.messagesDao().getAllMessages();
+        progressDialog.dismiss();
+        messagesRecyclerViewAdapter.setItems(messagesResponseList);
+        messagesRecyclerView.setAdapter(messagesRecyclerViewAdapter);
+        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        messagesRecyclerViewAdapter.notifyDataSetChanged();
+    }
 
     private ArrayList<MessagesResponseModel> getMessagesList() {
         ArrayList<MessagesResponseModel> items = new ArrayList<>();

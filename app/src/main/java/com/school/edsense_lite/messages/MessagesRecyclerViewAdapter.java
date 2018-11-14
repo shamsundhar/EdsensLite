@@ -12,8 +12,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.login.LoginActivity;
 import com.school.edsense_lite.model.MessagesResponseModel;
 import com.school.edsense_lite.today.Schedule;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -68,8 +70,12 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (messagesModel != null) {
             vh1.getTitle().setText(messagesModel.getContextDisplayName());
             vh1.getMessage().setText(messagesModel.getMessageBody());
-            Glide.with(context)
-                    .load(messagesModel.getOriginatorImageUrl())
+//            Glide.with(context)
+//                    .load("https://glendale.tst.edsense.co.in"+messagesModel.getOriginatorImageUrl())
+//                    .into(vh1.image);
+            Picasso.with(context).load("https://glendale.tst.edsense.co.in"+messagesModel.getOriginatorImageUrl()).fit()
+                    .placeholder(R.drawable.logo)
+                    .error(R.drawable.logo)
                     .into(vh1.image);
             vh1.getDate().setText(messagesModel.getTransactionDate());
             vh1.messageTime.setText(messagesModel.getTimeStampMsg());
