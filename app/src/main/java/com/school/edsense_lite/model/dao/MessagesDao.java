@@ -1,14 +1,14 @@
 package com.school.edsense_lite.model.dao;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
 
 import com.school.edsense_lite.model.MessagesResponseModel;
 
 import java.util.List;
 
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.Query;
 
 @Dao
 public interface MessagesDao {

@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import androidx.room.Room;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

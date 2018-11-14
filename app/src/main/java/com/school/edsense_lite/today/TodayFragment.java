@@ -18,6 +18,8 @@ import com.school.edsense_lite.login.LoginActivity;
 import com.school.edsense_lite.login.LoginApi;
 import com.school.edsense_lite.messages.MessagesModel;
 import com.school.edsense_lite.messages.MessagesRecyclerViewAdapter;
+import com.school.edsense_lite.model.AssignmentResponseModel;
+import com.school.edsense_lite.model.Row;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
@@ -150,7 +152,7 @@ public class TodayFragment extends BaseFragment {
                                  //   objectList.add(scheduleAndAssignment.getScheduleResponse());
                                     objectList.add(new NewsEvents());
                                     objectList.add(new Header("Assignments", ASSIGNMENT_HEADER));
-                                    List<AssignmentResponse.Response> assignmentResponseList = scheduleAndAssignment.getAssignmentResponse().getResponse();
+                                    List<AssignmentResponseModel> assignmentResponseList = scheduleAndAssignment.getAssignmentResponse().getResponse();
                                     for(int i = 0; i<assignmentResponseList.size(); i++){
                                         objectList.add(assignmentResponseList.get(i));
                                     }

@@ -11,6 +11,7 @@ import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.attendance.AttendanceFragment;
 import com.school.edsense_lite.messages.MessagesModel;
+import com.school.edsense_lite.model.RecomendationModel;
 
 import java.util.ArrayList;
 import java.util.List;
