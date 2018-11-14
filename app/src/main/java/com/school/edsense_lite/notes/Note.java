@@ -1,9 +1,22 @@
 package com.school.edsense_lite.notes;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+@Entity(tableName = "table_notes")
 public class Note {
+
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "notes_name")
     private String _name;
+    @ColumnInfo(name = "notes_traits")
     private String _traits;
+    @ColumnInfo(name = "notes_reason")
     private String _reason;
+    @ColumnInfo(name = "notes_imageUrl")
     private String _imageUrl;
 
     public Note(String _name, String _traits, String _reason, String _imageUrl) {

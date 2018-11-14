@@ -26,8 +26,6 @@ import com.school.edsense_lite.utils.PreferenceHelper;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
