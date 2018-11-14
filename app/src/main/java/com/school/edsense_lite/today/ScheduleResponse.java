@@ -54,8 +54,6 @@ public class ScheduleResponse {
         this.isUserActive = isUserActive;
     }
 
-
-
     public class Response{
         private List<Row> rows = null;
 

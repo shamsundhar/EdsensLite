@@ -20,7 +20,7 @@ public class Constants {
     public static final String BUNDLE_VALUE_COMPOSE_MESSAGE = "COMPOSE_MESSAGE";
 
     public static final String PREF_KEY_SUBSCRIPTION_ID = "KEY_SUBSCRIPTION_ID";
-    public static final String PREF_KEY_SUBSCRIPTION_URL = "KEY_SUBSCRIPTION_URL";
+    public static final String PREF_KEY_SUBSCRIPTION_PRIMARY_URL = "KEY_SUBSCRIPTION_PRIMARY_URL";
     public static final String PREF_KEY_LOGO_URL = "KEY_LOGO_URL";
     public static final String PREF_KEY_BEARER_TOKEN = "KEY_BEARER_TOKEN";
     public static final String DATE_FORMAT1 = "EEEE, d MMMM";

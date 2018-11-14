@@ -80,8 +80,6 @@ public class SubscriptionActivity extends BaseActivity {
 
         _continueButton.setEnabled(false);
 
-        //  displayLoginActivity();
-
         final ProgressDialog progressDialog = new ProgressDialog(SubscriptionActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -143,11 +141,21 @@ public class SubscriptionActivity extends BaseActivity {
                         Integer.toString(subscriptionResponse.getResponse().get(0).getSubscriptionId()));
                 preferenceHelper.setString(SubscriptionActivity.this,
                         Constants.PREF_KEY_LOGO_URL,
-                        subscriptionResponse.getResponse().get(0).getLogoUrl()
-                );
+                        subscriptionResponse.getResponse().get(0).getLogoUrl());
+                String primaryUrl = subscriptionResponse.getResponse().get(0).getPrimaryUrl();
+                primaryUrl = replaceLast(primaryUrl, "/","");
+                preferenceHelper.setString(SubscriptionActivity.this,
+                        Constants.PREF_KEY_SUBSCRIPTION_PRIMARY_URL,
+                        primaryUrl);
             }
         }
         displayLoginActivity();
+    }
+    private String replaceLast(String string, String from, String to) {
+        int lastIndex = string.lastIndexOf(from);
+        if (lastIndex < 0) return string;
+        String tail = string.substring(lastIndex).replaceFirst(from, to);
+        return string.substring(0, lastIndex) + tail;
     }
     private void displayLoginActivity()
     {

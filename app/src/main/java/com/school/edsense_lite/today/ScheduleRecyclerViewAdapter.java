@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.utils.DateTimeUtils;
 
+import org.w3c.dom.Text;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -131,9 +133,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private void configureViewHolder1(ViewHolder1 vh1, int position) {
         Row scheduleModel = (Row) items.get(position);
         if (scheduleModel != null) {
-            vh1.getClas().setText(scheduleModel.getSubject());
-            vh1.getSubject().setText(scheduleModel.getSectionName());
-            vh1.getTopic().setText(scheduleModel.getTimePeriod());
+            vh1.getClas().setText(scheduleModel.getGradeName());
+            vh1.getSubject().setText(scheduleModel.getSubject());
+            vh1.getTopic().setText(scheduleModel.getTitle());
+            vh1.getTime().setText(scheduleModel.getStartTimeSlot());
             //  vh1.bind(scheduleModel, listener);
         }
     }
@@ -184,6 +187,16 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         private TextView subject;
         private TextView topic;
 
+        public TextView getTime() {
+            return time;
+        }
+
+        public void setTime(TextView time) {
+            this.time = time;
+        }
+
+        private TextView time;
+
         public TextView getClas() {
             return clas;
         }
@@ -213,8 +226,9 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             clas = (TextView) v.findViewById(R.id.clas);
             subject = (TextView) v.findViewById(R.id.subject);
             topic = (TextView)v.findViewById(R.id.topic);
+            time = (TextView)v.findViewById(R.id.time);
         }
-        public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
+        public void bind(final ScheduleResponse schedule, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     //listener.onItemClick(schedule.get_section(), schedule.get_time());

@@ -10,11 +10,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.school.edsense_lite.R;
-import com.school.edsense_lite.login.LoginActivity;
 import com.school.edsense_lite.model.MessagesResponseModel;
-import com.school.edsense_lite.today.Schedule;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -24,9 +21,11 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private List<MessagesResponseModel> items;
     private AdapterView.OnItemClickListener listener;
     private Context context;
+    private String primaryUrl;
 
-    public MessagesRecyclerViewAdapter(Context applicationContext){
+    public MessagesRecyclerViewAdapter(Context applicationContext, String primaryUrl){
         context = applicationContext;
+        this.primaryUrl = primaryUrl;
     }
     public void setOnItemClickListener(AdapterView.OnItemClickListener clickListener){
         this.listener = clickListener;
@@ -73,7 +72,7 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 //            Glide.with(context)
 //                    .load("https://glendale.tst.edsense.co.in"+messagesModel.getOriginatorImageUrl())
 //                    .into(vh1.image);
-            Picasso.with(context).load("https://glendale.tst.edsense.co.in"+messagesModel.getOriginatorImageUrl()).fit()
+            Picasso.with(context).load(primaryUrl+messagesModel.getOriginatorImageUrl()).fit()
                     .placeholder(R.drawable.logo)
                     .error(R.drawable.logo)
                     .into(vh1.image);
@@ -151,12 +150,12 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             image = (ImageView)v.findViewById(R.id.imageView);
             messageTime = (TextView) v.findViewById(R.id.message_time);
         }
-        public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
-                }
-            });
-        }
+//        public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override public void onClick(View v) {
+//                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
+//                }
+//            });
+//        }
     }
 }
