@@ -10,11 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.google.gson.JsonObject;
 import com.school.edsense_lite.AWFActivity;
 import com.school.edsense_lite.BaseFragment;
-import com.school.edsense_lite.MainActivity;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.model.MessagesResponseModel;
 import com.school.edsense_lite.model.db.EdsenseDatabase;
@@ -38,6 +38,7 @@ import okhttp3.RequestBody;
 
 import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_COMPOSE_MESSAGE;
+import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_MESSAGE_DETAILS;
 
 public class MessagesFragment extends BaseFragment {
     @BindView(R.id.messagesRecyclerview)
@@ -80,15 +81,19 @@ public class MessagesFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
 
+        messagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(getActivity().getApplicationContext());
+        messagesRecyclerViewAdapter.setOnItemClickListener(new MessageItemClickListener() {
+            @Override
+            public void onMessageItemClicked(int position) {
+//                Intent in = new Intent(getActivity(), AWFActivity.class);
+//                in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_MESSAGE_DETAILS);
+//                getActivity().startActivity(in);
+            }
+        });
+
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String primaryUrl = preferenceHelper.getString(getActivity(),Constants.PREF_KEY_SUBSCRIPTION_PRIMARY_URL,"");
-        messagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(getActivity().getApplicationContext(), primaryUrl);
-//        messagesRecyclerViewAdapter.setItems(getMessagesList());
-//        messagesRecyclerView.setAdapter(messagesRecyclerViewAdapter);
-//        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//
-//
-//        messagesRecyclerViewAdapter.notifyDataSetChanged();
+        
         //API call
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                 R.style.AppTheme_Dark_Dialog);

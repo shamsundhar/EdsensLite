@@ -17,9 +17,10 @@
         android:padding="5dp">
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@mipmap/ic_launcher"
+            android:layout_gravity="center"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"/>
         <LinearLayout
@@ -36,8 +37,10 @@
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
                     android:textStyle="bold"
-                    android:textSize="18sp"
+                    android:fontFamily="@font/bariol_bold_webfont"
+                    android:textSize="14sp"
                     android:text="title"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
                     android:gravity="center_vertical"/>
@@ -68,21 +71,20 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:id="@+id/message_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:text="Message"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
-
-                    android:textAppearance="?android:attr/textAppearanceListItemSmall"/>
+                    android:text="Message"
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:textSize="12sp" />
                 <TextView
                     android:id="@+id/message_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:text="Message"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
