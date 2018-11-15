@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.school.edsense_lite.events.EventsFragment;
+import com.school.edsense_lite.messages.MessageDetailsFragment;
 import com.school.edsense_lite.messages.NewMessageFragment;
 import com.school.edsense_lite.news.NewsFragment;
 import com.school.edsense_lite.today.TodayFragment;
@@ -30,6 +31,7 @@ public class AWFActivity extends BaseActivity {
 
     private static final String NEWS_FRAGMENT_TAG = "NEWS_FRAGMENT";
     private static final String COMPOSE_MESSAGE_FRAGMENT_TAG = "COMPOSE_MESSAGE_FRAGMENT";
+    private static final String MESSAGE_DETAILS_FRAGMENT_TAG = "MESSAGE_DETAILS_FRAGMENT";
     private static final String EVENTS_FRAGMENT_TAG = "EVENST_FRAGMENT";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,14 @@ public class AWFActivity extends BaseActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  NewMessageFragment.newInstance(), COMPOSE_MESSAGE_FRAGMENT_TAG)
+                .commit();
+    }
+
+    public void displayMessageDetailsFragment(){
+        setTitle(null);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, MessageDetailsFragment.newInstance(), MESSAGE_DETAILS_FRAGMENT_TAG)
                 .commit();
     }
     public void displayEventsFragment(){

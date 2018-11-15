@@ -7,6 +7,7 @@ import com.school.edsense_lite.events.EventsFragment;
 import com.school.edsense_lite.injection.modules.FragmentModule;
 import com.school.edsense_lite.injection.scopes.PerFragment;
 import com.school.edsense_lite.login.ResetPasswordEnterEmailFragment;
+import com.school.edsense_lite.messages.MessageDetailsFragment;
 import com.school.edsense_lite.messages.MessagesFragment;
 import com.school.edsense_lite.messages.NewMessageFragment;
 import com.school.edsense_lite.news.NewsFragment;
@@ -22,10 +23,12 @@ public interface FragmentComponent {
     void inject(NotesFragment fragment);
     void inject(MessagesFragment fragment);
     void inject(NewMessageFragment fragment);
+    void inject(MessageDetailsFragment fragment);
     void inject(AttendanceFragment fragment);
     void inject(RecomendationFragment fragment);
     void inject(EventsFragment fragment);
     void inject(ResetPasswordEnterEmailFragment fragment);
     void inject(TodayFragment fragment);
     void inject(NewsFragment fragment);
+
 }
