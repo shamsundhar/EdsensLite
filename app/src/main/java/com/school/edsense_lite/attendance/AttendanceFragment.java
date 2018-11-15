@@ -18,7 +18,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,6 +39,7 @@ import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -79,7 +83,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
     @Inject
     AttendanceApi attendanceApi;
     ArrayList<SectionResponse.Response> sectionResponseList;
-    List<Object> userResponseList;
+    ArrayList<Object> userResponseList;
+    //List<Object> userResponseList;
     private String selectedDate;
     private String selectedSectionId;
     /**
@@ -109,6 +114,12 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         attendanceRecyclerViewAdapter = new AttendanceRecyclerViewAdapter();
         attendanceRecyclerView.setAdapter(attendanceRecyclerViewAdapter);
         attendanceRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        attendanceRecyclerViewAdapter.setOnClickListener(new ClickListener() {
+            @Override
+            public void onModifyButtonClicked(View v, int position) {
+                displayAbsentPopup();
+            }
+        });
 
 //        attendanceRecyclerViewAdapter.setItems(getAttendanceList());
 //        attendanceRecyclerViewAdapter.notifyDataSetChanged();
@@ -133,7 +144,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
 
                         @Override
                         public void onComplete() {
-System.out.println("complete called");
+                            System.out.println("complete called");
                         }
 
                         @Override
@@ -193,6 +204,93 @@ System.out.println("complete called");
         items.add(new Attendance("Shyam14", "Early Out","Going to home town",""));
         return items;
     }
+    private void displayAbsentPopup(){
+        final Dialog builder = new Dialog(getActivity());
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Window window = builder.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        wlp.gravity = Gravity.CENTER;
+        window.setAttributes(wlp);
+        builder.setContentView(R.layout.popup_absentview);
+
+        final CheckBox absent = (CheckBox)builder.findViewById(R.id.absentCheckBox);
+        final EditText lateInEditText = (EditText) builder.findViewById(R.id.input_latein);
+        final EditText earlyOutEditText = (EditText)builder.findViewById(R.id.input_earlyout);
+        final EditText reasonEditText = (EditText)builder.findViewById(R.id.input_reason);
+        Button save = (Button)builder.findViewById(R.id.btn_save);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String lateIn = lateInEditText.getText().toString().trim();
+                String earlyOut = earlyOutEditText.getText().toString().trim();
+                String reason = reasonEditText.getText().toString().trim();
+                Boolean isAbsent = absent.isChecked();
+
+                final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                        R.style.AppTheme_Dark_Dialog);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage(getString(R.string.text_please_wait));
+                progressDialog.show();
+                PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+                String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
+                if(!bearerToken.isEmpty()) {
+                    SaveAttendanceRequest attendanceRequest = new SaveAttendanceRequest();
+                    ArrayList<SaveAttendanceRequest.User> usersList = new ArrayList<SaveAttendanceRequest.User>();
+                    SaveAttendanceRequest.User user = attendanceRequest.new User();
+                    user.setDisplayName("Annapu Reddy Pradham Reddy");
+                    user.setIsAttended(false);
+                    user.setIsEarlyOut(false);
+                    user.setIsLateIn(false);
+                    user.setStudentUserId("14B6C8E7-FE8E-41D4-BC8B-824DA61F11E8");
+                    user.setUserAttendanceId(1497);
+                    user.setTotalCount(25);
+                    user.setDate("2018-10-03T06:54:00.891Z");
+                    usersList.add(user);
+                    Gson gson = new Gson();
+
+                    attendanceRequest.setUsers(gson.toJson(usersList).toString());
+                    attendanceApi.saveUserAttendance(bearerToken, attendanceRequest)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<SaveAttendanceResponse>() {
+                                @Override
+                                public void onError(Throwable e) {
+                                    System.out.println("error called::" + e.fillInStackTrace());
+                                    progressDialog.dismiss();
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    System.out.println("complete called");
+                                }
+
+                                @Override
+                                public void onSubscribe(Disposable d) {
+                                    System.out.println("onsubscribe called");
+                                }
+
+                                @Override
+                                public void onNext(SaveAttendanceResponse sectionResponse) {
+                                    progressDialog.dismiss();
+                                    if (sectionResponse.getIsSuccess().equals("true")) {
+builder.dismiss();
+                                    } else if (!sectionResponse.getErrorCode().equals("200")) {
+                                        //display error.
+                                        new CustomAlertDialog().showAlert1(
+                                                getActivity(),
+                                                R.string.text_failed,
+                                                sectionResponse.getErrorMessage(),
+                                                null);
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+        builder.setCanceledOnTouchOutside(true);
+        builder.show();
+    }
     private void displaySectionsPopup()
     {
         final Dialog builder = new Dialog(getActivity());
@@ -219,9 +317,9 @@ System.out.println("complete called");
                 SectionResponse.Response dataModel = sectionResponseList.get(position);
                 sectionTV.setText(dataModel.getCompositeTagName());
                 selectedSectionId = dataModel.getCompositeTagId();
-                      //  Snackbar.make(view, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
-                      //          .setAction("No action", null).show();
-                        getUsersBasedOnSection();
+                //  Snackbar.make(view, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
+                //          .setAction("No action", null).show();
+                getUsersBasedOnSection();
             }
         });
         builder.setCanceledOnTouchOutside(true);
@@ -236,7 +334,7 @@ System.out.println("complete called");
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
         if(!bearerToken.isEmpty()) {
-            String date = DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT1, DATE_FORMAT3);
+            String date = DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT3);
             GetUserRequest request = new GetUserRequest(selectedSectionId, date);
             attendanceApi.getUsersBasedOnSection(bearerToken,request)
                     .subscribeOn(Schedulers.io())
@@ -261,7 +359,15 @@ System.out.println("complete called");
                         public void onNext(GetUserResponse getUserResponse) {
                             progressDialog.dismiss();
                             if (getUserResponse.getIsSuccess().equals("true")) {
-                                userResponseList = new ArrayList<Object>(getUserResponse.getResponse());
+                                String responseString = getUserResponse.getResponseString();
+                                ArrayList<GetUserResponse.Response> yourArray = new Gson().
+                                        fromJson(responseString,
+                                                new TypeToken<List<GetUserResponse.Response>>(){}.getType());
+
+                                //  userResponseList = new ArrayList<GetUserResponse.Response>(yourArray);
+                                //     userResponseList.addAll(yourArray);
+
+                                userResponseList = new ArrayList<Object>(yourArray);
                                 attendanceRecyclerViewAdapter.setItems(userResponseList);
                                 attendanceRecyclerViewAdapter.notifyDataSetChanged();
                             } else if (!getUserResponse.getErrorCode().equals("200")) {
@@ -277,8 +383,8 @@ System.out.println("complete called");
         }
     }
     private void setCurrentDate(){
+        selectedDate = DateTimeUtils.getCurrentDateInString(DATE_FORMAT2);
         String date = DateTimeUtils.getCurrentDateInString(DATE_FORMAT1);
-        selectedDate = date;
         dateTV.setText(date);
     }
     private void displayDateDialog(){
@@ -302,9 +408,21 @@ System.out.println("complete called");
     @Override
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
-        strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
         selectedDate = strDate;
+        strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
         dateTV.setText(strDate);
+
+//        int year = view.getYear();
+//        int month = view.getMonth();
+//        int day = view.getDayOfMonth();
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(year, month, day);
+//
+//        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT1);
+//        String strDate = format.format(calendar.getTime());
+//        selectedDate = strDate;
+//        dateTV.setText(strDate);
     }
     String padding(int value)
     {

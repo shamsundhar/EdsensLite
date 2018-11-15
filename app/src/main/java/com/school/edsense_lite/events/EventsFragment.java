@@ -1,5 +1,6 @@
 package com.school.edsense_lite.events;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,16 +13,33 @@ import com.school.edsense_lite.R;
 import com.school.edsense_lite.news.News;
 import com.school.edsense_lite.news.NewsFragment;
 import com.school.edsense_lite.news.NewsRecyclerViewAdapter;
+import com.school.edsense_lite.today.EventsRequest;
+import com.school.edsense_lite.today.EventsResponse;
+import com.school.edsense_lite.today.NewsRequest;
+import com.school.edsense_lite.today.NewsResponse;
+import com.school.edsense_lite.today.TodayApi;
+import com.school.edsense_lite.utils.Constants;
+import com.school.edsense_lite.utils.CustomAlertDialog;
+import com.school.edsense_lite.utils.PreferenceHelper;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class EventsFragment extends BaseFragment {
     @BindView(R.id.eventsRecyclerview)
     RecyclerView eventsRecyclerView;
     EventsRecyclerViewAdapter eventsRecyclerViewAdapter;
+
+    @Inject
+    TodayApi todayApi;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -50,8 +68,57 @@ public class EventsFragment extends BaseFragment {
         eventsRecyclerView.setAdapter(eventsRecyclerViewAdapter);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        eventsRecyclerViewAdapter.setItems(getEventsList());
-        eventsRecyclerViewAdapter.notifyDataSetChanged();
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.text_please_wait));
+        progressDialog.show();
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
+        EventsRequest eventsRequest = new EventsRequest();
+        EventsRequest.Value value = eventsRequest.new Value();
+        value.setValue("0");
+        value.setTop("2");
+        eventsRequest.setValue(value);
+        if(!bearerToken.isEmpty()) {
+            todayApi.getEvents(bearerToken, eventsRequest)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<EventsResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            System.out.println("error called::"+e.fillInStackTrace());
+                            progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            System.out.println("complete called");
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            System.out.println("onsubscribe called");
+                        }
+
+                        @Override
+                        public void onNext(EventsResponse eventsResponse) {
+                            progressDialog.dismiss();
+                            if (eventsResponse.getIsSuccess().equals(true)) {
+                                eventsRecyclerViewAdapter.setItems(new ArrayList<Object>(eventsResponse.getResponse()));
+                                eventsRecyclerViewAdapter.notifyDataSetChanged();
+
+                            } else if (!eventsResponse.getErrorCode().equals(200)) {
+                                //display error.
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_failed,
+                                        eventsResponse.getErrorMessage(),
+                                        null);
+                            }
+                        }
+                    });
+        }
 
         return view;
     }

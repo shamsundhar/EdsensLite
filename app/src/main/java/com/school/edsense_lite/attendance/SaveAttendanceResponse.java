@@ -1,28 +1,14 @@
-package com.school.edsense_lite.today;
+package com.school.edsense_lite.attendance;
 
-import com.school.edsense_lite.model.Row;
-import com.school.edsense_lite.model.Subscription;
+import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-/**
- * Created by shyam on 4/10/2018.
- */
-
-public class ScheduleResponse {
-    private Response response;
+public class SaveAttendanceResponse {
     private String isSuccess;
     private String errorMessage;
     private String errorCode;
     private String isUserActive;
+    private String response;
 
-    public Response getResponse() {
-        return response;
-    }
-
-    public void setResponse(Response response) {
-        this.response = response;
-    }
     public String getIsSuccess() {
         return isSuccess;
     }
@@ -55,16 +41,12 @@ public class ScheduleResponse {
         this.isUserActive = isUserActive;
     }
 
-    public class Response{
-        private List<Row> rows = null;
+    public String getResponse() {
+        return response;
+    }
 
-        public List<Row> getRows() {
-            return rows;
-        }
-        public void setRows(List<Row> rows) {
-            this.rows = rows;
-        }
-
+    public void setResponse(String response) {
+        this.response = response;
     }
 
 }

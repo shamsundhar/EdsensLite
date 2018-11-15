@@ -15,7 +15,6 @@ import com.school.edsense_lite.R;
 import com.school.edsense_lite.messages.MessagesModel;
 import com.school.edsense_lite.messages.MessagesRecyclerViewAdapter;
 import com.school.edsense_lite.model.RecomendationModel;
-import com.school.edsense_lite.today.Schedule;
 
 import java.util.List;
 

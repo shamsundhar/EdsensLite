@@ -5,21 +5,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.events.Event;
 
+
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Object> items;
     private final int ATTENDANCE_LIST_ITEM = 0;
-    private AdapterView.OnItemClickListener listener;
+    private ClickListener clickListener;
 
     public AttendanceRecyclerViewAdapter(){}
-    public void setOnItemClickListener(AdapterView.OnItemClickListener clickListener){
-        this.listener = clickListener;
+    public void setOnClickListener(ClickListener clickListener){
+        this.clickListener = clickListener;
     }
     public void setItems(List<Object> items) {
         this.items = items;
@@ -70,18 +73,34 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         GetUserResponse.Response attendanceModel = (GetUserResponse.Response) items.get(position);
         if (attendanceModel != null) {
             vh1.getName().setText(attendanceModel.getDisplayName());
-            vh1.getReason().setText(attendanceModel.getIsAttended());
-            vh1.getStatus().setText(attendanceModel.getStudentUserId());
+            vh1.getReason().setText("fssadds");
+            if(attendanceModel.getIsAttended().equals("true")){
+                vh1.getStatus().setText("Attended");
+            }
+            else{
+                vh1.getStatus().setText("Absent");
+            }
+
             //  vh1.bind(scheduleModel, listener);
         }
     }
 
 
-    class ViewHolder1 extends RecyclerView.ViewHolder {
+    class ViewHolder1 extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView name;
         private TextView status;
         private TextView reason;
+        private ImageView modifyButton;
+        private WeakReference<ClickListener> listenerRef;
+
+        public ImageView getModifyButton() {
+            return modifyButton;
+        }
+
+        public void setModifyButton(ImageView modifyButton) {
+            this.modifyButton = modifyButton;
+        }
 
         public TextView getName() {
             return name;
@@ -109,16 +128,25 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
         public ViewHolder1(View v) {
             super(v);
+            listenerRef = new WeakReference<>(clickListener);
             name = (TextView) v.findViewById(R.id.name);
             status = (TextView) v.findViewById(R.id.status);
             reason = (TextView) v.findViewById(R.id.reason);
+            modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
+            modifyButton.setOnClickListener(this);
         }
-        public void bind(final Attendance attendance, final AdapterView.OnItemClickListener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
-                }
-            });
+//        public void bind(final Attendance attendance, final AdapterView.OnItemClickListener listener) {
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override public void onClick(View v) {
+//                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
+//                }
+//            });
+//        }
+        @Override
+        public void onClick(View v) {
+            if(v.getId() == modifyButton.getId()){
+                listenerRef.get().onModifyButtonClicked(v, getAdapterPosition());
+            }
         }
     }
 

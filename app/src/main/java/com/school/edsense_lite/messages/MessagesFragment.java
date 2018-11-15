@@ -81,7 +81,6 @@ public class MessagesFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
 
-
         messagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(getActivity().getApplicationContext());
         messagesRecyclerViewAdapter.setOnItemClickListener(new MessageItemClickListener() {
             @Override
@@ -92,13 +91,15 @@ public class MessagesFragment extends BaseFragment {
             }
         });
 
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String primaryUrl = preferenceHelper.getString(getActivity(),Constants.PREF_KEY_SUBSCRIPTION_PRIMARY_URL,"");
+        
         //API call
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.text_please_wait));
         progressDialog.show();
-        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
 
         MessagesRequest request = new MessagesRequest();

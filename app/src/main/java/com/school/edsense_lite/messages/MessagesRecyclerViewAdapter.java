@@ -15,15 +15,9 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 import com.school.edsense_lite.MainActivity;
 import com.school.edsense_lite.R;
-import com.school.edsense_lite.login.LoginActivity;
 import com.school.edsense_lite.model.MessagesResponseModel;
-import com.school.edsense_lite.today.Schedule;
-import com.school.edsense_lite.today.TodayFragment;
-import com.school.edsense_lite.utils.DateTimeUtils;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
@@ -41,9 +35,11 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private List<MessagesResponseModel> items;
     private MessageItemClickListener listener;
     private Context context;
+    private String primaryUrl;
 
-    public MessagesRecyclerViewAdapter(Context applicationContext){
+    public MessagesRecyclerViewAdapter(Context applicationContext, String primaryUrl){
         context = applicationContext;
+        this.primaryUrl = primaryUrl;
     }
     public void setOnItemClickListener(MessageItemClickListener clickListener){
         this.listener = clickListener;
@@ -86,6 +82,7 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (messagesModel != null) {
             vh1.getTitle().setText(messagesModel.getContextDisplayName());
             vh1.getMessage().setText(messagesModel.getMessageBody());
+
 //            ShapeDrawable sd = new ShapeDrawable(new OvalShape());
 //            sd.setIntrinsicHeight(100);
 //            sd.setIntrinsicWidth(100);
@@ -93,7 +90,8 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 //            vh1.image.setBackground(sd);
 
             //"https://www.gstatic.com/webp/gallery/1.jpg"
-            Picasso.with(context).load("https://glendale.tst.edsense.co.in"+messagesModel.getOriginatorImageUrl()).fit()
+            
+            Picasso.with(context).load(primaryUrl+messagesModel.getOriginatorImageUrl()).fit()
                     .placeholder(R.drawable.logo)
                     .error(R.drawable.logo)
                     .into(vh1.image);
@@ -102,7 +100,6 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             vh1.getDate().setText(DateTimeUtils.parseDateTime(messagesModel.getTransactionDate(), DATE_FORMAT6, DATE_FORMAT1));
             //vh1.getMessageTime().setText(messagesModel.getTimeStampMsg());
             String timestamp = messagesModel.getTimeStampMsg();
-
             vh1.getMessageTime().setText(timestamp.substring(timestamp.indexOf(',')+1));
             //vh1.favoriteCheck;
             //vh1.bind(messagesModel, listener);
@@ -182,10 +179,16 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         public void bind(final MessagesResponseModel messagesModel, final AdapterView.OnItemClickListener listener) {
 
         }
-
         @Override
         public void onClick(View v) {
             listenerRef.get().onMessageItemClicked(getAdapterPosition());
         }
+//        public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override public void onClick(View v) {
+//                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
+//                }
+//            });
+//        }
     }
 }

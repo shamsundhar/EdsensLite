@@ -1,6 +1,8 @@
 package com.school.edsense_lite.events;
 
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +10,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.school.edsense_lite.R;
-import com.school.edsense_lite.news.News;
-import com.school.edsense_lite.today.Schedule;
+import com.school.edsense_lite.today.EventsResponse;
 
 import java.util.List;
 
@@ -62,17 +63,23 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof Event) {
+        if (items.get(position) instanceof EventsResponse.Response) {
             return EVENTS_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(EventsRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        Event eventModel = (Event) items.get(position);
+        EventsResponse.Response eventModel = (EventsResponse.Response) items.get(position);
         if (eventModel != null) {
-            vh1.getTitle().setText(eventModel.get_title());
-            vh1.getSubtitle().setText(eventModel.get_date());
-            vh1.getDate().setText(eventModel.get_description());
+            vh1.getTitle().setText(eventModel.getTitle());
+            if(eventModel.getDescription() != null && eventModel.getDescription().trim().length() > 0) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    vh1.getSubtitle().setText(Html.fromHtml(eventModel.getDescription(), Html.FROM_HTML_MODE_COMPACT));
+                } else {
+                    vh1.getSubtitle().setText(Html.fromHtml(eventModel.getDescription()));
+                }
+            }
+            vh1.getDate().setText(eventModel.getStart());
             //  vh1.bind(scheduleModel, listener);
         }
     }

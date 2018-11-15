@@ -1,6 +1,8 @@
 package com.school.edsense_lite.news;
 
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +10,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.school.edsense_lite.R;
-import com.school.edsense_lite.today.Schedule;
-import com.school.edsense_lite.today.ScheduleRecyclerViewAdapter;
+import com.school.edsense_lite.today.NewsResponse;
 
 import java.util.List;
 
@@ -62,21 +63,26 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof News) {
+        if (items.get(position) instanceof NewsResponse.Response) {
             return NEWS_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(NewsRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        News newsModel = (News) items.get(position);
+        NewsResponse.Response newsModel = (NewsResponse.Response) items.get(position);
         if (newsModel != null) {
-            vh1.getTitle().setText(newsModel.get_title());
-            vh1.getSubtitle().setText(newsModel.get_description());
-            vh1.getDate().setText(newsModel.get_date());
+            vh1.getTitle().setText(newsModel.getNewsName());
+            if(newsModel.getDescription() != null && newsModel.getDescription().trim().length() > 0) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    vh1.getSubtitle().setText(Html.fromHtml(newsModel.getDescription(), Html.FROM_HTML_MODE_COMPACT));
+                } else {
+                    vh1.getSubtitle().setText(Html.fromHtml(newsModel.getDescription()));
+                }
+            }
+            vh1.getDate().setText(newsModel.getNewsDate());
             //  vh1.bind(scheduleModel, listener);
         }
     }
-
 
     class ViewHolder1 extends RecyclerView.ViewHolder {
 
@@ -114,13 +120,13 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             subtitle = (TextView) v.findViewById(R.id.subtitle);
             date = (TextView)v.findViewById(R.id.date);
         }
-        public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
-                }
-            });
-        }
+//        public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override public void onClick(View v) {
+//                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
+//                }
+//            });
+//        }
     }
 
 }

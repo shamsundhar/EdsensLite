@@ -13,13 +13,23 @@ import retrofit2.http.Query;
 
 public interface TodayApi {
 
-   // https://edsensewebtst.azurewebsites.net/api/Academic/GetDayWiseScheduleByUser?currentDate=08-20-2018
-    @GET("Academic/GetDayWiseScheduleByUser?currentDate=2018-11-12")
-    @Headers({"Content-Type: application/json"})
-    Observable<ScheduleResponse> getSchedules(@Header("Authorization") String token);
+ // https://edsensewebtst.azurewebsites.net/api/Academic/GetDayWiseScheduleByUser?currentDate=08-20-2018
+ @GET("Academic/GetDayWiseScheduleByUser?currentDate=2018-11-12")
+ @Headers({"Content-Type: application/json"})
+ Observable<ScheduleResponse> getSchedules(@Header("Authorization") String token);
 
-    //https://edsensewebtst.azurewebsites.net/api/Assignment/GetAssignmentDetails?value=1
-    @GET("Assignment/GetAssignmentDetails?value=1")
-    @Headers({"Content-Type: application/json"})
-    Observable<AssignmentResponse> getAssignmentsForLoginUser(@Header("Authorization") String token);
+ //https://edsensewebtst.azurewebsites.net/api/Assignment/GetAssignmentDetails?value=1
+ @GET("Assignment/GetAssignmentDetails?value=1")
+ @Headers({"Content-Type: application/json"})
+ Observable<AssignmentResponse> getAssignmentsForLoginUser(@Header("Authorization") String token);
+
+ //https://apitst.edsense.co.in/api/news/GetPortalNewsByTypeId
+ @POST("news/GetPortalNewsByTypeId")
+ @Headers({"Content-Type: application/json"})
+ Observable<NewsResponse> getNews(@Header("Authorization") String token, @Body NewsRequest newsRequest);
+
+ //https://apitst.edsense.co.in/api/calendar/GetEventbyOrgId
+ @POST("calendar/GetEventbyOrgId")
+ @Headers({"Content-Type: application/json"})
+ Observable<EventsResponse> getEvents(@Header("Authorization") String token, @Body EventsRequest newsRequest);
 }
