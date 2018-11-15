@@ -36,6 +36,7 @@ import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -236,7 +237,7 @@ System.out.println("complete called");
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
         if(!bearerToken.isEmpty()) {
-            String date = DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT1, DATE_FORMAT3);
+            String date = DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT3);
             GetUserRequest request = new GetUserRequest(selectedSectionId, date);
             attendanceApi.getUsersBasedOnSection(bearerToken,request)
                     .subscribeOn(Schedulers.io())
@@ -277,8 +278,8 @@ System.out.println("complete called");
         }
     }
     private void setCurrentDate(){
+        selectedDate = DateTimeUtils.getCurrentDateInString(DATE_FORMAT2);
         String date = DateTimeUtils.getCurrentDateInString(DATE_FORMAT1);
-        selectedDate = date;
         dateTV.setText(date);
     }
     private void displayDateDialog(){
@@ -302,9 +303,21 @@ System.out.println("complete called");
     @Override
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
-        strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
         selectedDate = strDate;
+        strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
         dateTV.setText(strDate);
+
+//        int year = view.getYear();
+//        int month = view.getMonth();
+//        int day = view.getDayOfMonth();
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(year, month, day);
+//
+//        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT1);
+//        String strDate = format.format(calendar.getTime());
+//        selectedDate = strDate;
+//        dateTV.setText(strDate);
     }
     String padding(int value)
     {

@@ -24,9 +24,9 @@ public class Constants {
     public static final String PREF_KEY_LOGO_URL = "KEY_LOGO_URL";
     public static final String PREF_KEY_BEARER_TOKEN = "KEY_BEARER_TOKEN";
     public static final String DATE_FORMAT1 = "EEEE, d MMMM";
-    public static final String DATE_FORMAT2 = "mm-dd-yyyy";
+    public static final String DATE_FORMAT2 = "MM-dd-yyyy";
     public static final String DATE_FORMAT3 = "yyyy-MM-dd'T'HH:mm:dd.SSS'Z'";
-    public static final String DATE_FORMAT4  = "dd/mm/yyyy";
+    public static final String DATE_FORMAT4  = "dd/MM/yyyy";
 //2018-08-24T00:00:00+00:00
     public static final String DATE_FORMAT5 = "yyyy-MM-dd'T'HH:mm:ss'+'SSS:XXX";
     public static final String CONST_CUSTOMER_USER_TYPE = "1";
