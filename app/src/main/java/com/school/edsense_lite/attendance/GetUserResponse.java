@@ -1,21 +1,33 @@
 package com.school.edsense_lite.attendance;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class GetUserResponse {
-    private List<GetUserResponse.Response> response = null;
+//    private List<GetUserResponse.Response> response = null;
     private String isSuccess;
     private String errorMessage;
     private String errorCode;
     private String isUserActive;
 
-    public List<GetUserResponse.Response> getResponse() {
-        return response;
+    public String getResponseString() {
+        return responseString;
     }
 
-    public void setResponse(List<GetUserResponse.Response> response) {
-        this.response = response;
+    public void setResponseString(String responseString) {
+        this.responseString = responseString;
     }
+
+    @SerializedName("response")
+    private String responseString;
+//    public List<GetUserResponse.Response> getResponse() {
+//        return response;
+//    }
+//
+//    public void setResponse(List<GetUserResponse.Response> response) {
+//        this.response = response;
+//    }
 
     public String getIsSuccess() {
         return isSuccess;

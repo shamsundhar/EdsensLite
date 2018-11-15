@@ -19,4 +19,9 @@ public interface AttendanceApi {
     @POST("Academic/getUsers")
     @Headers({"Content-Type: application/json"})
     Observable<GetUserResponse> getUsersBasedOnSection(@Header("Authorization") String token, @Body GetUserRequest getUserRequest);
+
+    //https://apitst.edsense.co.in/api/Academic/UsersSaveAttendance
+    @POST("Academic/UsersSaveAttendance")
+    @Headers({"Content-Type: application/json"})
+    Observable<SaveAttendanceResponse> saveUserAttendance(@Header("Authorization") String token, @Body SaveAttendanceRequest saveAttendanceRequest);
 }
