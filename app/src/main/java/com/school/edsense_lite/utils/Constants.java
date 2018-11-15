@@ -18,6 +18,7 @@ public class Constants {
     public static final String BUNDLE_VALUE_NEWS = "NEWS";
     public static final String BUNDLE_VALUE_EVENTS = "EVENTS";
     public static final String BUNDLE_VALUE_COMPOSE_MESSAGE = "COMPOSE_MESSAGE";
+    public static final String BUNDLE_VALUE_MESSAGE_DETAILS = "DISPLAY_MESSAGE";
 
     public static final String PREF_KEY_SUBSCRIPTION_ID = "KEY_SUBSCRIPTION_ID";
     public static final String PREF_KEY_SUBSCRIPTION_URL = "KEY_SUBSCRIPTION_URL";
@@ -27,8 +28,9 @@ public class Constants {
     public static final String DATE_FORMAT2 = "mm-dd-yyyy";
     public static final String DATE_FORMAT3 = "yyyy-MM-dd'T'HH:mm:dd.SSS'Z'";
     public static final String DATE_FORMAT4  = "dd/mm/yyyy";
-//2018-08-24T00:00:00+00:00
+//2018-08-24T00:00:00+00:00  //2018-07-26T12:44:59+00:00 //Jul 26, 12:44 PM
     public static final String DATE_FORMAT5 = "yyyy-MM-dd'T'HH:mm:ss'+'SSS:XXX";
+    public static final String DATE_FORMAT6 = "yyyy-MM-dd'T'HH:mm:ssZ";
     public static final String CONST_CUSTOMER_USER_TYPE = "1";
     public static final String BUNDLE_KEY_OTP_VERIFIED_MESSAGE = "OTP_VERIFIED_MESSAGE";
 
