@@ -32,7 +32,6 @@ import com.school.edsense_lite.attendance.Attendance;
 import com.school.edsense_lite.attendance.AttendanceApi;
 import com.school.edsense_lite.attendance.AttendanceFragment;
 import com.school.edsense_lite.attendance.AttendanceRecyclerViewAdapter;
-import com.school.edsense_lite.attendance.ClickListener;
 import com.school.edsense_lite.attendance.GetUserRequest;
 import com.school.edsense_lite.attendance.GetUserResponse;
 import com.school.edsense_lite.attendance.SaveAttendanceRequest;

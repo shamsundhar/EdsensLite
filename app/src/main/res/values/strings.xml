@@ -20,6 +20,10 @@
     <string name="text_myschedule">My Schedule</string>
     <string name="text_profile">Profile</string>
 
+    <string name="text_absent">Absent</string>
+    <string name="text_latein">Late-in</string>
+    <string name="text_earlyout">Early-out</string>
+
 
     <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
 

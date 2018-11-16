@@ -3,11 +3,13 @@ package com.school.edsense_lite.attendance;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -22,9 +24,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -122,8 +129,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         attendanceRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         attendanceRecyclerViewAdapter.setOnClickListener(new ClickListener() {
             @Override
-            public void onModifyButtonClicked(View v, int position) {
-                displayAbsentPopup();
+            public void onModifyButtonClicked(GetUserResponse.Response attendanceModel) {
+                displayAbsentPopup(attendanceModel);
             }
         });
 
@@ -195,7 +202,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         dateTV.setTypeface(tf);
         chooseSection.setTypeface(tf);
     }
-    private void displayAbsentPopup(){
+    private void displayAbsentPopup(final GetUserResponse.Response attendanceModel){
         final Dialog builder = new Dialog(getActivity());
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Window window = builder.getWindow();
@@ -203,20 +210,84 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         wlp.gravity = Gravity.CENTER;
         window.setAttributes(wlp);
-        builder.setContentView(R.layout.popup_absentview);
+        builder.setCanceledOnTouchOutside(false);
+        builder.setContentView(R.layout.popup_absentview2);
 
-        final CheckBox absent = (CheckBox)builder.findViewById(R.id.absentCheckBox);
-        final EditText lateInEditText = (EditText) builder.findViewById(R.id.input_latein);
-        final EditText earlyOutEditText = (EditText)builder.findViewById(R.id.input_earlyout);
+        String fontPath = "fonts/bariol_bold-webfont.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), fontPath);
+
+        final RadioGroup radioGroup = (RadioGroup)builder.findViewById(R.id.myRadioGroup);
+        RadioButton absentRB = (RadioButton)builder.findViewById(R.id.absent);
+        RadioButton lateinRB = (RadioButton)builder.findViewById(R.id.latein);
+        RadioButton earlyoutRB = (RadioButton)builder.findViewById(R.id.earlyout);
+
+        final EditText timeEditText = (EditText) builder.findViewById(R.id.input_time);
+        final TextInputLayout timeInputLayout = (TextInputLayout)builder.findViewById(R.id.input_timelayout);
         final EditText reasonEditText = (EditText)builder.findViewById(R.id.input_reason);
+
+        final ImageView close = (ImageView)builder.findViewById(R.id.close);
         Button save = (Button)builder.findViewById(R.id.btn_save);
+
+        absentRB.setTypeface(tf);lateinRB.setTypeface(tf);
+        earlyoutRB.setTypeface(tf);timeEditText.setTypeface(tf);
+        reasonEditText.setTypeface(tf);save.setTypeface(tf);
+
+        timeEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        timeEditText.setText( selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, true);//Yes 24 hour time
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+            }
+        });
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // find which radio button is selected
+                if(checkedId == R.id.absent) {
+                    timeInputLayout.setVisibility(View.GONE);
+                } else if(checkedId == R.id.latein) {
+                    timeInputLayout.setVisibility(View.VISIBLE);
+                } else {
+                    timeInputLayout.setVisibility(View.VISIBLE);
+                }
+            }
+
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.dismiss();
+            }
+        });
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String lateIn = lateInEditText.getText().toString().trim();
-                String earlyOut = earlyOutEditText.getText().toString().trim();
+                String time = timeEditText.getText().toString().trim();
                 String reason = reasonEditText.getText().toString().trim();
-                Boolean isAbsent = absent.isChecked();
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                Boolean isAttended = true;
+                Boolean isLatein = false;
+                Boolean isEarlyout = false;
+                // find which radioButton is checked by id
+                if(selectedId == R.id.absent) {
+                    isAttended = false;
+                } else if(selectedId == R.id.latein) {
+                    isLatein = true;
+                } else if(selectedId == R.id.earlyout){
+                    isEarlyout = true;
+                }
 
                 final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                         R.style.AppTheme_Dark_Dialog);
@@ -229,13 +300,15 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                     SaveAttendanceRequest attendanceRequest = new SaveAttendanceRequest();
                     ArrayList<SaveAttendanceRequest.User> usersList = new ArrayList<SaveAttendanceRequest.User>();
                     SaveAttendanceRequest.User user = attendanceRequest.new User();
-                    user.setDisplayName("Annapu Reddy Pradham Reddy");
-                    user.setIsAttended(false);
-                    user.setIsEarlyOut(false);
-                    user.setIsLateIn(false);
-                    user.setStudentUserId("14B6C8E7-FE8E-41D4-BC8B-824DA61F11E8");
+
+                    user.setDisplayName(attendanceModel.getDisplayName());
+                    user.setIsAttended(isAttended);
+                    user.setIsEarlyOut(isEarlyout);
+                    user.setIsLateIn(isLatein);
+                    user.setStudentUserId(attendanceModel.getStudentUserId());
                     user.setUserAttendanceId(1497);
-                    user.setTotalCount(25);
+                    user.setTotalCount(Integer.parseInt(attendanceModel.getTotalCount()));
+                    user.setReason(reason);
                     user.setDate("2018-10-03T06:54:00.891Z");
                     usersList.add(user);
                     Gson gson = new Gson();
@@ -288,6 +361,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         builder.setCanceledOnTouchOutside(true);
         builder.show();
     }
+
     private void displaySectionsPopup()
     {
         final Dialog builder = new Dialog(getActivity());

@@ -64,10 +64,12 @@ public class LoginActivity extends BaseActivity {
             _emailText.setText("GLA468");
             _passwordText.setText("Joselives199*");
             applyFonts();
-            Picasso.with(LoginActivity.this).load(logoUrl).fit()
-                    .placeholder(R.drawable.logo)
-                    .error(R.drawable.logo)
-                    .into(_logoImageView);
+            if(!logoUrl.isEmpty()) {
+                Picasso.with(LoginActivity.this).load(logoUrl).fit()
+                        .placeholder(R.drawable.logo)
+                        .error(R.drawable.logo)
+                        .into(_logoImageView);
+            }
         }
         else{
             displayNavigationActivity();

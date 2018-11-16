@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.attendance.Attendance;
-import com.school.edsense_lite.attendance.ClickListener;
+
 import com.school.edsense_lite.attendance.GetUserResponse;
 
 import java.lang.ref.WeakReference;

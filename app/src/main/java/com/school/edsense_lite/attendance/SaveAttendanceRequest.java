@@ -27,6 +27,16 @@ public class SaveAttendanceRequest {
         private Object inTime;
         private Object outTime;
 
+        public String getReason() {
+            return reason;
+        }
+
+        public void setReason(String reason) {
+            this.reason = reason;
+        }
+
+        private String reason;
+
         public String getDisplayName() {
             return displayName;
         }

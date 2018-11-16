@@ -81,7 +81,7 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 vh1.getStatus().setText("Absent");
             }
 
-            //  vh1.bind(scheduleModel, listener);
+              vh1.bind(attendanceModel, clickListener);
         }
     }
 
@@ -133,20 +133,20 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             status = (TextView) v.findViewById(R.id.status);
             reason = (TextView) v.findViewById(R.id.reason);
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
-            modifyButton.setOnClickListener(this);
+          //  modifyButton.setOnClickListener(this);
         }
-//        public void bind(final Attendance attendance, final AdapterView.OnItemClickListener listener) {
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override public void onClick(View v) {
-//                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
-//                }
-//            });
-//        }
+        public void bind(final GetUserResponse.Response attendance, final ClickListener listener) {
+            modifyButton.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onModifyButtonClicked(attendance);
+                }
+            });
+        }
         @Override
         public void onClick(View v) {
-            if(v.getId() == modifyButton.getId()){
-                listenerRef.get().onModifyButtonClicked(v, getAdapterPosition());
-            }
+//            if(v.getId() == modifyButton.getId()){
+//                listenerRef.get().onModifyButtonClicked(v, getAdapterPosition());
+//            }
         }
     }
 
