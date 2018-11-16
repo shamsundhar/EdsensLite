@@ -1,5 +1,6 @@
 package com.school.edsense_lite.today;
 
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -229,6 +230,18 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             subject = (TextView) v.findViewById(R.id.subject);
             topic = (TextView)v.findViewById(R.id.topic);
             time = (TextView)v.findViewById(R.id.time);
+
+            applyFonts(v);
+        }
+        private void applyFonts(View v){
+            // Font path
+            String fontPath = "fonts/bariol_bold-webfont.ttf";
+            // Loading Font Face
+            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            clas.setTypeface(tf);
+            subject.setTypeface(tf);
+            topic.setTypeface(tf);
+            time.setTypeface(tf);
         }
         public void bind(final ScheduleResponse schedule, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -273,6 +286,16 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             title = (TextView) v.findViewById(R.id.title);
             dueDate = (TextView) v.findViewById(R.id.duedate);
             description = (TextView)v.findViewById(R.id.description);
+            applyFonts(v);
+        }
+        private void applyFonts(View v){
+            // Font path
+            String fontPath = "fonts/bariol_bold-webfont.ttf";
+            // Loading Font Face
+            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            title.setTypeface(tf);
+            dueDate.setTypeface(tf);
+            description.setTypeface(tf);
         }
         public void bind(final Assignment assignment, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -297,6 +320,14 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         public ViewHolder3(View v) {
             super(v);
             title = (TextView) v.findViewById(R.id.headerTitle);
+            applyFonts(v);
+        }
+        private void applyFonts(View v){
+            // Font path
+            String fontPath = "fonts/bariol_bold-webfont.ttf";
+            // Loading Font Face
+            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            title.setTypeface(tf);
         }
         public void bind(final Header header, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -321,6 +352,14 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         public ViewHolder5(View v) {
             super(v);
             title = (TextView) v.findViewById(R.id.headerTitle);
+            applyFonts(v);
+        }
+        private void applyFonts(View v){
+            // Font path
+            String fontPath = "fonts/bariol_bold-webfont.ttf";
+            // Loading Font Face
+            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            title.setTypeface(tf);
         }
         public void bind(final Header header, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -334,6 +373,8 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         private LinearLayout newsLayout;
         private LinearLayout eventsLayout;
+        private TextView news;
+        private TextView events;
         private WeakReference<ClickListener> listenerRef;
 
         public LinearLayout getNewsLayout() {
@@ -358,10 +399,21 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             newsLayout = (LinearLayout) v.findViewById(R.id.newsLayout);
             eventsLayout = (LinearLayout) v.findViewById(R.id.eventsLayout);
 
+            news = (TextView)v.findViewById(R.id.news);
+            events = (TextView)v.findViewById(R.id.events);
+
+            applyFonts(v);
             newsLayout.setOnClickListener(this);
             eventsLayout.setOnClickListener(this);
         }
-
+        private void applyFonts(View v){
+            // Font path
+            String fontPath = "fonts/bariol_bold-webfont.ttf";
+            // Loading Font Face
+            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            news.setTypeface(tf);
+            events.setTypeface(tf);
+        }
         @Override
         public void onClick(View v) {
             if(v.getId() == newsLayout.getId()){

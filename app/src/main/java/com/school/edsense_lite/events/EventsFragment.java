@@ -1,12 +1,14 @@
 package com.school.edsense_lite.events;
 
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
@@ -32,12 +34,14 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.internal.http2.StreamResetException;
 
 public class EventsFragment extends BaseFragment {
     @BindView(R.id.eventsRecyclerview)
     RecyclerView eventsRecyclerView;
     EventsRecyclerViewAdapter eventsRecyclerViewAdapter;
-
+    @BindView(R.id.tv1)
+    TextView tv1;
     @Inject
     TodayApi todayApi;
     /**
@@ -63,7 +67,7 @@ public class EventsFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
 
-
+        applyFonts();
         eventsRecyclerViewAdapter = new EventsRecyclerViewAdapter();
         eventsRecyclerView.setAdapter(eventsRecyclerViewAdapter);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -87,8 +91,13 @@ public class EventsFragment extends BaseFragment {
                     .subscribe(new Observer<EventsResponse>() {
                         @Override
                         public void onError(Throwable e) {
-                            System.out.println("error called::"+e.fillInStackTrace());
                             progressDialog.dismiss();
+                            if(e instanceof StreamResetException)
+                            {
+                                //login again
+                                e.printStackTrace();
+                                relogin();
+                            }
                         }
 
                         @Override
@@ -122,19 +131,11 @@ public class EventsFragment extends BaseFragment {
 
         return view;
     }
-    private ArrayList<Object> getEventsList() {
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new Event("Bandh", "lorem ipsum","12-12-1998"));
-        items.add(new Event("holidya", "lorem ipsum","12-12-1994"));
-        items.add(new Event("indipendence day", "lorem ipsum","12-12-1991"));
-        items.add(new Event("policia", "lorem ipsum","12-12-1995"));
-        items.add(new Event("Basasndh", "lorem ipsum","12-12-1997"));
-        items.add(new Event("divadsdsd dsdsd li", "lorem ipsum","12-12-1994"));
-        items.add(new Event("dusserah", "lorem ipsum","12-12-1999"));
-        items.add(new Event("ganesh", "lorem ipsum","12-12-1990"));
-        items.add(new Event("bharath bandh", "lorem ipsum","12-12-1993"));
-        items.add(new Event("ramzaan", "lorem ipsum","12-12-1996"));
-
-        return items;
+    private void applyFonts(){
+        // Font path
+        String fontPath = "fonts/bariol_bold-webfont.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), fontPath);
+        tv1.setTypeface(tf);
     }
 }

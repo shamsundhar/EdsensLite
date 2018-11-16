@@ -1,12 +1,14 @@
 package com.school.edsense_lite.news;
 
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -31,11 +33,13 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.internal.http2.StreamResetException;
 
 public class NewsFragment extends BaseFragment {
     @BindView(R.id.newsRecyclerview)
     RecyclerView newsRecyclerView;
-
+    @BindView(R.id.tv1)
+    TextView tv1;
     private NewsRecyclerViewAdapter newsRecyclerViewAdapter;
 
     @Inject
@@ -64,6 +68,8 @@ public class NewsFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
 
+        applyFonts();
+
         newsRecyclerViewAdapter = new NewsRecyclerViewAdapter();
         newsRecyclerView.setAdapter(newsRecyclerViewAdapter);
         newsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -86,8 +92,13 @@ public class NewsFragment extends BaseFragment {
                     .subscribe(new Observer<NewsResponse>() {
                         @Override
                         public void onError(Throwable e) {
-                            System.out.println("error called::"+e.fillInStackTrace());
                             progressDialog.dismiss();
+                            if(e instanceof StreamResetException)
+                            {
+                                //login again
+                                e.printStackTrace();
+                                relogin();
+                            }
                         }
 
                         @Override
@@ -121,19 +132,11 @@ public class NewsFragment extends BaseFragment {
 
         return view;
     }
-    private ArrayList<Object> getNewsList() {
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new News("Bandh", "lorem ipsum","12-12-1998"));
-        items.add(new News("Bandasash", "lorem ipsum","12-12-1994"));
-        items.add(new News("Bansasadh", "lorem ipsum","12-12-1991"));
-        items.add(new News("Bansasadh", "lorem ipsum","12-12-1995"));
-        items.add(new News("Basasndh", "lorem ipsum","12-12-1997"));
-        items.add(new News("Basasndh", "lorem ipsum","12-12-1994"));
-        items.add(new News("Basasandh", "lorem ipsum","12-12-1999"));
-        items.add(new News("Basasasndh", "lorem ipsum","12-12-1990"));
-        items.add(new News("Basasandh", "lorem ipsum","12-12-1993"));
-        items.add(new News("Baasasandh", "lorem ipsum","12-12-1996"));
-
-        return items;
+    private void applyFonts(){
+        // Font path
+        String fontPath = "fonts/bariol_bold-webfont.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), fontPath);
+        tv1.setTypeface(tf);
     }
 }

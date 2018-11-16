@@ -78,7 +78,8 @@ public class LoginActivity extends BaseActivity {
         String fontPath = "fonts/bariol_bold-webfont.ttf";
         // Loading Font Face
         Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
-
+        _emailText.setTypeface(tf);
+        _passwordText.setTypeface(tf);
         _forgotPasswordTV.setTypeface(tf);
         _loginButton.setTypeface(tf);
     }
@@ -99,16 +100,14 @@ public class LoginActivity extends BaseActivity {
 
         _loginButton.setEnabled(false);
 
-        //  displayNavigationActivity();
-
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.text_authenticating));
         progressDialog.show();
 
-        String username = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String username = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
         LoginRequest request = new LoginRequest();
         request.setUserkey(username);
         request.setPassword(password);
@@ -144,7 +143,7 @@ public class LoginActivity extends BaseActivity {
                         progressDialog.dismiss();
                         _loginButton.setEnabled(true);
                         if(loginResponse.getIsSuccess().equals("true")) {
-                            onLoginSuccess(loginResponse);
+                            onLoginSuccess(username, password, loginResponse);
                         }
                         else if(!loginResponse.getErrorCode().equals("200")){
                             //display error.
@@ -189,11 +188,13 @@ public class LoginActivity extends BaseActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess(LoginResponse loginResponse) {
+    public void onLoginSuccess(String username, String password, LoginResponse loginResponse) {
         _loginButton.setEnabled(true);
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         //  preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_LOGIN_ID, loginResponse.getRespon);
         if(!loginResponse.getResponse().getBearerToken().isEmpty()){
+            preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_USERNAME, username);
+            preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_PASSWORD, password);
             preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_BEARER_TOKEN, "Bearer "+loginResponse.getResponse().getBearerToken());
         }
         displayNavigationActivity();

@@ -42,6 +42,14 @@ public class SubscriptionActivity extends BaseActivity {
 
     @BindView(R.id.btn_continue)
     Button _continueButton;
+    @BindView(R.id.tv1)
+    TextView tv1;
+    @BindView(R.id.tv2)
+    TextView tv2;
+    @BindView(R.id.tv3)
+    TextView tv3;
+    @BindView(R.id.tv4)
+    TextView tv4;
 
     @Inject
     SubsciptionApi subsciptionApi;
@@ -66,8 +74,12 @@ public class SubscriptionActivity extends BaseActivity {
         String fontPath = "fonts/bariol_bold-webfont.ttf";
         // Loading Font Face
         Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
-
+        _hostnameText.setTypeface(tf);
         _continueButton.setTypeface(tf);
+        tv1.setTypeface(tf);
+        tv2.setTypeface(tf);
+        tv3.setTypeface(tf);
+        tv4.setTypeface(tf);
     }
 
     @OnClick(R.id.btn_continue)

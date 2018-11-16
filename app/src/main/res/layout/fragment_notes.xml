@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="10dp"
     android:weightSum="2"
     tools:context="com.school.edsense_lite.today.TodayFragment">
@@ -57,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/ic_expand_more"/>
+                android:src="@mipmap/ic_expand_more_grey"/>
         </RelativeLayout>
         <ImageView
             android:layout_width="20dp"

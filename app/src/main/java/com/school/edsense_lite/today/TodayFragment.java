@@ -44,6 +44,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.internal.http2.StreamResetException;
 
 import static com.school.edsense_lite.today.Header.ASSIGNMENT_HEADER;
 import static com.school.edsense_lite.today.Header.SCHEDULE_HEADER;
@@ -170,6 +171,12 @@ public class TodayFragment extends BaseFragment {
                                 public void accept(Throwable e) throws Exception {
                                     progressDialog.dismiss();
                                     //Do something on error completion of requests
+                                    if(e instanceof StreamResetException)
+                                    {
+                                        //login again
+                                        e.printStackTrace();
+                                        relogin();
+                                    }
                                 }
                             }
                     );

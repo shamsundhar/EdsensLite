@@ -35,6 +35,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.internal.http2.StreamResetException;
 
 import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_COMPOSE_MESSAGE;
@@ -123,6 +124,12 @@ public class MessagesFragment extends BaseFragment {
                         @Override
                         public void onError(Throwable e) {
                             progressDialog.dismiss();
+                            if(e instanceof StreamResetException)
+                            {
+                                //login again
+                                e.printStackTrace();
+                                relogin();
+                            }
                         }
 
                         @Override

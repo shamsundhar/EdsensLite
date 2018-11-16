@@ -1,5 +1,6 @@
 package com.school.edsense_lite.events;
 
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -120,6 +121,17 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             title = (TextView) v.findViewById(R.id.title);
             subtitle = (TextView) v.findViewById(R.id.subtitle);
             date = (TextView) v.findViewById(R.id.date);
+
+            applyFonts(v);
+        }
+        private void applyFonts(View v){
+            // Font path
+            String fontPath = "fonts/bariol_bold-webfont.ttf";
+            // Loading Font Face
+            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            title.setTypeface(tf);
+            subtitle.setTypeface(tf);
+            date.setTypeface(tf);
         }
         public void bind(final Event event, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {

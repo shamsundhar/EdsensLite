@@ -1,5 +1,6 @@
 package com.school.edsense_lite.news;
 
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -11,18 +12,16 @@ import android.widget.TextView;
 
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.today.NewsResponse;
+import com.school.edsense_lite.utils.Constants;
+import com.school.edsense_lite.utils.DateTimeUtils;
 
 import java.util.List;
 
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Object> items;
     private final int NEWS_LIST_ITEM = 0;
-    private AdapterView.OnItemClickListener listener;
 
     public NewsRecyclerViewAdapter(){}
-    public void setOnItemClickListener(AdapterView.OnItemClickListener clickListener){
-        this.listener = clickListener;
-    }
     public void setItems(List<Object> items) {
         this.items = items;
     }
@@ -79,8 +78,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     vh1.getSubtitle().setText(Html.fromHtml(newsModel.getDescription()));
                 }
             }
-            vh1.getDate().setText(newsModel.getNewsDate());
-            //  vh1.bind(scheduleModel, listener);
+           String date = DateTimeUtils.parseDateTime(newsModel.getNewsDate(),Constants.DATE_FORMAT6, Constants.DATE_FORMAT2);
+            vh1.getDate().setText(date);
         }
     }
 
@@ -119,14 +118,18 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             title = (TextView) v.findViewById(R.id.title);
             subtitle = (TextView) v.findViewById(R.id.subtitle);
             date = (TextView)v.findViewById(R.id.date);
+
+            applyFonts(v);
         }
-//        public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override public void onClick(View v) {
-//                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
-//                }
-//            });
-//        }
+        private void applyFonts(View v){
+            // Font path
+            String fontPath = "fonts/bariol_bold-webfont.ttf";
+            // Loading Font Face
+            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            title.setTypeface(tf);
+            subtitle.setTypeface(tf);
+            date.setTypeface(tf);
+        }
     }
 
 }

@@ -33,6 +33,10 @@ import com.school.edsense_lite.R;
 import com.school.edsense_lite.events.Event;
 import com.school.edsense_lite.events.EventsRecyclerViewAdapter;
 import com.school.edsense_lite.fragment.DatePickerFragment;
+import com.school.edsense_lite.login.LoginActivity;
+import com.school.edsense_lite.login.LoginApi;
+import com.school.edsense_lite.login.LoginRequest;
+import com.school.edsense_lite.login.LoginResponse;
 import com.school.edsense_lite.today.TodayFragment;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
@@ -53,6 +57,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.internal.http2.StreamResetException;
 
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
@@ -82,6 +87,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
     SectionsListAdapter sectionsListAdapter;
     @Inject
     AttendanceApi attendanceApi;
+
     ArrayList<SectionResponse.Response> sectionResponseList;
     ArrayList<Object> userResponseList;
     //List<Object> userResponseList;
@@ -121,9 +127,6 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
             }
         });
 
-//        attendanceRecyclerViewAdapter.setItems(getAttendanceList());
-//        attendanceRecyclerViewAdapter.notifyDataSetChanged();
-
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -140,6 +143,12 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                         public void onError(Throwable e) {
                             System.out.println("error called::"+e.fillInStackTrace());
                             progressDialog.dismiss();
+                            if(e instanceof StreamResetException)
+                            {
+                                //login again
+                                e.printStackTrace();
+                                relogin();
+                            }
                         }
 
                         @Override
@@ -185,24 +194,6 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         titleTV.setTypeface(tf);
         dateTV.setTypeface(tf);
         chooseSection.setTypeface(tf);
-    }
-    private ArrayList<Object> getAttendanceList() {
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new Attendance("Shyam", "Absent","Going to home town",""));
-        items.add(new Attendance("Shyam2", "Early Out","Going to home town",""));
-        items.add(new Attendance("Shyam3", "Late In","Going to home town",""));
-        items.add(new Attendance("Shyam4", "Absent","Going to home town",""));
-        items.add(new Attendance("Shyam5", "Absent","Going to home town",""));
-        items.add(new Attendance("Shyam6", "Early Out","Going to home town",""));
-        items.add(new Attendance("Shyam7", "Absent","Going to home town",""));
-        items.add(new Attendance("Shyam8", "Absent","Going to home town",""));
-        items.add(new Attendance("Shyam9", "Absent","Going to home town",""));
-        items.add(new Attendance("Shyam10", "Late In","Going to home town",""));
-        items.add(new Attendance("Shyam11", "Absent","Going to home town",""));
-        items.add(new Attendance("Shyam12", "Absent","Going to home town",""));
-        items.add(new Attendance("Shyam13", "Absent","Going to home town",""));
-        items.add(new Attendance("Shyam14", "Early Out","Going to home town",""));
-        return items;
     }
     private void displayAbsentPopup(){
         final Dialog builder = new Dialog(getActivity());
@@ -258,6 +249,12 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                                 public void onError(Throwable e) {
                                     System.out.println("error called::" + e.fillInStackTrace());
                                     progressDialog.dismiss();
+                                    if(e instanceof StreamResetException)
+                                    {
+                                        //login again
+                                        e.printStackTrace();
+                                        relogin();
+                                    }
                                 }
 
                                 @Override
@@ -274,7 +271,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                                 public void onNext(SaveAttendanceResponse sectionResponse) {
                                     progressDialog.dismiss();
                                     if (sectionResponse.getIsSuccess().equals("true")) {
-builder.dismiss();
+                                        builder.dismiss();
                                     } else if (!sectionResponse.getErrorCode().equals("200")) {
                                         //display error.
                                         new CustomAlertDialog().showAlert1(
@@ -343,6 +340,12 @@ builder.dismiss();
                         @Override
                         public void onError(Throwable e) {
                             progressDialog.dismiss();
+                            if(e instanceof StreamResetException)
+                            {
+                                //login again
+                                e.printStackTrace();
+                                relogin();
+                            }
                         }
 
                         @Override
@@ -374,7 +377,7 @@ builder.dismiss();
                                 //display error.
                                 new CustomAlertDialog().showAlert1(
                                         getActivity(),
-                                        R.string.text_login_failed,
+                                        R.string.text_failed,
                                         getUserResponse.getErrorMessage(),
                                         null);
                             }
@@ -411,18 +414,6 @@ builder.dismiss();
         selectedDate = strDate;
         strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
         dateTV.setText(strDate);
-
-//        int year = view.getYear();
-//        int month = view.getMonth();
-//        int day = view.getDayOfMonth();
-//
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.set(year, month, day);
-//
-//        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT1);
-//        String strDate = format.format(calendar.getTime());
-//        selectedDate = strDate;
-//        dateTV.setText(strDate);
     }
     String padding(int value)
     {
@@ -431,4 +422,5 @@ builder.dismiss();
             str = "0"+str;
         return str;
     }
+
 }
