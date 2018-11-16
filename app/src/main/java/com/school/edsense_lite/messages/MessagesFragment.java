@@ -3,6 +3,7 @@ package com.school.edsense_lite.messages;
 import android.app.ProgressDialog;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.school.edsense_lite.AWFActivity;
@@ -44,6 +46,8 @@ import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_MESSAGE_DETAI
 public class MessagesFragment extends BaseFragment {
     @BindView(R.id.messagesRecyclerview)
     RecyclerView messagesRecyclerView;
+    @BindView(R.id.pagetitle)
+    TextView titleTV;
     @BindView(R.id.new_message_button)
     FloatingActionButton newMessageButton;
 
@@ -81,8 +85,11 @@ public class MessagesFragment extends BaseFragment {
 
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
+        applyFonts();
 
-        messagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(getActivity().getApplicationContext());
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String primaryUrl = preferenceHelper.getString(getActivity(),Constants.PREF_KEY_SUBSCRIPTION_PRIMARY_URL,"");
+        messagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(getActivity().getApplicationContext(), primaryUrl);
         messagesRecyclerViewAdapter.setOnItemClickListener(new MessageItemClickListener() {
             @Override
             public void onMessageItemClicked(int position) {
@@ -92,8 +99,7 @@ public class MessagesFragment extends BaseFragment {
             }
         });
 
-        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-        String primaryUrl = preferenceHelper.getString(getActivity(),Constants.PREF_KEY_SUBSCRIPTION_PRIMARY_URL,"");
+
         
         //API call
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
@@ -179,7 +185,15 @@ public class MessagesFragment extends BaseFragment {
 
         return view;
     }
+    private void applyFonts(){
+        // Font path
+        String fontPath = "fonts/bariol_bold-webfont.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), fontPath);
 
+        titleTV.setTypeface(tf);
+
+    }
     @OnClick(R.id.new_message_button)
     public void newMessage(){
         Intent in = new Intent(getActivity(), AWFActivity.class);

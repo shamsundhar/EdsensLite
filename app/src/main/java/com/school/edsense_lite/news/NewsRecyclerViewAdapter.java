@@ -78,7 +78,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     vh1.getSubtitle().setText(Html.fromHtml(newsModel.getDescription()));
                 }
             }
-           String date = DateTimeUtils.parseDateTime(newsModel.getNewsDate(),Constants.DATE_FORMAT6, Constants.DATE_FORMAT2);
+           String date = DateTimeUtils.parseDateTime(newsModel.getNewsDate(),Constants.DATE_FORMAT6, Constants.DATE_FORMAT7);
+            date = date.replace(',','\n');
             vh1.getDate().setText(date);
         }
     }

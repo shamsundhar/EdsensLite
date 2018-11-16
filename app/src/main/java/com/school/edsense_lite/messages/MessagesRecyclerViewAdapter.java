@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.school.edsense_lite.MainActivity;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.model.MessagesResponseModel;
+import com.school.edsense_lite.utils.DateTimeUtils;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
@@ -174,7 +175,18 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             image = (ImageView)v.findViewById(R.id.imageView);
             messageTime = (TextView) v.findViewById(R.id.message_time);
             listenerRef = new WeakReference<>(clickListener);
+            applyFonts(v);
             v.setOnClickListener(this);
+        }
+        private void applyFonts(View v){
+            // Font path
+            String fontPath = "fonts/bariol_bold-webfont.ttf";
+            // Loading Font Face
+            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            title.setTypeface(tf);
+            message.setTypeface(tf);
+            date.setTypeface(tf);
+            messageTime.setTypeface(tf);
         }
         public void bind(final MessagesResponseModel messagesModel, final AdapterView.OnItemClickListener listener) {
 

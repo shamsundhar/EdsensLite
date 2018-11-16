@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.today.EventsResponse;
+import com.school.edsense_lite.utils.Constants;
+import com.school.edsense_lite.utils.DateTimeUtils;
 
 import java.util.List;
 
@@ -80,8 +82,9 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     vh1.getSubtitle().setText(Html.fromHtml(eventModel.getDescription()));
                 }
             }
-            vh1.getDate().setText(eventModel.getStart());
-            //  vh1.bind(scheduleModel, listener);
+            String date = DateTimeUtils.parseDateTime(eventModel.getStart(),Constants.DATE_FORMAT6, Constants.DATE_FORMAT7);
+            date = date.replace(',','\n');
+            vh1.getDate().setText(date);
         }
     }
 

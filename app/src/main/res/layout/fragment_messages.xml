@@ -4,12 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.school.edsense_lite.messages.MessagesFragment">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pagetitle"
+        android:textSize="24sp"
+        android:text="Messages"/>
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:background="@color/white"
         android:layout_marginTop="5dp"
+        android:layout_below="@id/pagetitle"
         android:layout_height="wrap_content">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/messagesRecyclerview"

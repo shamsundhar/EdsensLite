@@ -4,10 +4,10 @@
     android:id="@+id/cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4.0dp"
+    android:layout_marginBottom="2.0dp"
     android:layout_marginLeft="8.0dp"
     android:layout_marginRight="8.0dp"
-    android:layout_marginTop="4.0dp">
+    android:layout_marginTop="2.0dp">
 
     <RelativeLayout
         android:id="@+id/llContainer"
@@ -17,10 +17,9 @@
         android:padding="5dp">
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@mipmap/ic_launcher"
-            android:layout_gravity="center"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"/>
         <LinearLayout
@@ -28,7 +27,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/imageView">
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -37,23 +36,19 @@
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/bariol_bold_webfont"
-                    android:textSize="14sp"
-                    android:text="title"
-                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:gravity="center_vertical"/>
-                <CheckBox
-                    android:button="@android:drawable/btn_star"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/favorite"
-                    android:background="@android:color/transparent"
-                    android:layout_alignParentRight="true"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"/>
+                    android:text="title" />
+                <CheckBox
+                    android:button="@null"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/checkbox_selector"
+                    android:id="@+id/favorite"
+                    android:layout_alignParentRight="true"/>
 
             </RelativeLayout>
 
@@ -64,10 +59,9 @@
                 android:layout_below="@id/title"
                 android:textSize="16sp"
                 android:text="Message"
-                android:layout_centerVertical="true"
-                android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                android:gravity="center_vertical"
-                android:lines="2"/>
+                android:textColor="@color/aluminum"
+                android:lines="2"
+                android:ellipsize="end"/>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -78,7 +72,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:text="Message"
-                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:ellipsize="end"
+                    android:textColor="@color/aluminum"
                     android:textSize="12sp" />
                 <TextView
                     android:id="@+id/message_time"
@@ -86,10 +81,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
                     android:text="Message"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-
-                    android:textAppearance="?android:attr/textAppearanceListItemSmall"/>
+                    android:textColor="@color/aluminum"
+                    android:layout_alignParentRight="true"/>
 
             </RelativeLayout>
         </LinearLayout>
