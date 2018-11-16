@@ -17,12 +17,12 @@ public class DateTimeUtils {
 
     public static String parseDateTime(String dateString, String originalFormat, String outputFromat){
 
-        SimpleDateFormat formatter = new SimpleDateFormat(originalFormat, Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat(originalFormat);
         Date date = null;
         try {
             date = formatter.parse(dateString);
 
-            SimpleDateFormat dateFormat=new SimpleDateFormat(outputFromat, new Locale("US"));
+            SimpleDateFormat dateFormat=new SimpleDateFormat(outputFromat);
 
             return dateFormat.format(date);
 

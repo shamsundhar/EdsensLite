@@ -1,7 +1,13 @@
 package com.school.edsense_lite.messages;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,17 +15,25 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.school.edsense_lite.MainActivity;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.model.MessagesResponseModel;
 import com.squareup.picasso.Picasso;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
+
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT3;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT4;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT5;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT6;
 
 public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
+    private static final String MESSAGE_DETAILS_FRAGMENT_TAG = "MessageDetailsFragment";
     private List<MessagesResponseModel> items;
-    private AdapterView.OnItemClickListener listener;
+    private MessageItemClickListener listener;
     private Context context;
     private String primaryUrl;
 
@@ -27,7 +41,7 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         context = applicationContext;
         this.primaryUrl = primaryUrl;
     }
-    public void setOnItemClickListener(AdapterView.OnItemClickListener clickListener){
+    public void setOnItemClickListener(MessageItemClickListener clickListener){
         this.listener = clickListener;
     }
     public void setItems(List<MessagesResponseModel> items) {
@@ -39,8 +53,7 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         RecyclerView.ViewHolder viewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View v1 = inflater.inflate(R.layout.layout_messages_item, viewGroup, false);
-        viewHolder = new ViewHolder1(v1);
-
+        viewHolder = new ViewHolder1(v1,listener);
         return viewHolder;
     }
 
@@ -69,28 +82,39 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (messagesModel != null) {
             vh1.getTitle().setText(messagesModel.getContextDisplayName());
             vh1.getMessage().setText(messagesModel.getMessageBody());
-//            Glide.with(context)
-//                    .load("https://glendale.tst.edsense.co.in"+messagesModel.getOriginatorImageUrl())
-//                    .into(vh1.image);
+
+//            ShapeDrawable sd = new ShapeDrawable(new OvalShape());
+//            sd.setIntrinsicHeight(100);
+//            sd.setIntrinsicWidth(100);
+//            sd.getPaint().setColor(Color.CYAN);
+//            vh1.image.setBackground(sd);
+
+            //"https://www.gstatic.com/webp/gallery/1.jpg"
+            
             Picasso.with(context).load(primaryUrl+messagesModel.getOriginatorImageUrl()).fit()
                     .placeholder(R.drawable.logo)
                     .error(R.drawable.logo)
                     .into(vh1.image);
-            vh1.getDate().setText(messagesModel.getTransactionDate());
-            vh1.messageTime.setText(messagesModel.getTimeStampMsg());
+
+
+            vh1.getDate().setText(DateTimeUtils.parseDateTime(messagesModel.getTransactionDate(), DATE_FORMAT6, DATE_FORMAT1));
+            //vh1.getMessageTime().setText(messagesModel.getTimeStampMsg());
+            String timestamp = messagesModel.getTimeStampMsg();
+            vh1.getMessageTime().setText(timestamp.substring(timestamp.indexOf(',')+1));
             //vh1.favoriteCheck;
-            //  vh1.bind(scheduleModel, listener);
+            //vh1.bind(messagesModel, listener);
         }
     }
 
 
-    class ViewHolder1 extends RecyclerView.ViewHolder {
+    class ViewHolder1 extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView title;
         private TextView message;
         private TextView date;
         private TextView messageTime;
         private CheckBox favoriteCheck;
+        private WeakReference<MessageItemClickListener> listenerRef;
 
         public CheckBox getFavoriteCheck() {
             return favoriteCheck;
@@ -142,13 +166,22 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             this.message = message;
         }
 
-        public ViewHolder1(View v) {
+        public ViewHolder1(View v, MessageItemClickListener clickListener) {
             super(v);
             title = (TextView) v.findViewById(R.id.title);
             message = (TextView) v.findViewById(R.id.message);
             date = (TextView)v.findViewById(R.id.message_date);
             image = (ImageView)v.findViewById(R.id.imageView);
             messageTime = (TextView) v.findViewById(R.id.message_time);
+            listenerRef = new WeakReference<>(clickListener);
+            v.setOnClickListener(this);
+        }
+        public void bind(final MessagesResponseModel messagesModel, final AdapterView.OnItemClickListener listener) {
+
+        }
+        @Override
+        public void onClick(View v) {
+            listenerRef.get().onMessageItemClicked(getAdapterPosition());
         }
 //        public void bind(final Schedule schedule, final AdapterView.OnItemClickListener listener) {
 //            itemView.setOnClickListener(new View.OnClickListener() {
