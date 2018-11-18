@@ -22,7 +22,8 @@
             android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".login.ForgotPasswordActivity"/>
         <activity android:name=".NavigationDrawerActivity"/>
-        <activity android:name=".AWFActivity"/>
+        <activity android:name=".AWFActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".subscription.SubscriptionActivity"/>
     </application>
 
