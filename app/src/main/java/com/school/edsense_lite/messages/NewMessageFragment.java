@@ -49,6 +49,8 @@ public class NewMessageFragment extends BaseFragment {
     private int THRESHOLD = 4;
     @Inject
     MessagesApi messagesApi;
+
+    Integer selectedToId, selectedCcId;
     public static NewMessageFragment newInstance() {
         NewMessageFragment fragment = new NewMessageFragment();
         return fragment;
@@ -76,15 +78,16 @@ public class NewMessageFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 SearchUserResponse.Response recipient = (SearchUserResponse.Response) adapterView.getItemAtPosition(position);
-                String existingString = to.getText().toString().trim();
-                if(existingString.length() > 0)
-                {
-                    existingString = existingString + RECIPIENT_DELIMETER + recipient.getTagName();
-                }
-                else {
-                    existingString = recipient.getTagName();
-                }
-                to.setText(existingString);
+//                String existingString = to.getText().toString().trim();
+//                if(existingString.length() > 0)
+//                {
+//                    existingString = existingString + RECIPIENT_DELIMETER + recipient.getTagName();
+//                }
+//                else {
+//                    existingString = recipient.getTagName();
+//                }
+                to.setText(recipient.getTagName());
+                selectedToId = recipient.getTagId();
             }
         });
 
@@ -96,15 +99,16 @@ public class NewMessageFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 SearchUserResponse.Response recipient = (SearchUserResponse.Response) adapterView.getItemAtPosition(position);
-                String existingString = cc.getText().toString().trim();
-                if(existingString.length() > 0)
-                {
-                    existingString = existingString + RECIPIENT_DELIMETER + recipient.getTagName();
-                }
-                else {
-                    existingString = recipient.getTagName();
-                }
-                cc.setText(existingString);
+//                String existingString = cc.getText().toString().trim();
+//                if(existingString.length() > 0)
+//                {
+//                    existingString = existingString + RECIPIENT_DELIMETER + recipient.getTagName();
+//                }
+//                else {
+//                    existingString = recipient.getTagName();
+//                }
+                cc.setText(recipient.getTagName());
+                selectedCcId = recipient.getTagId();
             }
         });
 
