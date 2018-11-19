@@ -11,24 +11,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.model.SectionResponseModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SectionsListAdapter extends ArrayAdapter<SectionResponse.Response>{
+public class SectionsListAdapter extends ArrayAdapter<SectionResponseModel>{
 
-    private ArrayList<SectionResponse.Response> dataSet;
+    private List<SectionResponseModel> dataSet;
     Context mContext;
 
     // View lookup cache
     private static class ViewHolder {
         TextView title;
     }
-    public void setItems(ArrayList<SectionResponse.Response> items) {
+    public void setItems(List<SectionResponseModel> items) {
         this.dataSet = items;
     }
 
-    public SectionsListAdapter( ArrayList<SectionResponse.Response> items, Context context) {
+    public SectionsListAdapter(List<SectionResponseModel> items, Context context) {
         super(context, R.layout.layout_sectionitem);
         this.mContext=context;
         this.dataSet = items;
@@ -37,7 +38,7 @@ public class SectionsListAdapter extends ArrayAdapter<SectionResponse.Response>{
 
     @Nullable
     @Override
-    public SectionResponse.Response getItem(int position) {
+    public SectionResponseModel getItem(int position) {
         return dataSet.get(position);
     }
 
@@ -66,7 +67,7 @@ public class SectionsListAdapter extends ArrayAdapter<SectionResponse.Response>{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        SectionResponse.Response dataModel = getItem(position);
+        SectionResponseModel dataModel = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
 

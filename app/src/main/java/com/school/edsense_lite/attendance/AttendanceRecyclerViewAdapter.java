@@ -64,13 +64,13 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof GetUserResponse.Response) {
+        if (items.get(position) instanceof GetUserResponseModel) {
             return ATTENDANCE_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(AttendanceRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        GetUserResponse.Response attendanceModel = (GetUserResponse.Response) items.get(position);
+        GetUserResponseModel attendanceModel = (GetUserResponseModel) items.get(position);
         if (attendanceModel != null) {
             vh1.getName().setText(attendanceModel.getDisplayName());
             vh1.getReason().setText("fssadds");
@@ -135,7 +135,7 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
           //  modifyButton.setOnClickListener(this);
         }
-        public void bind(final GetUserResponse.Response attendance, final ClickListener listener) {
+        public void bind(final GetUserResponseModel attendance, final ClickListener listener) {
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onModifyButtonClicked(attendance);

@@ -42,6 +42,7 @@ import okhttp3.internal.http2.StreamResetException;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_COMPOSE_MESSAGE;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_MESSAGE_DETAILS;
+import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 
 public class MessagesFragment extends BaseFragment {
     @BindView(R.id.messagesRecyclerview)
@@ -73,7 +74,7 @@ public class MessagesFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, "EdsenseDB")
+        mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
                 .allowMainThreadQueries()
                 .build();
     }
