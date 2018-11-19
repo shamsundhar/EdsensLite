@@ -1,6 +1,7 @@
 package com.school.edsense_lite.today;
 
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -16,10 +17,13 @@ import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.login.LoginActivity;
 import com.school.edsense_lite.login.LoginApi;
+import com.school.edsense_lite.messages.MessagesFragment;
 import com.school.edsense_lite.messages.MessagesModel;
 import com.school.edsense_lite.messages.MessagesRecyclerViewAdapter;
 import com.school.edsense_lite.model.AssignmentResponseModel;
 import com.school.edsense_lite.model.Row;
+import com.school.edsense_lite.model.db.EdsenseDatabase;
+import com.school.edsense_lite.utils.Common;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
@@ -53,6 +57,7 @@ import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_EVENTS;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
+import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 
 public class TodayFragment extends BaseFragment {
     @BindView(R.id.todayRecyclerview)
@@ -94,7 +99,9 @@ public class TodayFragment extends BaseFragment {
         scheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter();
         todayRecyclerView.setAdapter(scheduleRecyclerViewAdapter);
         todayRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        MessagesFragment.mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
+                .allowMainThreadQueries()
+                .build();
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -119,67 +126,69 @@ public class TodayFragment extends BaseFragment {
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread());
 
+            if(Common.isNetworkAvailable(getActivity())) {
+                // Zip all requests with the Function, which will receive the results.
+                Observable.zip(
+                        requests,
+                        new Function<Object[], ScheduleAndAssignment>() {
+                            @Override
+                            public ScheduleAndAssignment apply(Object[] objects) throws Exception {
+                                // Objects[] is an array of combined results of completed requests
 
-            // Zip all requests with the Function, which will receive the results.
-            Observable.zip(
-                    requests,
-                    new Function<Object[], ScheduleAndAssignment>() {
-                        @Override
-                        public ScheduleAndAssignment apply(Object[] objects) throws Exception {
-                            // Objects[] is an array of combined results of completed requests
+                                // do something with those results and emit new event
 
-                            // do something with those results and emit new event
+                                List<Object> objectList = Arrays.asList(objects);
 
-                            List<Object> objectList = Arrays.asList(objects);
-
-                            return new ScheduleAndAssignment(objects[0], objects[1]);
-                        }
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    // After all requests had been performed the next observer will receive the Object, returned from Function
-                    .subscribe(
-                            // Will be triggered if all requests will end successfully (4xx and 5xx also are successful requests too)
-                            new Consumer<ScheduleAndAssignment>() {
-                                @Override
-                                public void accept(ScheduleAndAssignment scheduleAndAssignment) throws Exception {
-                                    //Do something on successful completion of all requests
-                                    List<Object> objectList = new ArrayList<Object>();
-                                    objectList.add(new Header("My Schedule", SCHEDULE_HEADER));
-                                    List<Row> scheduleRows = scheduleAndAssignment.getScheduleResponse().getResponse().getRows();
-                                    for(int i = 0; i<scheduleRows.size(); i++){
-                                        objectList.add(scheduleRows.get(i));
-                                    }
-                                 //   objectList.add(scheduleAndAssignment.getScheduleResponse());
-                                    objectList.add(new NewsEvents());
-                                    objectList.add(new Header("Assignments", ASSIGNMENT_HEADER));
-                                    List<AssignmentResponseModel> assignmentResponseList = scheduleAndAssignment.getAssignmentResponse().getResponse();
-                                    for(int i = 0; i<assignmentResponseList.size(); i++){
-                                        objectList.add(assignmentResponseList.get(i));
-                                    }
-                                 //   objectList.add(scheduleAndAssignment.getAssignmentResponse());
-                                    progressDialog.dismiss();
-                                    scheduleRecyclerViewAdapter.setItems(objectList);
-                                    scheduleRecyclerViewAdapter.notifyDataSetChanged();
-
-                                }
-                            },
-
-                            // Will be triggered if any error during requests will happen
-                            new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable e) throws Exception {
-                                    progressDialog.dismiss();
-                                    //Do something on error completion of requests
-                                    if(e instanceof StreamResetException)
-                                    {
-                                        //login again
-                                        e.printStackTrace();
-                                        relogin();
-                                    }
-                                }
+                                return new ScheduleAndAssignment(objects[0], objects[1]);
                             }
-                    );
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        // After all requests had been performed the next observer will receive the Object, returned from Function
+                        .subscribe(
+                                // Will be triggered if all requests will end successfully (4xx and 5xx also are successful requests too)
+                                new Consumer<ScheduleAndAssignment>() {
+                                    @Override
+                                    public void accept(ScheduleAndAssignment scheduleAndAssignment) throws Exception {
+                                        //Do something on successful completion of all requests
+
+                                        List<Row> scheduleRows = scheduleAndAssignment.getScheduleResponse().getResponse().getRows();
+                                        for (int i = 0; i < scheduleRows.size(); i++) {
+                                            //objectList.add(scheduleRows.get(i));
+                                            MessagesFragment.mEdsenseDatabase.scheduleRowDao().insert(scheduleRows.get(i));
+                                        }
+                                        //   objectList.add(scheduleAndAssignment.getScheduleResponse());
+                                        //objectList.add(new NewsEvents());
+                                        //objectList.add(new Header("Assignments", ASSIGNMENT_HEADER));
+                                        List<AssignmentResponseModel> assignmentResponseList = scheduleAndAssignment.getAssignmentResponse().getResponse();
+                                        for (int i = 0; i < assignmentResponseList.size(); i++) {
+                                            //objectList.add(assignmentResponseList.get(i));
+                                            MessagesFragment.mEdsenseDatabase.assignmentDao().insert(assignmentResponseList.get(i));
+                                        }
+
+                                        displayAssignmentsAndSchedulesFromDB(progressDialog);
+
+
+                                    }
+                                },
+
+                                // Will be triggered if any error during requests will happen
+                                new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable e) throws Exception {
+                                        progressDialog.dismiss();
+                                        //Do something on error completion of requests
+                                        if (e instanceof StreamResetException) {
+                                            //login again
+                                            e.printStackTrace();
+                                            relogin();
+                                        }
+                                    }
+                                }
+                        );
+            }else{
+                displayAssignmentsAndSchedulesFromDB(progressDialog);
+            }
 
 
 //            todayApi.getSchedules(bearerToken)
@@ -266,6 +275,27 @@ public class TodayFragment extends BaseFragment {
 
         return view;
     }
+
+    private void displayAssignmentsAndSchedulesFromDB(ProgressDialog progressDialog) {
+        List<Object> objectList = new ArrayList<Object>();
+        objectList.add(new Header("My Schedule", SCHEDULE_HEADER));
+        List<Row> scheduleRows = MessagesFragment.mEdsenseDatabase.scheduleRowDao().getAllRows();
+        for(int i = 0; i<scheduleRows.size(); i++){
+            objectList.add(scheduleRows.get(i));
+        }
+
+        objectList.add(new NewsEvents());
+        objectList.add(new Header("Assignments", ASSIGNMENT_HEADER));
+        List<AssignmentResponseModel> assignmentResponseList = MessagesFragment.mEdsenseDatabase.assignmentDao().getAllAssignments();
+        for(int i = 0; i<assignmentResponseList.size(); i++){
+            objectList.add(assignmentResponseList.get(i));
+        }
+        progressDialog.dismiss();
+        scheduleRecyclerViewAdapter.setItems(objectList);
+        scheduleRecyclerViewAdapter.notifyDataSetChanged();
+
+    }
+
     private void setCurrentDate(){
         dateTV.setText(DateTimeUtils.getCurrentDateInString(DATE_FORMAT1));
     }

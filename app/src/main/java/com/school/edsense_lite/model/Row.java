@@ -10,14 +10,14 @@ public class Row {
 
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "schedlue_row_title")
-    private String title;
     @ColumnInfo(name = "schedlue_row_learningObjectID")
     private Integer learningObjectID;
-    @ColumnInfo(name = "schedlue_row_parentId")
-    private Integer parentId;
     @ColumnInfo(name = "schedlue_row_eventId")
     private String eventId;
+    @ColumnInfo(name = "schedlue_row_title")
+    private String title;
+    @ColumnInfo(name = "schedlue_row_parentId")
+    private Integer parentId;
     @ColumnInfo(name = "schedlue_row_cSSClass")
     private String cSSClass;
     @ColumnInfo(name = "schedlue_row_tagCategory")

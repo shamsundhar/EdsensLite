@@ -12,6 +12,7 @@ import com.school.edsense_lite.R;
 import com.school.edsense_lite.attendance.Attendance;
 
 import com.school.edsense_lite.attendance.GetUserResponse;
+import com.school.edsense_lite.attendance.GetUserResponseModel;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -65,13 +66,13 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof GetUserResponse.Response) {
+        if (items.get(position) instanceof GetUserResponseModel) {
             return NOTES_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(NotesRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        GetUserResponse.Response attendanceModel = (GetUserResponse.Response) items.get(position);
+        GetUserResponseModel attendanceModel = (GetUserResponseModel) items.get(position);
         if (attendanceModel != null) {
             vh1.getName().setText(attendanceModel.getDisplayName());
             vh1.getReason().setText("fssadds");

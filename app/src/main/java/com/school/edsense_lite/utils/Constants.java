@@ -38,5 +38,6 @@ public class Constants {
     public static final String BUNDLE_KEY_OTP_VERIFIED_MESSAGE = "OTP_VERIFIED_MESSAGE";
 
     public static final String DOMAIN_POSTFIX = ".edsense.co.in";
+    public static final String EDSENSE_DATABASE = "EdsenseDB";
     public static final String RECIPIENT_DELIMETER = ";";
 }

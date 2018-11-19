@@ -61,45 +61,4 @@ public class GetUserResponse {
         this.isUserActive = isUserActive;
     }
 
-    public class Response {
-        private String DisplayName;
-        private String studentUserId;
-        private String isAttended;
-        private String totalCount;
-
-        public String getDisplayName() {
-            return DisplayName;
-        }
-
-        public void setDisplayName(String displayName) {
-            DisplayName = displayName;
-        }
-
-        public String getStudentUserId() {
-            return studentUserId;
-        }
-
-        public void setStudentUserId(String studentUserId) {
-            this.studentUserId = studentUserId;
-        }
-
-        public String getIsAttended() {
-            return isAttended;
-        }
-
-        public void setIsAttended(String isAttended) {
-            this.isAttended = isAttended;
-        }
-
-        public String getTotalCount() {
-            return totalCount;
-        }
-
-        public void setTotalCount(String totalCount) {
-            this.totalCount = totalCount;
-        }
-
-
-
-    }
 }

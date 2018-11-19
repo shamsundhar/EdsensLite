@@ -11,7 +11,7 @@ import java.util.List;
 
 @Dao
 public interface NotesDao {
-//    @Insert
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
 //    void insert(Note note);
 //
 //    @Query("DELETE FROM table_notes")
