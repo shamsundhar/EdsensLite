@@ -21,4 +21,8 @@ public interface MessagesApi {
     @Headers({"Content-Type: application/json"})
     Observable<MessagesResponse> sendNotification(@Header("Authorization") String token, @Body String messageId);
 
+    //://apitst.edsense.co.in/api/Portal/SearchTagsByCategoryId
+    @POST("Portal/SearchTagsByCategoryId")
+    @Headers({"Content-Type: application/json"})
+    Observable<SearchUserResponse> searchUsernames(@Header("Authorization") String token, @Body SearchUserRequest searchUserRequest);
 }

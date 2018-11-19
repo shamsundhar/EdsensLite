@@ -3,18 +3,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <EditText
-        android:id="@+id/txtTo"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:hint="To"/>
+        android:id="@+id/layoutTo"
+        android:layout_alignParentTop="true">
+        <com.school.edsense_lite.messages.DelayAutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="To"
+            android:id="@+id/toEditText"
+            />
+        <ProgressBar
+            android:id="@+id/pb_loading_indicator"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layoutCC"
+        android:layout_below="@id/layoutTo">
+        <com.school.edsense_lite.messages.DelayAutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="CC"
+            android:id="@+id/ccEditText"
+            />
+        <ProgressBar
+            android:id="@+id/cc_pb_loading_indicator"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"/>
+    </RelativeLayout>
     <EditText
         android:id="@+id/txtSub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Subject"
-        android:layout_below="@id/txtTo"/>
+        android:layout_below="@id/layoutCC"/>
     <EditText
         android:id="@+id/txtMsg"
         android:layout_width="match_parent"

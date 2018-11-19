@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import com.school.edsense_lite.injection.components.AppComponent;
 import com.school.edsense_lite.injection.components.DaggerAppComponent;
 import com.school.edsense_lite.injection.modules.AppModule;
+import com.school.edsense_lite.injection.modules.NetModule;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
 import org.acra.ACRA;
@@ -30,6 +31,7 @@ public class MyApplication extends Application {
         sInstance = this;
         sAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
+                .netModule(new NetModule())
                 .build();
 //        sAppComponent = DaggerAppComponent.create();
 
