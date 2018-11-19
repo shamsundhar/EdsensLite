@@ -3,6 +3,7 @@ package com.school.edsense_lite.attendance;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
+import com.school.edsense_lite.model.SectionResponseModel;
 import com.school.edsense_lite.today.AssignmentResponse;
 
 import java.util.ArrayList;
@@ -10,15 +11,15 @@ import java.util.List;
 
 public class SectionResponse {
 
-    public List<Response> getResponseList() {
+    public List<SectionResponseModel> getResponseList() {
         return responseList;
     }
 
-    public void setResponseList(List<Response> responseList) {
+    public void setResponseList(List<SectionResponseModel> responseList) {
         this.responseList = responseList;
     }
 
-    private List<SectionResponse.Response> responseList = null;
+    private List<SectionResponseModel> responseList = null;
     @SerializedName("response")
     private String responseString;
     private String isSuccess;
@@ -32,7 +33,7 @@ public class SectionResponse {
 
     public void setResponseString(String responseString) {
         this.responseString = responseString;
-        ArrayList<Response> yourArray = new Gson().fromJson(responseString, new TypeToken<List<Response>>(){}.getType());
+        ArrayList<SectionResponseModel> yourArray = new Gson().fromJson(responseString, new TypeToken<List<SectionResponseModel>>(){}.getType());
         setResponse(yourArray);
     }
 
@@ -47,11 +48,11 @@ public class SectionResponse {
     public String getErrorMessage() {
         return errorMessage;
     }
-    public List<SectionResponse.Response> getResponse() {
+    public List<SectionResponseModel> getResponse() {
         return responseList;
     }
 
-    public void setResponse(List<SectionResponse.Response> responseList) {
+    public void setResponse(List<SectionResponseModel> responseList) {
         this.responseList = responseList;
     }
 
@@ -75,24 +76,5 @@ public class SectionResponse {
         this.isUserActive = isUserActive;
     }
 
-    public class Response {
-        private String compositeTagName;
-        private String compositeTagId;
 
-        public String getCompositeTagName() {
-            return compositeTagName;
-        }
-
-        public void setCompositeTagName(String compositeTagName) {
-            this.compositeTagName = compositeTagName;
-        }
-
-        public String getCompositeTagId() {
-            return compositeTagId;
-        }
-
-        public void setCompositeTagId(String compositeTagId) {
-            this.compositeTagId = compositeTagId;
-        }
-    }
 }

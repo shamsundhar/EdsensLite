@@ -3,6 +3,7 @@ package com.school.edsense_lite.notes;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -34,11 +35,16 @@ import com.school.edsense_lite.attendance.AttendanceFragment;
 import com.school.edsense_lite.attendance.AttendanceRecyclerViewAdapter;
 import com.school.edsense_lite.attendance.GetUserRequest;
 import com.school.edsense_lite.attendance.GetUserResponse;
+import com.school.edsense_lite.attendance.GetUserResponseModel;
 import com.school.edsense_lite.attendance.SaveAttendanceRequest;
 import com.school.edsense_lite.attendance.SaveAttendanceResponse;
 import com.school.edsense_lite.attendance.SectionResponse;
 import com.school.edsense_lite.attendance.SectionsListAdapter;
 import com.school.edsense_lite.fragment.DatePickerFragment;
+import com.school.edsense_lite.messages.MessagesFragment;
+import com.school.edsense_lite.model.SectionResponseModel;
+import com.school.edsense_lite.model.db.EdsenseDatabase;
+import com.school.edsense_lite.utils.Common;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
@@ -62,6 +68,7 @@ import okhttp3.internal.http2.StreamResetException;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT3;
+import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 
 public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     @BindView(R.id.notesRecyclerview)
@@ -76,7 +83,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     TextView chooseSection;
     @Inject
     AttendanceApi attendanceApi;
-    ArrayList<SectionResponse.Response> sectionResponseList;
+    List<SectionResponseModel> sectionResponseList;
     ArrayList<Object> userResponseList;
     SectionsListAdapter sectionsListAdapter;
     private String selectedDate;
@@ -133,55 +140,68 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.text_please_wait));
         progressDialog.show();
+        MessagesFragment.mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
+                .allowMainThreadQueries()
+                .build();
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
-        if(!bearerToken.isEmpty()) {
-            attendanceApi.getSectionsForAttendance(bearerToken)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<SectionResponse>() {
-                        @Override
-                        public void onError(Throwable e) {
-                            progressDialog.dismiss();
-                            if(e instanceof StreamResetException)
-                            {
-                                //login again
-                                e.printStackTrace();
-                                relogin();
+        if(Common.isNetworkAvailable(getActivity())) {
+            if (!bearerToken.isEmpty()) {
+                attendanceApi.getSectionsForAttendance(bearerToken)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<SectionResponse>() {
+                            @Override
+                            public void onError(Throwable e) {
+                                progressDialog.dismiss();
+                                if (e instanceof StreamResetException) {
+                                    //login again
+                                    e.printStackTrace();
+                                    relogin();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onComplete() {
-                            System.out.println("complete called");
-                        }
-
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            System.out.println("onsubscribe called");
-                        }
-
-                        @Override
-                        public void onNext(SectionResponse sectionResponse) {
-                            progressDialog.dismiss();
-                            if (sectionResponse.getIsSuccess().equals("true")) {
-                                String responseString = sectionResponse.getResponseString();
-                                ArrayList<SectionResponse.Response> yourArray = new Gson().
-                                        fromJson(responseString,
-                                                new TypeToken<List<SectionResponse.Response>>(){}.getType());
-
-                                sectionResponseList = new ArrayList<SectionResponse.Response>(yourArray);
-
-                            } else if (!sectionResponse.getErrorCode().equals("200")) {
-                                //display error.
-                                new CustomAlertDialog().showAlert1(
-                                        getActivity(),
-                                        R.string.text_login_failed,
-                                        sectionResponse.getErrorMessage(),
-                                        null);
+                            @Override
+                            public void onComplete() {
+                                System.out.println("complete called");
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                System.out.println("onsubscribe called");
+                            }
+
+                            @Override
+                            public void onNext(SectionResponse sectionResponse) {
+                                progressDialog.dismiss();
+                                if (sectionResponse.getIsSuccess().equals("true")) {
+                                    String responseString = sectionResponse.getResponseString();
+                                    ArrayList<SectionResponseModel> yourArray = new Gson().
+                                            fromJson(responseString,
+                                                    new TypeToken<List<SectionResponseModel>>() {
+                                                    }.getType());
+
+                                    if (yourArray != null && yourArray.size() > 0) {
+                                        for (SectionResponseModel model : yourArray) {
+                                            MessagesFragment.mEdsenseDatabase.sectionResponseDao().insert(model);
+                                        }
+                                    }
+                                    sectionResponseList = MessagesFragment.mEdsenseDatabase.sectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
+
+
+                                } else if (!sectionResponse.getErrorCode().equals("200")) {
+                                    //display error.
+                                    new CustomAlertDialog().showAlert1(
+                                            getActivity(),
+                                            R.string.text_login_failed,
+                                            sectionResponse.getErrorMessage(),
+                                            null);
+                                }
+                            }
+                        });
+            }
+        }else{
+            sectionResponseList = MessagesFragment.mEdsenseDatabase.sectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
         }
 
         return view;
@@ -311,7 +331,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                                     int position, long id) {
                 // TODO Auto-generated method stub
                 builder.dismiss();
-                SectionResponse.Response dataModel = sectionResponseList.get(position);
+                SectionResponseModel dataModel = sectionResponseList.get(position);
                 sectionTV.setText(dataModel.getCompositeTagName());
                 selectedSectionId = dataModel.getCompositeTagId();
                 //  Snackbar.make(view, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
@@ -347,58 +367,74 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         progressDialog.show();
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
-        if(!bearerToken.isEmpty()) {
-            String date = DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT3);
-            GetUserRequest request = new GetUserRequest(selectedSectionId, date);
-            attendanceApi.getUsersBasedOnSection(bearerToken,request)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<GetUserResponse>() {
-                        @Override
-                        public void onError(Throwable e) {
-                            progressDialog.dismiss();
-                            if(e instanceof StreamResetException)
-                            {
-                                //login again
-                                e.printStackTrace();
-                                relogin();
+        if(Common.isNetworkAvailable(getActivity())) {
+            if (!bearerToken.isEmpty()) {
+                String date = DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT3);
+                GetUserRequest request = new GetUserRequest(selectedSectionId, date);
+                attendanceApi.getUsersBasedOnSection(bearerToken, request)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<GetUserResponse>() {
+                            @Override
+                            public void onError(Throwable e) {
+                                progressDialog.dismiss();
+                                if (e instanceof StreamResetException) {
+                                    //login again
+                                    e.printStackTrace();
+                                    relogin();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onComplete() {
+                            @Override
+                            public void onComplete() {
 
-                        }
-
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(GetUserResponse getUserResponse) {
-                            progressDialog.dismiss();
-                            if (getUserResponse.getIsSuccess().equals("true")) {
-                                String responseString = getUserResponse.getResponseString();
-                                ArrayList<GetUserResponse.Response> yourArray = new Gson().
-                                        fromJson(responseString,
-                                                new TypeToken<List<GetUserResponse.Response>>(){}.getType());
-
-                                userResponseList = new ArrayList<Object>(yourArray);
-                                notesRecyclerViewAdapter.setItems(userResponseList);
-                                notesRecyclerViewAdapter.notifyDataSetChanged();
-                            } else if (!getUserResponse.getErrorCode().equals("200")) {
-                                //display error.
-                                new CustomAlertDialog().showAlert1(
-                                        getActivity(),
-                                        R.string.text_failed,
-                                        getUserResponse.getErrorMessage(),
-                                        null);
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(GetUserResponse getUserResponse) {
+                                progressDialog.dismiss();
+                                if (getUserResponse.getIsSuccess().equals("true")) {
+                                    String responseString = getUserResponse.getResponseString();
+                                    ArrayList<GetUserResponseModel> yourArray = new Gson().
+                                            fromJson(responseString,
+                                                    new TypeToken<List<GetUserResponseModel>>() {
+                                                    }.getType());
+                                    if(yourArray != null && yourArray.size()>0){
+                                        for(GetUserResponseModel model : yourArray){
+                                            MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
+                                        }
+                                    }
+
+                                    displayUserResponseFromDB(progressDialog);
+                                } else if (!getUserResponse.getErrorCode().equals("200")) {
+                                    //display error.
+                                    new CustomAlertDialog().showAlert1(
+                                            getActivity(),
+                                            R.string.text_failed,
+                                            getUserResponse.getErrorMessage(),
+                                            null);
+                                }
+                            }
+                        });
+            }
+        }else{
+            displayUserResponseFromDB(progressDialog);
         }
     }
+
+    private void displayUserResponseFromDB(ProgressDialog progressDialog) {
+        List<GetUserResponseModel> yourArray = MessagesFragment.mEdsenseDatabase.getUserResponseDao().getAllUserResponses();
+        userResponseList = new ArrayList<Object>(yourArray);
+        notesRecyclerViewAdapter.setItems(userResponseList);
+        progressDialog.dismiss();
+        notesRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
