@@ -7,139 +7,138 @@ import android.support.annotation.NonNull;
 
 @Entity(tableName = "table_schedule_row")
 public class Row {
-
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "schedlue_row_learningObjectID")
-    private Integer learningObjectID;
+    private Integer LearningObjectID;
     @ColumnInfo(name = "schedlue_row_eventId")
-    private String eventId;
+    private String EventId;
     @ColumnInfo(name = "schedlue_row_title")
-    private String title;
+    private String Title;
     @ColumnInfo(name = "schedlue_row_parentId")
-    private Integer parentId;
+    private Integer ParentId;
     @ColumnInfo(name = "schedlue_row_cSSClass")
-    private String cSSClass;
+    private String CSSClass;
     @ColumnInfo(name = "schedlue_row_tagCategory")
-    private String tagCategory;
+    private String TagCategory;
     @ColumnInfo(name = "schedlue_row_teacherName")
-    private String teacherName;
+    private String TeacherName;
     @ColumnInfo(name = "schedlue_row_startTimeSlot")
-    private String startTimeSlot;
+    private String StartTimeSlot;
     @ColumnInfo(name = "schedlue_row_endTimeSlot")
-    private String endTimeSlot;
+    private String EndTimeSlot;
     @ColumnInfo(name = "schedlue_row_timePeriod")
-    private String timePeriod;
+    private String TimePeriod;
     @ColumnInfo(name = "schedlue_row_gradeName")
-    private String gradeName;
+    private String GradeName;
     @ColumnInfo(name = "schedlue_row_subject")
-    private String subject;
+    private String Subject;
     @ColumnInfo(name = "schedlue_row_sectionName")
-    private String sectionName;
+    private String SectionName;
 
-
-    public String getStartTimeSlot() {
-        return startTimeSlot;
-    }
-
-    public void setStartTimeSlot(String startTimeSlot) {
-        this.startTimeSlot = startTimeSlot;
-    }
-
-    public String getEndTimeSlot() {
-        return endTimeSlot;
-    }
-
-    public void setEndTimeSlot(String endTimeSlot) {
-        this.endTimeSlot = endTimeSlot;
-    }
-
-    public String getTimePeriod() {
-        return timePeriod;
-    }
-
-    public void setTimePeriod(String timePeriod) {
-        this.timePeriod = timePeriod;
-    }
-
-    public String getGradeName() {
-        return gradeName;
-    }
-
-    public void setGradeName(String gradeName) {
-        this.gradeName = gradeName;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getSectionName() {
-        return sectionName;
-    }
-
-    public void setSectionName(String sectionName) {
-        this.sectionName = sectionName;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
+    @NonNull
     public Integer getLearningObjectID() {
-        return learningObjectID;
+        return LearningObjectID;
     }
 
-    public void setLearningObjectID(Integer learningObjectID) {
-        this.learningObjectID = learningObjectID;
-    }
-
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
+    public void setLearningObjectID(@NonNull Integer learningObjectID) {
+        LearningObjectID = learningObjectID;
     }
 
     public String getEventId() {
-        return eventId;
+        return EventId;
     }
 
     public void setEventId(String eventId) {
-        this.eventId = eventId;
+        EventId = eventId;
+    }
+
+    public String getTitle() {
+        return Title;
+    }
+
+    public void setTitle(String title) {
+        Title = title;
+    }
+
+    public Integer getParentId() {
+        return ParentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        ParentId = parentId;
     }
 
     public String getCSSClass() {
-        return cSSClass;
+        return CSSClass;
     }
 
-    public void setCSSClass(String cSSClass) {
-        this.cSSClass = cSSClass;
+    public void setCSSClass(String CSSClass) {
+        this.CSSClass = CSSClass;
     }
 
     public String getTagCategory() {
-        return tagCategory;
+        return TagCategory;
     }
 
     public void setTagCategory(String tagCategory) {
-        this.tagCategory = tagCategory;
+        TagCategory = tagCategory;
     }
 
     public String getTeacherName() {
-        return teacherName;
+        return TeacherName;
     }
 
     public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
+        TeacherName = teacherName;
+    }
+
+    public String getStartTimeSlot() {
+        return StartTimeSlot;
+    }
+
+    public void setStartTimeSlot(String startTimeSlot) {
+        StartTimeSlot = startTimeSlot;
+    }
+
+    public String getEndTimeSlot() {
+        return EndTimeSlot;
+    }
+
+    public void setEndTimeSlot(String endTimeSlot) {
+        EndTimeSlot = endTimeSlot;
+    }
+
+    public String getTimePeriod() {
+        return TimePeriod;
+    }
+
+    public void setTimePeriod(String timePeriod) {
+        TimePeriod = timePeriod;
+    }
+
+    public String getGradeName() {
+        return GradeName;
+    }
+
+    public void setGradeName(String gradeName) {
+        GradeName = gradeName;
+    }
+
+    public String getSubject() {
+        return Subject;
+    }
+
+    public void setSubject(String subject) {
+        Subject = subject;
+    }
+
+    public String getSectionName() {
+        return SectionName;
+    }
+
+    public void setSectionName(String sectionName) {
+        SectionName = sectionName;
     }
 
 }

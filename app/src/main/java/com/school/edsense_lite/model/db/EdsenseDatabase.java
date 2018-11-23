@@ -8,7 +8,6 @@ import android.arch.persistence.room.RoomDatabase;
 import com.school.edsense_lite.model.MessagesResponseModel;
 import com.school.edsense_lite.model.RecomendationModel;
 import com.school.edsense_lite.model.Row;
-import com.school.edsense_lite.model.ScheduleResponseModel;
 import com.school.edsense_lite.model.SectionResponseModel;
 import com.school.edsense_lite.model.Subscription;
 import com.school.edsense_lite.model.dao.AssignmentDao;

@@ -15,11 +15,7 @@ import android.widget.TextView;
 import com.school.edsense_lite.AWFActivity;
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
-import com.school.edsense_lite.login.LoginActivity;
-import com.school.edsense_lite.login.LoginApi;
 import com.school.edsense_lite.messages.MessagesFragment;
-import com.school.edsense_lite.messages.MessagesModel;
-import com.school.edsense_lite.messages.MessagesRecyclerViewAdapter;
 import com.school.edsense_lite.model.AssignmentResponseModel;
 import com.school.edsense_lite.model.Row;
 import com.school.edsense_lite.model.db.EdsenseDatabase;
@@ -29,18 +25,14 @@ import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -157,7 +149,7 @@ public class TodayFragment extends BaseFragment {
                                             //objectList.add(scheduleRows.get(i));
                                             MessagesFragment.mEdsenseDatabase.scheduleRowDao().insert(scheduleRows.get(i));
                                         }
-                                        //   objectList.add(scheduleAndAssignment.getScheduleResponse());
+                                        //objectList.add(scheduleAndAssignment.getScheduleResponse());
                                         //objectList.add(new NewsEvents());
                                         //objectList.add(new Header("Assignments", ASSIGNMENT_HEADER));
                                         List<AssignmentResponseModel> assignmentResponseList = scheduleAndAssignment.getAssignmentResponse().getResponse();
@@ -211,8 +203,8 @@ public class TodayFragment extends BaseFragment {
 //                        public void onNext(ScheduleResponse scheduleResponse) {
 //                            progressDialog.dismiss();
 //                            if (scheduleResponse.getIsSuccess().equals("true")) {
-//                                scheduleRecyclerViewAdapter.setItems(prepareList(scheduleResponse));
-//                                scheduleRecyclerViewAdapter.notifyDataSetChanged();
+//                             //   scheduleRecyclerViewAdapter.setItems(prepareList(scheduleResponse));
+//                            //    scheduleRecyclerViewAdapter.notifyDataSetChanged();
 //                            } else if (!scheduleResponse.getErrorCode().equals("200")) {
 //                                //display error.
 //                                new CustomAlertDialog().showAlert1(
@@ -280,16 +272,18 @@ public class TodayFragment extends BaseFragment {
         List<Object> objectList = new ArrayList<Object>();
         objectList.add(new Header("My Schedule", SCHEDULE_HEADER));
         List<Row> scheduleRows = MessagesFragment.mEdsenseDatabase.scheduleRowDao().getAllRows();
-        for(int i = 0; i<scheduleRows.size(); i++){
-            objectList.add(scheduleRows.get(i));
-        }
+        objectList.addAll(scheduleRows);
+//        for(int i = 0; i<scheduleRows.size(); i++){
+//            objectList.add(scheduleRows.get(i));
+//        }
 
         objectList.add(new NewsEvents());
         objectList.add(new Header("Assignments", ASSIGNMENT_HEADER));
         List<AssignmentResponseModel> assignmentResponseList = MessagesFragment.mEdsenseDatabase.assignmentDao().getAllAssignments();
-        for(int i = 0; i<assignmentResponseList.size(); i++){
-            objectList.add(assignmentResponseList.get(i));
-        }
+        objectList.addAll(assignmentResponseList);
+//        for(int i = 0; i<assignmentResponseList.size(); i++){
+//            objectList.add(assignmentResponseList.get(i));
+//        }
         progressDialog.dismiss();
         scheduleRecyclerViewAdapter.setItems(objectList);
         scheduleRecyclerViewAdapter.notifyDataSetChanged();

@@ -1,9 +1,13 @@
 package com.school.edsense_lite.messages;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +19,10 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import com.school.edsense_lite.AWFActivity;
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.today.ScheduleResponse;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
@@ -28,11 +34,14 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
+import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_COMPOSE_MESSAGE;
 import static com.school.edsense_lite.utils.Constants.RECIPIENT_DELIMETER;
 
 public class NewMessageFragment extends BaseFragment {
@@ -44,13 +53,13 @@ public class NewMessageFragment extends BaseFragment {
     EditText subject;
     @BindView(R.id.toEditText)
     DelayAutoCompleteTextView to;
-    @BindView(R.id.ccEditText)
-    DelayAutoCompleteTextView cc;
+//    @BindView(R.id.ccEditText)
+//    DelayAutoCompleteTextView cc;
     private int THRESHOLD = 4;
     @Inject
     MessagesApi messagesApi;
 
-    Integer selectedToId, selectedCcId;
+    Integer selectedToId;
     public static NewMessageFragment newInstance() {
         NewMessageFragment fragment = new NewMessageFragment();
         return fragment;
@@ -91,26 +100,26 @@ public class NewMessageFragment extends BaseFragment {
             }
         });
 
-        cc.setThreshold(THRESHOLD);
-        cc.setAdapter(new BookAutoCompleteAdapter(getActivity())); // 'this' is Activity instance
-        cc.setLoadingIndicator(
-                (android.widget.ProgressBar) view.findViewById(R.id.cc_pb_loading_indicator));
-        cc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                SearchUserResponse.Response recipient = (SearchUserResponse.Response) adapterView.getItemAtPosition(position);
-//                String existingString = cc.getText().toString().trim();
-//                if(existingString.length() > 0)
-//                {
-//                    existingString = existingString + RECIPIENT_DELIMETER + recipient.getTagName();
-//                }
-//                else {
-//                    existingString = recipient.getTagName();
-//                }
-                cc.setText(recipient.getTagName());
-                selectedCcId = recipient.getTagId();
-            }
-        });
+//        cc.setThreshold(THRESHOLD);
+//        cc.setAdapter(new BookAutoCompleteAdapter(getActivity())); // 'this' is Activity instance
+//        cc.setLoadingIndicator(
+//                (android.widget.ProgressBar) view.findViewById(R.id.cc_pb_loading_indicator));
+//        cc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//                SearchUserResponse.Response recipient = (SearchUserResponse.Response) adapterView.getItemAtPosition(position);
+////                String existingString = cc.getText().toString().trim();
+////                if(existingString.length() > 0)
+////                {
+////                    existingString = existingString + RECIPIENT_DELIMETER + recipient.getTagName();
+////                }
+////                else {
+////                    existingString = recipient.getTagName();
+////                }
+//                cc.setText(recipient.getTagName());
+//                selectedCcId = recipient.getTagId();
+//            }
+//        });
 
         return view;
     }
@@ -125,7 +134,58 @@ public class NewMessageFragment extends BaseFragment {
         message.setTypeface(tf);
 
     }
+    @OnClick(R.id.send_message_button)
+    public void newMessage(){
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.text_please_wait));
+        progressDialog.show();
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
+    //    <recipients><to><recipient groupTypeId=\"1\">29693,32012</recipient>" +
+     //           "<recipient groupTypeId=\"2\">33004,33005</recipient></to>" +
+     //           "</recipients>
+        String recipientsString = "<recipients><to><recipient groupTypeId=\"1\">"+selectedToId+"</recipient></to></recipients>";
+        SendMessageRequest sendMessageRequest = new SendMessageRequest();
+        sendMessageRequest.setBody(message.getText().toString().trim());
+        sendMessageRequest.setContextTypeId(1);
+        sendMessageRequest.setMapId(2);
+        sendMessageRequest.setRecipientsInfo(recipientsString);
+        sendMessageRequest.setSubject(subject.getText().toString().trim());
+        messagesApi.sendNotification(bearerToken, sendMessageRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MessagesResponse>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        progressDialog.dismiss();
+                    }
+                    @Override
+                    public void onComplete() {
 
+                    }
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+                    @Override
+                    public void onNext(MessagesResponse messagesResponse) {
+                        progressDialog.dismiss();
+                        if (messagesResponse.isIsSuccess() == true) {
+                           getActivity().finish();
+                        } else if (messagesResponse.getErrorCode() != 200) {
+                            //display error.
+                            new CustomAlertDialog().showAlert1(
+                                    getActivity(),
+                                    R.string.text_failed,
+                                    messagesResponse.getErrorMessage(),
+                                    null);
+                        }
+                    }
+                });
+
+    }
     class BookAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
         private static final int MAX_RESULTS = 10;

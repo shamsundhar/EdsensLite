@@ -24,33 +24,33 @@
             android:layout_marginRight="10dp"
             android:visibility="gone"/>
     </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/layoutCC"
-        android:layout_below="@id/layoutTo">
-        <com.school.edsense_lite.messages.DelayAutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="CC"
-            android:id="@+id/ccEditText"
-            />
-        <ProgressBar
-            android:id="@+id/cc_pb_loading_indicator"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:visibility="gone"/>
-    </RelativeLayout>
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/layoutCC"-->
+        <!--android:layout_below="@id/layoutTo">-->
+        <!--<com.school.edsense_lite.messages.DelayAutoCompleteTextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="CC"-->
+            <!--android:id="@+id/ccEditText"-->
+            <!--/>-->
+        <!--<ProgressBar-->
+            <!--android:id="@+id/cc_pb_loading_indicator"-->
+            <!--style="?android:attr/progressBarStyleSmall"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:visibility="gone"/>-->
+    <!--</RelativeLayout>-->
     <EditText
         android:id="@+id/txtSub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Subject"
-        android:layout_below="@id/layoutCC"/>
+        android:layout_below="@id/layoutTo"/>
     <EditText
         android:id="@+id/txtMsg"
         android:layout_width="match_parent"
@@ -60,7 +60,7 @@
         android:hint="Compose message"
         android:layout_below="@id/txtSub"/>
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/new_message_button"
+        android:id="@+id/send_message_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_send"
