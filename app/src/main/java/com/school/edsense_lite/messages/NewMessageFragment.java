@@ -46,7 +46,8 @@ import static com.school.edsense_lite.utils.Constants.RECIPIENT_DELIMETER;
 
 public class NewMessageFragment extends BaseFragment {
 
-
+@BindView(R.id.pagetitle)
+TextView pageTitle;
     @BindView(R.id.txtMsg)
     EditText message;
     @BindView(R.id.txtSub)
@@ -132,6 +133,7 @@ public class NewMessageFragment extends BaseFragment {
         to.setTypeface(tf);
         subject.setTypeface(tf);
         message.setTypeface(tf);
+        pageTitle.setTypeface(tf);
 
     }
     @OnClick(R.id.send_message_button)
