@@ -34,6 +34,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private List<Object> items;
     private final int SCHEDULE_LIST_ITEM = 0;
     private final int ASSIGNMENT_LIST_ITEM = 1;
+    private final int ASSIGNMENT_LIST_ITEM_LAST = 5;
     private final int ASSIGNMENT_HEADER_ITEM = 2;
     private final int NEWS_EVENTS_LIST_ITEM = 3;
     private final int SCHEDULE_HEADER_ITEM = 4;
@@ -64,6 +65,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             View v1 = inflater.inflate(R.layout.layout_assignmentitem, viewGroup, false);
             viewHolder = new ViewHolder2(v1);
         }
+        else if(viewType == ASSIGNMENT_LIST_ITEM_LAST){
+            View v1 = inflater.inflate(R.layout.layout_assignmentitem_last, viewGroup, false);
+            viewHolder = new ViewHolder2(v1);
+        }
         else if(viewType == ASSIGNMENT_HEADER_ITEM){
             View v1 = inflater.inflate(R.layout.layout_header_item, viewGroup, false);
             viewHolder = new ViewHolder3(v1);
@@ -89,6 +94,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             case ASSIGNMENT_LIST_ITEM:
                 ViewHolder2 vh2 = (ViewHolder2)viewHolder;
                 configureViewHolder2(vh2, position);
+                break;
+            case ASSIGNMENT_LIST_ITEM_LAST:
+                ViewHolder2 vhr2 = (ViewHolder2)viewHolder;
+                configureViewHolder2(vhr2, position);
                 break;
             case ASSIGNMENT_HEADER_ITEM:
                 ViewHolder3 vh3 = (ViewHolder3)viewHolder;
@@ -120,7 +129,13 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             return SCHEDULE_LIST_ITEM;
         }
         else if(items.get(position) instanceof AssignmentResponseModel){
-            return ASSIGNMENT_LIST_ITEM;
+            if((getItemCount()-1) == position){
+                return ASSIGNMENT_LIST_ITEM_LAST;
+            }
+            else{
+                return ASSIGNMENT_LIST_ITEM;
+            }
+
         }
         else if(items.get(position) instanceof Header){
             if(((Header)items.get(position)).getHeaderType() == ASSIGNMENT_HEADER){
@@ -242,11 +257,13 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         private void applyFonts(View v){
             // Font path
             String fontPath = "fonts/bariol_bold-webfont.ttf";
+            String fontPath2 = "fonts/framd.ttf";
             // Loading Font Face
             Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            Typeface tf2 = Typeface.createFromAsset(v.getContext().getAssets(), fontPath2);
             clas.setTypeface(tf);
             subject.setTypeface(tf);
-            topic.setTypeface(tf);
+            topic.setTypeface(tf2);
             time.setTypeface(tf);
         }
         public void bind(final ScheduleResponse schedule, final AdapterView.OnItemClickListener listener) {

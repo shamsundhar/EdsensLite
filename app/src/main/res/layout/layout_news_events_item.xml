@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:padding="5dp"
-                android:src="@mipmap/ic_news_white"/>
+                android:src="@drawable/news_white"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:padding="5dp"
-                android:src="@mipmap/ic_events_white"/>
+                android:src="@drawable/events_white"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

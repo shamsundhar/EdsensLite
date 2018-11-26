@@ -130,11 +130,14 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         private void applyFonts(View v){
             // Font path
             String fontPath = "fonts/bariol_bold-webfont.ttf";
+            String fontPath2 = "fonts/framd.ttf";
             // Loading Font Face
             Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            Typeface tf2 = Typeface.createFromAsset(v.getContext().getAssets(), fontPath2);
+
             title.setTypeface(tf);
             subtitle.setTypeface(tf);
-            date.setTypeface(tf);
+            date.setTypeface(tf2);
         }
         public void bind(final Event event, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {

@@ -25,6 +25,19 @@
         <activity android:name=".AWFActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".subscription.SubscriptionActivity"/>
+
+        <!--&lt;!&ndash; Firebase Notifications &ndash;&gt;-->
+        <!--<service android:name=".firebase.MyFirebaseMessagingService">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
+
+        <!--<service android:name=".firebase.MyFirebaseInstanceIDService">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.firebase.INSTANCE_ID_EVENT" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
     </application>
 
 </manifest>

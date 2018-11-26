@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "499918108560",
+    "firebase_url": "https://edsense-mobile-app.firebaseio.com",
+    "project_id": "edsense-mobile-app",
+    "storage_bucket": "edsense-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499918108560:android:49e2c5948dc8e606",
+        "android_client_info": {
+          "package_name": "com.school.edsense_lite.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "499918108560-t7kv3d8tu21996vi9d9rfhv3gtua1qtp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXVSw9Ol2OQMK8FWVpI8n5j0CPwuQeECc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
