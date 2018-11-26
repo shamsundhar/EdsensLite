@@ -29,6 +29,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.school.edsense_lite.utils.Constants.KEY_PREF_BOARD_DATA;
+import static com.school.edsense_lite.utils.Constants.KEY_PREF_DISPLAY_NAME;
+import static com.school.edsense_lite.utils.Constants.KEY_PREF_SUBJECT_DATA;
+
 public class NavigationDrawerActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     ImageView profileAvatar;
@@ -69,8 +73,13 @@ public class NavigationDrawerActivity extends BaseActivity
         profileNameTV = (TextView)headerview.findViewById(R.id.profile_name);
         profileClassTV = (TextView)headerview.findViewById(R.id.profile_class);
         profileSubjectsTV = (TextView)headerview.findViewById(R.id.profile_subjects);
-
-
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String displayName = preferenceHelper.getString(NavigationDrawerActivity.this, KEY_PREF_DISPLAY_NAME, "");
+        String boardData = preferenceHelper.getString(NavigationDrawerActivity.this, KEY_PREF_BOARD_DATA, "");
+        String subjectData = preferenceHelper.getString(NavigationDrawerActivity.this, KEY_PREF_SUBJECT_DATA, "");
+        profileNameTV.setText(displayName);
+        profileClassTV.setText(boardData);
+        profileSubjectsTV.setText("Subject : "+subjectData);
         profileClassTV.setText("test dynamically");
         profileClassTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,26 +170,26 @@ public class NavigationDrawerActivity extends BaseActivity
         } else if(id == R.id.nav_today){
             displayTodayFragment();
         }else if (id == R.id.nav_attendance) {
-          //  setTitle(getString(R.string.text_attendance));
+            //  setTitle(getString(R.string.text_attendance));
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  AttendanceFragment.newInstance(), ATTENDANCE_FRAGMENT_TAG)
                     .commit();
 
         } else if (id == R.id.nav_notes) {
-         //   setTitle(getString(R.string.text_notes));
+            //   setTitle(getString(R.string.text_notes));
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  NotesFragment.newInstance(), NOTES_FRAGMENT_TAG)
                     .commit();
         } else if (id == R.id.nav_recomendation) {
-         //   setTitle(getString(R.string.text_recomendation));
+            //   setTitle(getString(R.string.text_recomendation));
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container, new RecomendationFragment(), RECOMENDATION_FRAGMENT_TAG)
                     .commit();
         } else if (id == R.id.nav_messages) {
-          //  setTitle(getString(R.string.text_messages));
+            //  setTitle(getString(R.string.text_messages));
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container, MessagesFragment.newInstance(), MESSAGES_FRAGMENT_TAG)

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.model.AssignmentResponseModel;
 import com.school.edsense_lite.model.Row;
+import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.DateTimeUtils;
 
 import org.w3c.dom.Text;
@@ -23,6 +24,7 @@ import java.util.List;
 import static com.school.edsense_lite.today.Header.ASSIGNMENT_HEADER;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT4;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT5;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT6;
 
 /**
  * Created by shyam on 2/25/2018.
@@ -147,12 +149,16 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         AssignmentResponseModel assignmentModel = (AssignmentResponseModel) items.get(position);
         if (assignmentModel != null) {
             vh2.getTitle().setText(assignmentModel.getName());
-
+            String startDate = assignmentModel.getStartDate();
+            if(startDate != null && startDate.trim().length() > 0) {
+                startDate = DateTimeUtils.parseDateTime(startDate, Constants.DATE_FORMAT6, Constants.DATE_FORMAT7);
+                startDate = startDate.replace(',','\n');
+                vh2.getDate().setText(startDate);
+            }
             String endDate = assignmentModel.getEndDate();
             if(endDate != null && endDate.trim().length() > 0) {
-                //endDate = DateTimeUtils.parseDate(endDate, DATE_FORMAT5, DATE_FORMAT4);
-                String[] date = endDate.split("T");
-                vh2.getDueDate().setText("Due :"+date[0].replace('-','/'));
+                endDate = DateTimeUtils.parseDate(endDate, DATE_FORMAT6, DATE_FORMAT4);
+                vh2.getDueDate().setText("Due: "+endDate);
             }
 
             if(assignmentModel.getDescription() != null && assignmentModel.getDescription().trim().length() > 0) {
@@ -256,7 +262,14 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         private TextView title;
         private TextView dueDate;
         private TextView description;
+        private TextView date;
 
+        public TextView getDate() {
+            return date;
+        }
+        public void setDate(TextView date) {
+            this.date = date;
+        }
         public TextView getTitle() {
             return title;
         }
@@ -286,16 +299,20 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             title = (TextView) v.findViewById(R.id.title);
             dueDate = (TextView) v.findViewById(R.id.duedate);
             description = (TextView)v.findViewById(R.id.description);
+            date = (TextView)v.findViewById(R.id.time);
             applyFonts(v);
         }
         private void applyFonts(View v){
             // Font path
             String fontPath = "fonts/bariol_bold-webfont.ttf";
+            String fontPath2 = "fonts/framd.ttf";
             // Loading Font Face
             Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            Typeface tf2 = Typeface.createFromAsset(v.getContext().getAssets(), fontPath2);
+
             title.setTypeface(tf);
             dueDate.setTypeface(tf);
-            description.setTypeface(tf);
+            description.setTypeface(tf2);
         }
         public void bind(final Assignment assignment, final AdapterView.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -325,6 +342,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         private void applyFonts(View v){
             // Font path
             String fontPath = "fonts/bariol_bold-webfont.ttf";
+            String fontPath2 = "fonts/framd.ttf";
             // Loading Font Face
             Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
             title.setTypeface(tf);

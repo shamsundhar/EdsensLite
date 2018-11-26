@@ -21,6 +21,8 @@ import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -30,6 +32,16 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.school.edsense_lite.utils.Constants.BOARD_STRING;
+import static com.school.edsense_lite.utils.Constants.KEY_PREF_BOARD_DATA;
+import static com.school.edsense_lite.utils.Constants.KEY_PREF_DISPLAY_NAME;
+import static com.school.edsense_lite.utils.Constants.KEY_PREF_SUBJECT_DATA;
+import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_STUDENT;
+import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_TEACHER;
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_BEARER_TOKEN;
+import static com.school.edsense_lite.utils.Constants.SUBJECT_STRING;
+import static com.school.edsense_lite.utils.Constants.TEACHER_STRING;
 
 
 /**
@@ -47,6 +59,7 @@ public class LoginActivity extends BaseActivity {
     TextView _forgotPasswordTV;
     @BindView(R.id.logo)
     ImageView _logoImageView;
+    PreferenceHelper preferenceHelper;
 
     @Inject
     LoginApi loginApi;
@@ -55,9 +68,11 @@ public class LoginActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityComponent().inject(this);
-        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-        String loginToken = preferenceHelper.getString(LoginActivity.this, Constants.PREF_KEY_BEARER_TOKEN, "");
+        //PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String loginToken = preferenceHelper.getString(LoginActivity.this, PREF_KEY_BEARER_TOKEN, "");
         String logoUrl = preferenceHelper.getString(LoginActivity.this, Constants.PREF_KEY_LOGO_URL, "");
+
         if(loginToken.isEmpty()){
             setContentView(R.layout.activity_login);
             ButterKnife.bind(this);
@@ -113,7 +128,7 @@ public class LoginActivity extends BaseActivity {
         LoginRequest request = new LoginRequest();
         request.setUserkey(username);
         request.setPassword(password);
-        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+
         String subscriptionId = preferenceHelper.getString(LoginActivity.this,
                 Constants.PREF_KEY_SUBSCRIPTION_ID, "");
         request.setSubscriptionId(subscriptionId);
@@ -146,6 +161,7 @@ public class LoginActivity extends BaseActivity {
                         _loginButton.setEnabled(true);
                         if(loginResponse.getIsSuccess().equals("true")) {
                             onLoginSuccess(username, password, loginResponse);
+                            getUserDetails();
                         }
                         else if(!loginResponse.getErrorCode().equals("200")){
                             //display error.
@@ -159,7 +175,100 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
     }
+    private void getUserDetails(){
+        String bearerToken = preferenceHelper.getString(LoginActivity.this, PREF_KEY_BEARER_TOKEN, "");
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.text_retrieving_details));
+        progressDialog.show();
+        loginApi.getUserRegistrationDetails(bearerToken)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ProfileResponse>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        progressDialog.dismiss();
+                        onLoginFailed();
+                    }
 
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(ProfileResponse profileResponse){
+                        progressDialog.dismiss();
+                        _loginButton.setEnabled(true);
+                        if(profileResponse.getIsSuccess().equals("true")) {
+                            processProfileData(profileResponse);
+                        }
+                        else if(!profileResponse.getErrorCode().equals("200")){
+                            //display error.
+                            new CustomAlertDialog().showAlert1(
+                                    LoginActivity.this,
+                                    R.string.text_login_failed,
+                                    profileResponse.getErrorMessage(),
+                                    null);
+                        }
+
+                    }
+                });
+    }
+    private void processProfileData(ProfileResponse profileResponse){
+        ProfileResponse.Response response = profileResponse.getResponse();
+        String userRolesString = response.getUserRoles();
+        if(userRolesString.trim().length() > 0){
+            setUserRoleData(userRolesString);
+        }
+        String loggedInUserDisplayName = response.getDisplayName();
+        preferenceHelper.setString(LoginActivity.this, KEY_PREF_DISPLAY_NAME, loggedInUserDisplayName);
+
+        List<ProfileResponse.Tag> tagList = response.getTags();
+        setBoardData(tagList);
+        setSubjectsData(tagList);
+        displayNavigationActivity();
+    }
+    private void setUserRoleData(String userRoleData){
+        if(userRoleData.contains(TEACHER_STRING)){
+            preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_TEACHER, true);
+            preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_STUDENT, false);
+        }
+        else{
+            preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_TEACHER, false);
+            preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_STUDENT, true);
+
+        }
+    }
+    private void setBoardData(List<ProfileResponse.Tag> tagList){
+        for(int i = 0; i < tagList.size(); i++){
+            ProfileResponse.Tag tag = tagList.get(i);
+            if(tag.getCategoryName().equals(BOARD_STRING)){
+                preferenceHelper.setString(LoginActivity.this, KEY_PREF_BOARD_DATA, tag.getName());
+            }
+        }
+    }
+    private void setSubjectsData(List<ProfileResponse.Tag> tagList){
+        String subjectString = "";
+        for(int i = 0; i < tagList.size(); i++){
+            ProfileResponse.Tag tag = tagList.get(i);
+            if(tag.getCategoryName().equals(SUBJECT_STRING)){
+                if(subjectString.trim().length() > 0){
+                    subjectString = subjectString + "," + tag.getName();
+                }
+                else{
+                    subjectString = tag.getName();
+                }
+                preferenceHelper.setString(LoginActivity.this, KEY_PREF_SUBJECT_DATA, subjectString);
+            }
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
@@ -197,9 +306,8 @@ public class LoginActivity extends BaseActivity {
         if(!loginResponse.getResponse().getBearerToken().isEmpty()){
             preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_USERNAME, username);
             preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_PASSWORD, password);
-            preferenceHelper.setString(LoginActivity.this, Constants.PREF_KEY_BEARER_TOKEN, "Bearer "+loginResponse.getResponse().getBearerToken());
+            preferenceHelper.setString(LoginActivity.this, PREF_KEY_BEARER_TOKEN, "Bearer "+loginResponse.getResponse().getBearerToken());
         }
-        displayNavigationActivity();
     }
     private void displayNavigationActivity()
     {
