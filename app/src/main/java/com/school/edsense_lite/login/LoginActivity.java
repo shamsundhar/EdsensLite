@@ -34,12 +34,14 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.school.edsense_lite.utils.Constants.BOARD_STRING;
+import static com.school.edsense_lite.utils.Constants.KEY_PREF_AVATAR_URL;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_BOARD_DATA;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_DISPLAY_NAME;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_SUBJECT_DATA;
 import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_STUDENT;
 import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_TEACHER;
 import static com.school.edsense_lite.utils.Constants.PREF_KEY_BEARER_TOKEN;
+import static com.school.edsense_lite.utils.Constants.SECTION_STRING;
 import static com.school.edsense_lite.utils.Constants.SUBJECT_STRING;
 import static com.school.edsense_lite.utils.Constants.TEACHER_STRING;
 
@@ -190,6 +192,7 @@ public class LoginActivity extends BaseActivity {
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
                         onLoginFailed();
+                      //  displayNavigationActivity();
                     }
 
                     @Override
@@ -206,10 +209,10 @@ public class LoginActivity extends BaseActivity {
                     public void onNext(ProfileResponse profileResponse){
                         progressDialog.dismiss();
                         _loginButton.setEnabled(true);
-                        if(profileResponse.getIsSuccess().equals("true")) {
+                        if(profileResponse.getIsSuccess().equals(true)) {
                             processProfileData(profileResponse);
                         }
-                        else if(!profileResponse.getErrorCode().equals("200")){
+                        else if(!profileResponse.getErrorCode().equals(200)){
                             //display error.
                             new CustomAlertDialog().showAlert1(
                                     LoginActivity.this,
@@ -230,6 +233,9 @@ public class LoginActivity extends BaseActivity {
         String loggedInUserDisplayName = response.getDisplayName();
         preferenceHelper.setString(LoginActivity.this, KEY_PREF_DISPLAY_NAME, loggedInUserDisplayName);
 
+        String userAvatarUrl = response.getImageFileFullPath();
+        preferenceHelper.setString(LoginActivity.this, KEY_PREF_AVATAR_URL, userAvatarUrl);
+
         List<ProfileResponse.Tag> tagList = response.getTags();
         setBoardData(tagList);
         setSubjectsData(tagList);
@@ -247,12 +253,26 @@ public class LoginActivity extends BaseActivity {
         }
     }
     private void setBoardData(List<ProfileResponse.Tag> tagList){
+        String boardData = "";
         for(int i = 0; i < tagList.size(); i++){
             ProfileResponse.Tag tag = tagList.get(i);
             if(tag.getCategoryName().equals(BOARD_STRING)){
-                preferenceHelper.setString(LoginActivity.this, KEY_PREF_BOARD_DATA, tag.getName());
+                boardData = tag.getName();
             }
         }
+        for(int i = 0; i < tagList.size(); i++){
+            ProfileResponse.Tag tag = tagList.get(i);
+            if(tag.getCategoryName().equals(SECTION_STRING)){
+                if(boardData.trim().length() > 0){
+                    boardData = boardData + "," + tag.getName();
+                }
+                else{
+                    boardData = tag.getName();
+                }
+            }
+        }
+         preferenceHelper.setString(LoginActivity.this, KEY_PREF_BOARD_DATA, boardData);
+
     }
     private void setSubjectsData(List<ProfileResponse.Tag> tagList){
         String subjectString = "";
@@ -265,9 +285,9 @@ public class LoginActivity extends BaseActivity {
                 else{
                     subjectString = tag.getName();
                 }
-                preferenceHelper.setString(LoginActivity.this, KEY_PREF_SUBJECT_DATA, subjectString);
             }
         }
+        preferenceHelper.setString(LoginActivity.this, KEY_PREF_SUBJECT_DATA, subjectString);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

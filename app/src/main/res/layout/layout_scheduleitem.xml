@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:orientation="vertical"
+    android:paddingTop="10dp">
 
     <RelativeLayout
         android:id="@+id/llContainer"
@@ -74,5 +74,10 @@
             android:textColor="@color/dark_blue" />
 
     </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="1dp"
+        android:background="@color/divider_color2"/>
 
 </LinearLayout>

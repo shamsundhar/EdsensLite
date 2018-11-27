@@ -23,12 +23,15 @@ import com.school.edsense_lite.messages.MessagesFragment;
 import com.school.edsense_lite.notes.NotesFragment;
 import com.school.edsense_lite.recomendations.RecomendationFragment;
 import com.school.edsense_lite.today.TodayFragment;
+import com.school.edsense_lite.utils.CircleTransform;
 import com.school.edsense_lite.utils.PreferenceHelper;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.school.edsense_lite.utils.Constants.KEY_PREF_AVATAR_URL;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_BOARD_DATA;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_DISPLAY_NAME;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_SUBJECT_DATA;
@@ -80,7 +83,16 @@ public class NavigationDrawerActivity extends BaseActivity
         profileNameTV.setText(displayName);
         profileClassTV.setText(boardData);
         profileSubjectsTV.setText("Subject : "+subjectData);
-        profileClassTV.setText("test dynamically");
+        profileClassTV.setText(boardData);
+        String userAvatarUrl = preferenceHelper.getString(NavigationDrawerActivity.this, KEY_PREF_AVATAR_URL, "");
+        if(!userAvatarUrl.isEmpty()) {
+            Picasso.with(NavigationDrawerActivity.this).load(userAvatarUrl).fit()
+                    .placeholder(R.drawable.man_user)
+                    .error(R.drawable.man_user)
+                    .transform(new CircleTransform())
+                    .into(profileAvatar);
+        }
+
         profileClassTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

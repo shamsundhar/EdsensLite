@@ -42,10 +42,12 @@ public class Constants {
     public static final String RECIPIENT_DELIMETER = ";";
     public static final String TEACHER_STRING = "Teacher";
     public static final String BOARD_STRING = "Board";
+    public static final String SECTION_STRING = "Section";
     public static final String SUBJECT_STRING = "Subject";
     public static final String KEY_USER_ROLE_TEACHER = "Key_Role_Teacher";
     public static final String KEY_USER_ROLE_STUDENT = "Key_Role_Student";
     public static final String KEY_PREF_DISPLAY_NAME = "KEY_DISPLAY_NAME";
+    public static final String KEY_PREF_AVATAR_URL = "KEY_AVATAR_URL";
     public static final String KEY_PREF_BOARD_DATA = "KEY_BOARD_DATA";
     public static final String KEY_PREF_SUBJECT_DATA = "KEY_SUBJECT_DATA";
 }

@@ -127,7 +127,16 @@ public class SubscriptionActivity extends BaseActivity {
                         progressDialog.dismiss();
                         _continueButton.setEnabled(true);
                         if(subscriptionResponse.getIsSuccess().equals("true")) {
-                            onSubsciptionSuccess(subscriptionResponse);
+                            if(subscriptionResponse.getResponse().size() > 0) {
+                                onSubsciptionSuccess(subscriptionResponse);
+                            }
+                            else{
+                                new CustomAlertDialog().showAlert1(
+                                        SubscriptionActivity.this,
+                                        R.string.text_enter_details,
+                                        subscriptionResponse.getErrorMessage(),
+                                        null);
+                            }
                         }
                         else if(!subscriptionResponse.getErrorCode().equals("200")){
                             //display error.

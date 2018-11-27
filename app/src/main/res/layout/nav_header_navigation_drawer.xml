@@ -7,62 +7,63 @@
     android:layout_gravity="top"
     android:orientation="vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
-    <ImageView
-        android:id="@+id/profile_avatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:clickable="false"
-        android:focusable="false"
-        app:srcCompat="@drawable/man_user" />
-
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/profile_name"
-        android:text="Y. Shyam Sundar"
-        android:layout_toEndOf="@id/profile_avatar"
-        android:layout_alignParentTop="true"
-        android:textColor="@color/white"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:clickable="false"
-        android:focusable="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+        <ImageView
+            android:id="@+id/profile_avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:clickable="false"
+            android:focusable="false"
+            app:srcCompat="@drawable/man_user" />
 
-    <TextView
-        android:id="@+id/profile_class"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/profile_avatar"
-        android:layout_below="@id/profile_name"
-        android:textColor="@color/white"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="CBSE, VIII A" />
-    <TextView
-        android:id="@+id/profile_subjects"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/profile_avatar"
-        android:layout_below="@id/profile_class"
-        android:textColor="@color/white"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="Subject : Maths, Science" />
-</RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_name"
+            android:text="Y. Shyam Sundar"
+            android:layout_toEndOf="@id/profile_avatar"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:clickable="false"
+            android:focusable="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <TextView
+            android:id="@+id/profile_class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/profile_avatar"
+            android:layout_below="@id/profile_name"
+            android:textColor="@color/white"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="CBSE, VIII A" />
+        <TextView
+            android:id="@+id/profile_subjects"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/profile_avatar"
+            android:layout_below="@id/profile_class"
+            android:textColor="@color/white"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Subject : Maths, Science" />
+    </RelativeLayout>
 
 
     <View

@@ -33,6 +33,7 @@
 
     <string name="text_login_failed">Login Failed</string>
     <string name="text_failed">Failed</string>
+    <string name="text_enter_details">Details are not matching</string>
 
     <string-array name="sections_array">
         <item>VII - A, B</item>
