@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/white"
     android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -75,6 +76,12 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:text="Continue"/>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/login_img_small"
+            android:scaleType="center"
+            android:layout_gravity="center_horizontal"
+            android:padding="5dp"/>
     </LinearLayout>
 </ScrollView>

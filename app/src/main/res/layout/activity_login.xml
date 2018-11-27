@@ -2,13 +2,14 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/white"
     android:fitsSystemWindows="true">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
+        android:paddingTop="15dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
@@ -16,7 +17,7 @@
             android:id="@+id/logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="15dp"
             android:layout_gravity="center_horizontal" />
 
         <!-- Email Label -->
@@ -61,7 +62,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
-            android:padding="10dp"
             android:layout_weight="2">
             <TextView android:id="@+id/link_forgotpassword"
                 android:layout_width="wrap_content"
@@ -72,7 +72,13 @@
                 android:gravity="center"
                 android:textSize="16dip"/>
         </LinearLayout>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/login_img_small"
+            android:scaleType="center"
+            android:layout_gravity="center_horizontal"
+            android:padding="5dp"/>
 
 
     </LinearLayout>
