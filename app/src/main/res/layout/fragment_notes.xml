@@ -22,7 +22,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/pagetitle"
-            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textSize="30sp"
+            android:textColor="@color/black"
             android:text="Notes"/>
 
     </LinearLayout>
@@ -31,9 +33,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textChooseSection"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:textSize="18sp"
-        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textColor="@color/aluminum"
         android:text="Choose Section"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,8 +65,8 @@
                 android:src="@mipmap/ic_expand_more_grey"/>
         </RelativeLayout>
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_weight="1"
             android:id="@+id/calendar"
             android:layout_gravity="center_vertical"

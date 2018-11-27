@@ -8,10 +8,11 @@
         android:weightSum="3"
         android:padding="5dp">
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:layout_margin="10dp"
+            android:background="@drawable/layout_corners_light_grey"
+           android:padding="8dp"
             android:src="@drawable/girl"/>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -36,6 +37,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@id/modifyButton"
                     android:textSize="18sp"
+                    android:textColor="@color/oil"
                     android:maxLines="2"
                     android:ellipsize="end"
                     android:gravity="center_vertical"/>
@@ -56,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/reason"
                 android:textSize="14sp"
-                android:textColor="@color/aluminum"/>
+                android:textColor="@color/description_color"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

@@ -30,6 +30,7 @@
     <color name="divider_color2">#e2e2e4</color>
 
     <color name="description_color">#a6a6ab</color>
+    <color name="light_grey">#EFEFEF</color>
 
     <!--&lt;!&ndash; Indigo 500 &ndash;&gt;-->
     <!--<color name="primary_500">#3F51B5</color>-->

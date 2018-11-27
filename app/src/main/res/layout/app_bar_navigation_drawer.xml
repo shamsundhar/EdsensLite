@@ -22,8 +22,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="left"
                     android:id="@+id/logo"
-                    android:scaleType="center"
-                    android:src="@drawable/logo"
+                    android:scaleType="fitCenter"
+                    android:padding="10dp"
+                    android:src="@drawable/logo_big"
                     android:contentDescription="@string/app_name" />
 
         </android.support.v7.widget.Toolbar>

@@ -75,7 +75,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         GetUserResponseModel attendanceModel = (GetUserResponseModel) items.get(position);
         if (attendanceModel != null) {
             vh1.getName().setText(attendanceModel.getDisplayName());
-            vh1.getReason().setText("fssadds");
+           // vh1.getReason().setText("fssadds");
             if(attendanceModel.getIsAttended().equals("true")){
                 vh1.getTraits().setText("Attended");
             }

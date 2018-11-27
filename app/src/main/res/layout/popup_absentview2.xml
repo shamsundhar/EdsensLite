@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/layout_corners_white"
     android:minWidth="300dp"
     android:orientation="vertical"
     android:padding="10dp" >
@@ -65,10 +65,11 @@
     </android.support.design.widget.TextInputLayout>
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_save"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
+        android:layout_gravity="center_horizontal"
         android:padding="12dp"
         android:background="@drawable/layout_corners_primary_gradient"
         android:textAllCaps="false"
