@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/light_blue"
-    android:paddingTop="3dp">
+    android:paddingTop="10dp">
 
     <RelativeLayout
         android:id="@+id/llContainer"
@@ -69,6 +69,8 @@
             android:id="@+id/description"
             android:layout_below="@id/upLayout"
             android:textColor="@color/white"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:text="Description"
             android:layout_toRightOf="@id/dateLayout"/>
 
@@ -78,5 +80,5 @@
     android:layout_width="match_parent"
     android:layout_height="1dp"
     android:background="@color/divider_color1"
-    android:layout_marginTop="3dp"/>
+    android:layout_marginTop="10dp"/>
 </LinearLayout>

@@ -11,6 +11,7 @@ android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:id="@+id/logo"
         android:padding="50dp"
         android:src="@drawable/logo_big"/>
 

@@ -7,6 +7,9 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 //import com.google.firebase.messaging.FirebaseMessaging;
@@ -18,13 +21,14 @@ import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
 public class MainActivity extends AppCompatActivity {
-   // private BroadcastReceiver mRegistrationBroadcastReceiver;
+    // private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private ImageView logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        logo = (ImageView)findViewById(R.id.logo);
 //        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
 //            @Override
 //            public void onReceive(Context context, Intent intent) {
@@ -66,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                     }
                 }, 3000);
+        Animation myanim = AnimationUtils.loadAnimation(this,R.anim.mysplashanimation);
+        logo.startAnimation(myanim);
     }
 //    @Override
 //    protected void onResume() {

@@ -22,7 +22,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -33,6 +35,8 @@ import com.school.edsense_lite.attendance.Attendance;
 import com.school.edsense_lite.attendance.AttendanceApi;
 import com.school.edsense_lite.attendance.AttendanceFragment;
 import com.school.edsense_lite.attendance.AttendanceRecyclerViewAdapter;
+import com.school.edsense_lite.attendance.GetTraitsRequest;
+import com.school.edsense_lite.attendance.GetTraitsResponse;
 import com.school.edsense_lite.attendance.GetUserRequest;
 import com.school.edsense_lite.attendance.GetUserResponse;
 import com.school.edsense_lite.attendance.GetUserResponseModel;
@@ -40,6 +44,9 @@ import com.school.edsense_lite.attendance.SaveAttendanceRequest;
 import com.school.edsense_lite.attendance.SaveAttendanceResponse;
 import com.school.edsense_lite.attendance.SectionResponse;
 import com.school.edsense_lite.attendance.SectionsListAdapter;
+import com.school.edsense_lite.attendance.SeverityListAdapter;
+import com.school.edsense_lite.attendance.SeverityTypeResponse;
+import com.school.edsense_lite.attendance.TraitsListAdapter;
 import com.school.edsense_lite.fragment.DatePickerFragment;
 import com.school.edsense_lite.messages.MessagesFragment;
 import com.school.edsense_lite.model.SectionResponseModel;
@@ -83,11 +90,20 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     TextView chooseSection;
     @Inject
     AttendanceApi attendanceApi;
+    TextView severityTv;
+    TextView traitsTv;
     List<SectionResponseModel> sectionResponseList;
     ArrayList<Object> userResponseList;
     SectionsListAdapter sectionsListAdapter;
+    SeverityListAdapter severityListAdapter;
+    TraitsListAdapter traitsListAdapter;
+
     private String selectedDate;
     private String selectedSectionId;
+    private int selectedSeverityId;
+    private int selectedTraitsId;
+    List<SeverityTypeResponse.Response> severityTypeList;
+    List<GetTraitsResponse.Response> traitsList;
 
     @OnClick(R.id.sectionLayout)
     public void ClickOnSectionLayout(){
@@ -132,8 +148,8 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
             }
         });
 
-    //    notesRecyclerViewAdapter.setItems(getNotesList());
-     //   notesRecyclerViewAdapter.notifyDataSetChanged();
+        //    notesRecyclerViewAdapter.setItems(getNotesList());
+        //   notesRecyclerViewAdapter.notifyDataSetChanged();
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                 R.style.AppTheme_Dark_Dialog);
@@ -199,6 +215,90 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                                 }
                             }
                         });
+
+                attendanceApi.getSeverityTypes(bearerToken)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<SeverityTypeResponse>() {
+                            @Override
+                            public void onError(Throwable e) {
+                                progressDialog.dismiss();
+                                if (e instanceof StreamResetException) {
+                                    //login again
+                                    e.printStackTrace();
+                                    relogin();
+                                }
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                System.out.println("complete called");
+                            }
+
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                System.out.println("onsubscribe called");
+                            }
+
+                            @Override
+                            public void onNext(SeverityTypeResponse severityTypeResponse) {
+                                progressDialog.dismiss();
+                                if (severityTypeResponse.getIsSuccess().equals(true)) {
+                                    severityTypeList = severityTypeResponse.getResponse();
+
+                                } else if (!severityTypeResponse.getErrorCode().equals(200)) {
+                                    //display error.
+                                    new CustomAlertDialog().showAlert1(
+                                            getActivity(),
+                                            R.string.text_failed,
+                                            severityTypeResponse.getErrorMessage(),
+                                            null);
+                                }
+                            }
+                        });
+                GetTraitsRequest request = new GetTraitsRequest();
+                GetTraitsRequest.Value value = request.new Value();
+                request.setValue(value);
+                attendanceApi.getTraits(bearerToken, request)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<GetTraitsResponse>() {
+                            @Override
+                            public void onError(Throwable e) {
+                                progressDialog.dismiss();
+                                if (e instanceof StreamResetException) {
+                                    //login again
+                                    e.printStackTrace();
+                                    relogin();
+                                }
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                System.out.println("complete called");
+                            }
+
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                System.out.println("onsubscribe called");
+                            }
+
+                            @Override
+                            public void onNext(GetTraitsResponse getTraitsResponse) {
+                                progressDialog.dismiss();
+                                if (getTraitsResponse.getIsSuccess().equals(true)) {
+                                    traitsList = getTraitsResponse.getResponse();
+
+                                } else if (!getTraitsResponse.getErrorCode().equals(200)) {
+                                    //display error.
+                                    new CustomAlertDialog().showAlert1(
+                                            getActivity(),
+                                            R.string.text_failed,
+                                            getTraitsResponse.getErrorMessage(),
+                                            null);
+                                }
+                            }
+                        });
             }
         }else{
             sectionResponseList = MessagesFragment.mEdsenseDatabase.sectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
@@ -224,21 +324,40 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         wlp.gravity = Gravity.CENTER;
         window.setAttributes(wlp);
-        builder.setContentView(R.layout.popup_absentview);
+        builder.setContentView(R.layout.popup_notesview);
 
-        final CheckBox absent = (CheckBox)builder.findViewById(R.id.absentCheckBox);
-        final EditText lateInEditText = (EditText) builder.findViewById(R.id.input_latein);
-        final EditText earlyOutEditText = (EditText)builder.findViewById(R.id.input_earlyout);
-        final EditText reasonEditText = (EditText)builder.findViewById(R.id.input_reason);
+        final RelativeLayout severityLayout = (RelativeLayout) builder.findViewById(R.id.severityLayout);
+        final RelativeLayout traitsLayout = (RelativeLayout)builder.findViewById(R.id.traitsLayout);
+        severityTv = (TextView)builder.findViewById(R.id.severityTV);
+        traitsTv = (TextView)builder.findViewById(R.id.traitsTV);
         Button save = (Button)builder.findViewById(R.id.btn_save);
+        ImageView closeImage = (ImageView)builder.findViewById(R.id.close);
+        final EditText reasonEditText = (EditText)builder.findViewById(R.id.input_reason);
+        reasonEditText.clearFocus();
+        severityLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displaySeverityPopup();
+            }
+        });
+        traitsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayTraitsPopup();
+            }
+        });
+        closeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.dismiss();
+            }
+        });
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String lateIn = lateInEditText.getText().toString().trim();
-                String earlyOut = earlyOutEditText.getText().toString().trim();
-                String reason = reasonEditText.getText().toString().trim();
-                Boolean isAbsent = absent.isChecked();
 
+                String reason = reasonEditText.getText().toString().trim();
+                builder.dismiss();
 //                final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
 //                        R.style.AppTheme_Dark_Dialog);
 //                progressDialog.setIndeterminate(true);
@@ -300,13 +419,74 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 //                }
             }
         });
-        builder.setCanceledOnTouchOutside(true);
+        builder.setCanceledOnTouchOutside(false);
         builder.show();
     }
     private void setCurrentDate(){
         selectedDate = DateTimeUtils.getCurrentDateInString(DATE_FORMAT2);
         String date = DateTimeUtils.getCurrentDateInString(DATE_FORMAT1);
         dateTV.setText(date);
+    }
+    private void displaySeverityPopup(){
+        final Dialog builder = new Dialog(getActivity());
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Window window = builder.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        wlp.gravity = Gravity.CENTER;
+        window.setAttributes(wlp);
+        builder.setContentView(R.layout.popup_listview);
+
+        final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
+        listView.setTextFilterEnabled(true);
+        if(severityTypeList != null) {
+            severityListAdapter = new SeverityListAdapter(severityTypeList, getActivity().getBaseContext());
+            listView.setAdapter(severityListAdapter);
+        }
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                builder.dismiss();
+                SeverityTypeResponse.Response dataModel = severityTypeList.get(position);
+                severityTv.setText(dataModel.getType());
+                selectedSeverityId = dataModel.getId();
+            }
+        });
+        builder.setCanceledOnTouchOutside(true);
+        builder.show();
+    }
+    private void displayTraitsPopup(){
+        final Dialog builder = new Dialog(getActivity());
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Window window = builder.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        wlp.gravity = Gravity.CENTER;
+        window.setAttributes(wlp);
+        builder.setContentView(R.layout.popup_listview);
+
+        final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
+        listView.setTextFilterEnabled(true);
+        if(traitsList != null) {
+            traitsListAdapter = new TraitsListAdapter(traitsList, getActivity().getBaseContext());
+            listView.setAdapter(traitsListAdapter);
+        }
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                builder.dismiss();
+                GetTraitsResponse.Response dataModel = traitsList.get(position);
+                traitsTv.setText(dataModel.getTagName());
+                selectedTraitsId = dataModel.getTagId();
+
+            }
+        });
+        builder.setCanceledOnTouchOutside(true);
+        builder.show();
     }
     private void displaySectionsPopup()
     {

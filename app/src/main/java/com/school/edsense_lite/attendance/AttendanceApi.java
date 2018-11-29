@@ -24,4 +24,15 @@ public interface AttendanceApi {
     @POST("Academic/UsersSaveAttendance")
     @Headers({"Content-Type: application/json"})
     Observable<SaveAttendanceResponse> saveUserAttendance(@Header("Authorization") String token, @Body SaveAttendanceRequest saveAttendanceRequest);
+
+    //  https://apitst.edsense.co.in/api/Academic/GetSeverityTypes
+    @GET("Academic/GetSeverityTypes")
+    @Headers({"Content-Type: application/json"})
+    Observable<SeverityTypeResponse> getSeverityTypes(@Header("Authorization") String token);
+
+    // https://apitst.edsense.co.in/api/Portal/SearchTagsByCategoryId
+    @POST("Portal/SearchTagsByCategoryId")
+    @Headers({"Content-Type: application/json"})
+    Observable<GetTraitsResponse> getTraits(@Header("Authorization") String token, @Body GetTraitsRequest getUserRequest);
+
 }

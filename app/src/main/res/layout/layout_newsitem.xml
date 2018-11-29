@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:weightSum="3"
-    android:padding="5dp">
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp">
     <LinearLayout
         android:layout_width="80dp"
         android:layout_height="wrap_content"
@@ -31,9 +32,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="2"
-        android:layout_marginLeft="5dp"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/imageView">
+        android:layout_marginLeft="5dp">
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
@@ -47,12 +46,10 @@
             android:id="@+id/subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
             android:textSize="16sp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="sub title"
-            android:layout_centerVertical="true"
+            android:minLines="2"
             android:textColor="@color/description_color"
             android:gravity="center_vertical" />
         <View android:layout_width="match_parent"

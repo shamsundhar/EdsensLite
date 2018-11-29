@@ -264,7 +264,7 @@ public class LoginActivity extends BaseActivity {
             ProfileResponse.Tag tag = tagList.get(i);
             if(tag.getCategoryName().equals(SECTION_STRING)){
                 if(boardData.trim().length() > 0){
-                    boardData = boardData + "," + tag.getName();
+                    boardData = boardData + ", " + tag.getName();
                 }
                 else{
                     boardData = tag.getName();
@@ -280,7 +280,7 @@ public class LoginActivity extends BaseActivity {
             ProfileResponse.Tag tag = tagList.get(i);
             if(tag.getCategoryName().equals(SUBJECT_STRING)){
                 if(subjectString.trim().length() > 0){
-                    subjectString = subjectString + "," + tag.getName();
+                    subjectString = subjectString + ", " + tag.getName();
                 }
                 else{
                     subjectString = tag.getName();

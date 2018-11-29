@@ -44,11 +44,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:visibility="gone"
+        android:focusable="false"
         android:id="@+id/input_timelayout"
         android:layout_marginBottom="8dp">
         <EditText android:id="@+id/input_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="false"
             android:textIsSelectable="true"
             android:hint="Select Time" />
     </android.support.design.widget.TextInputLayout>
@@ -70,7 +72,8 @@
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
         android:layout_gravity="center_horizontal"
-        android:padding="12dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
         android:background="@drawable/layout_corners_primary_gradient"
         android:textAllCaps="false"
         android:textColor="@color/white"

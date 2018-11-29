@@ -82,7 +82,7 @@ public class NavigationDrawerActivity extends BaseActivity
         String subjectData = preferenceHelper.getString(NavigationDrawerActivity.this, KEY_PREF_SUBJECT_DATA, "");
         profileNameTV.setText(displayName);
         profileClassTV.setText(boardData);
-        profileSubjectsTV.setText("Subject : "+subjectData);
+        profileSubjectsTV.setText("Subject: "+subjectData);
         profileClassTV.setText(boardData);
         String userAvatarUrl = preferenceHelper.getString(NavigationDrawerActivity.this, KEY_PREF_AVATAR_URL, "");
         if(!userAvatarUrl.isEmpty()) {

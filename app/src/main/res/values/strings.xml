@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Edsense - Lite</string>
+    <string name="app_name">EdsenseLite</string>
 
     <string name="crash_toast_text">Oops Crashe Occurred</string>
 
