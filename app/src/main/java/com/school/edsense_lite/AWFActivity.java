@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_COMPOSE_MESSAGE;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_EVENTS;
+import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_MESSAGE_DETAILS;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
 
 /*
@@ -54,7 +55,10 @@ public class AWFActivity extends BaseActivity {
                     displayEventsFragment();
                     break;
                 case BUNDLE_VALUE_COMPOSE_MESSAGE :
-                    displayComposeMessageFragment();
+                    displayComposeMessageFragment(bundle);
+                    break;
+                case BUNDLE_VALUE_MESSAGE_DETAILS:
+                    displayMessageDetailsFragment(bundle);
                     break;
             }
         }
@@ -67,19 +71,28 @@ public class AWFActivity extends BaseActivity {
                 .replace(R.id.container,  NewsFragment.newInstance(), NEWS_FRAGMENT_TAG)
                 .commit();
     }
-    public void displayComposeMessageFragment(){
+    public void displayComposeMessageFragment(Bundle bundle){
         setTitle(null);
+
+        NewMessageFragment nMF = NewMessageFragment.newInstance();
+        if(bundle != null){
+            nMF.setArguments(bundle);
+        }
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container,  NewMessageFragment.newInstance(), COMPOSE_MESSAGE_FRAGMENT_TAG)
+                .replace(R.id.container,  nMF, COMPOSE_MESSAGE_FRAGMENT_TAG)
                 .commit();
     }
 
-    public void displayMessageDetailsFragment(){
+    public void displayMessageDetailsFragment(Bundle bundle){
         setTitle(null);
+        MessageDetailsFragment nMF = MessageDetailsFragment.newInstance();
+        if(bundle != null){
+            nMF.setArguments(bundle);
+        }
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, MessageDetailsFragment.newInstance(), MESSAGE_DETAILS_FRAGMENT_TAG)
+                .replace(R.id.container, nMF, MESSAGE_DETAILS_FRAGMENT_TAG)
                 .commit();
     }
     public void displayEventsFragment(){
