@@ -43,6 +43,8 @@ import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMEN
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_COMPOSE_MESSAGE;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_MESSAGE_DETAILS;
 import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
+import static com.school.edsense_lite.utils.Constants.KEY_MESSAGE_ID;
+import static com.school.edsense_lite.utils.Constants.KEY_MESSAGE_MAP_ID;
 
 public class MessagesFragment extends BaseFragment {
     @BindView(R.id.messagesRecyclerview)
@@ -94,9 +96,16 @@ public class MessagesFragment extends BaseFragment {
         messagesRecyclerViewAdapter.setOnItemClickListener(new MessageItemClickListener() {
             @Override
             public void onMessageItemClicked(int position) {
-//                Intent in = new Intent(getActivity(), AWFActivity.class);
-//                in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_MESSAGE_DETAILS);
-//                getActivity().startActivity(in);
+                
+                Intent in = new Intent(getActivity(), AWFActivity.class);
+                Bundle b = new Bundle();
+                if(messagesResponseList != null && messagesResponseList.size()>0){
+                    b.putString(KEY_MESSAGE_ID,""+messagesResponseList.get(position).getId());
+                    b.putString(KEY_MESSAGE_MAP_ID,""+messagesResponseList.get(position).getMapId());
+                }
+                in.putExtras(b);
+                in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_MESSAGE_DETAILS);
+                getActivity().startActivity(in);
             }
         });
 

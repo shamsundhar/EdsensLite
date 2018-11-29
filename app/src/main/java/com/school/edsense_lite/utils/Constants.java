@@ -20,6 +20,10 @@ public class Constants {
     public static final String BUNDLE_VALUE_COMPOSE_MESSAGE = "COMPOSE_MESSAGE";
     public static final String BUNDLE_VALUE_MESSAGE_DETAILS = "DISPLAY_MESSAGE";
 
+    public static final String KEY_MESSAGE_ID = "Message_Id";
+    public static final String KEY_MESSAGE_MAP_ID = "Message_Map_Id";
+
+
     public static final String PREF_KEY_SUBSCRIPTION_ID = "KEY_SUBSCRIPTION_ID";
     public static final String PREF_KEY_SUBSCRIPTION_PRIMARY_URL = "KEY_SUBSCRIPTION_PRIMARY_URL";
     public static final String PREF_KEY_LOGO_URL = "KEY_LOGO_URL";

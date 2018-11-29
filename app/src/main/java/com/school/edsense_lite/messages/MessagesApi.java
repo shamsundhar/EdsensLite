@@ -14,7 +14,7 @@ public interface MessagesApi {
 
     @POST("NC/GetNotificationDetails")
     @Headers({"Content-Type: application/json"})
-    Observable<MessagesResponse> fetchNotificationDetails(@Header("Authorization") String token, @Body String messageId);
+    Observable<MessageDetailsResponse> fetchNotificationDetails(@Header("Authorization") String token, @Body MessageDetailsRequest messageDetailsRequest);
 
 
     @POST("NC/SaveNotification")
