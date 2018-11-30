@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical">
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:text="Sample message"
+    android:id="@+id/txt_msg_title"
+    android:textStyle="bold"
+    android:textColor="@color/black"
+    android:fontFamily="@font/bariol_bold_webfont"
+    android:textSize="30sp"/>
+    <RelativeLayout
+        android:id="@+id/llContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_launcher"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/imageView">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txt_sender_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/framd"
+                    android:textColor="@color/colorPrimary"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:layout_centerVertical="true"
+                    android:text="sender name" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/txt_sender_mail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_sender_name"
+                android:textSize="14sp"
+                android:text="sender mail"
+                android:fontFamily="@font/framd"
+                android:textColor="@color/aluminum"
+                android:lines="2"
+                android:ellipsize="end"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_msg_body"
+        android:fontFamily="@font/framd"
+        android:textSize="14sp"/>
+
+</ScrollView>
+
+
+</LinearLayout>
