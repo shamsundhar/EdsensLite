@@ -19,6 +19,7 @@ public class DatePickerFragment extends DialogFragment {
     }
 
     private int year, month, day;
+    private long maxdate;
 
     @Override
     public void setArguments(Bundle args) {
@@ -26,10 +27,15 @@ public class DatePickerFragment extends DialogFragment {
         year = args.getInt("year");
         month = args.getInt("month");
         day = args.getInt("day");
+        maxdate = args.getLong("maxdate", 0);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new DatePickerDialog(getActivity(), dateSet, year, month, day);
+        DatePickerDialog dialog =  new DatePickerDialog(getActivity(), dateSet, year, month, day);
+        if(maxdate != 0){
+            dialog.getDatePicker().setMaxDate(maxdate);
+        }
+        return dialog;
     }
 }

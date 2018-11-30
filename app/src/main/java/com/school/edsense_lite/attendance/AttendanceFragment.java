@@ -522,6 +522,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         args.putInt("year", calender.get(Calendar.YEAR));
         args.putInt("month", calender.get(Calendar.MONTH));
         args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        args.putLong("maxdate", calender.getTimeInMillis());
         date.setListener(AttendanceFragment.this);
         date.setArguments(args);
         /**

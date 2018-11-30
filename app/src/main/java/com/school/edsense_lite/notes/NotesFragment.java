@@ -358,30 +358,19 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 
                 String reason = reasonEditText.getText().toString().trim();
                 builder.dismiss();
-//                final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
-//                        R.style.AppTheme_Dark_Dialog);
-//                progressDialog.setIndeterminate(true);
-//                progressDialog.setMessage(getString(R.string.text_please_wait));
-//                progressDialog.show();
-//                PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-//                String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
-//                if(!bearerToken.isEmpty()) {
-//                    SaveAttendanceRequest attendanceRequest = new SaveAttendanceRequest();
-//                    ArrayList<SaveAttendanceRequest.User> usersList = new ArrayList<SaveAttendanceRequest.User>();
-//                    SaveAttendanceRequest.User user = attendanceRequest.new User();
-//                    user.setDisplayName("Annapu Reddy Pradham Reddy");
-//                    user.setIsAttended(false);
-//                    user.setIsEarlyOut(false);
-//                    user.setIsLateIn(false);
-//                    user.setStudentUserId("14B6C8E7-FE8E-41D4-BC8B-824DA61F11E8");
-//                    user.setUserAttendanceId(1497);
-//                    user.setTotalCount(25);
-//                    user.setDate("2018-10-03T06:54:00.891Z");
-//                    usersList.add(user);
-//                    Gson gson = new Gson();
+                final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                        R.style.AppTheme_Dark_Dialog);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage(getString(R.string.text_please_wait));
+                progressDialog.show();
+                PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+                String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
+                if(!bearerToken.isEmpty()) {
+                    SaveNotesRequest saveNotesRequest = new SaveNotesRequest();
 //
-//                    attendanceRequest.setUsers(gson.toJson(usersList).toString());
-//                    attendanceApi.saveUserAttendance(bearerToken, attendanceRequest)
+//
+//               //     attendanceRequest.setUsers(gson.toJson(usersList).toString());
+//                    attendanceApi.saveUserAttendance(bearerToken, saveNotesRequest)
 //                            .subscribeOn(Schedulers.io())
 //                            .observeOn(AndroidSchedulers.mainThread())
 //                            .subscribe(new Observer<SaveAttendanceResponse>() {
@@ -416,7 +405,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 //                                    }
 //                                }
 //                            });
-//                }
+                }
             }
         });
         builder.setCanceledOnTouchOutside(false);
