@@ -57,6 +57,8 @@ import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -75,6 +77,7 @@ import okhttp3.internal.http2.StreamResetException;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT3;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT4;
 import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 
 public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
@@ -328,6 +331,8 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 
         final RelativeLayout severityLayout = (RelativeLayout) builder.findViewById(R.id.severityLayout);
         final RelativeLayout traitsLayout = (RelativeLayout)builder.findViewById(R.id.traitsLayout);
+        final TextView dateTV = (TextView)builder.findViewById(R.id.date);
+        dateTV.setText(DateTimeUtils.getCurrentDateInString(DATE_FORMAT4));
         severityTv = (TextView)builder.findViewById(R.id.severityTV);
         traitsTv = (TextView)builder.findViewById(R.id.traitsTV);
         Button save = (Button)builder.findViewById(R.id.btn_save);
