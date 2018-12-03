@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 //apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -77,15 +78,16 @@ dependencies {
     //Room database configuration
     def room_version = "2.1.0-alpha02"
 
-   // implementation "androidx.room:room-runtime:$room_version"
-   // annotationProcessor "androidx.room:room-compiler:$room_version"
+    // implementation "androidx.room:room-runtime:$room_version"
+    // annotationProcessor "androidx.room:room-compiler:$room_version"
 //    implementation "androidx.core:core:2.0.0"
 
     implementation "android.arch.persistence.room:runtime:$roomDBVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$roomDBVersion"
 
-  //  implementation 'com.google.firebase:firebase-messaging:9.6.0'
+    implementation 'com.google.firebase:firebase-messaging:10.2.1'
 
 
 
+//    implementation 'com.google.firebase:firebase-messaging:17.0.0:15.0.0'
 }
