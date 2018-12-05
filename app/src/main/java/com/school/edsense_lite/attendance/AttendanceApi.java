@@ -1,5 +1,6 @@
 package com.school.edsense_lite.attendance;
 
+import com.school.edsense_lite.notes.GetUserNotesResponse;
 import com.school.edsense_lite.today.AssignmentResponse;
 
 import io.reactivex.Observable;
@@ -34,5 +35,9 @@ public interface AttendanceApi {
     @POST("Portal/SearchTagsByCategoryId")
     @Headers({"Content-Type: application/json"})
     Observable<GetTraitsResponse> getTraits(@Header("Authorization") String token, @Body GetTraitsRequest getUserRequest);
+
+    @POST("Academic/GetNotes")
+    @Headers({"Content-Type: application/json"})
+    Observable<GetUserNotesResponse> getNotes(@Header("Authorization") String token, @Body GetUserRequest getUserRequest);
 
 }

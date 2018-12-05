@@ -1,5 +1,6 @@
 package com.school.edsense_lite;
 
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,18 +19,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.school.edsense_lite.attendance.AttendanceFragment;
+import com.school.edsense_lite.firebase.FCMApi;
+import com.school.edsense_lite.firebase.FcmUnRegRequest;
+import com.school.edsense_lite.firebase.FcmUnRegResponse;
 import com.school.edsense_lite.login.LoginActivity;
+import com.school.edsense_lite.login.LoginResponse;
 import com.school.edsense_lite.messages.MessagesFragment;
 import com.school.edsense_lite.notes.NotesFragment;
 import com.school.edsense_lite.recomendations.RecomendationFragment;
 import com.school.edsense_lite.today.TodayFragment;
 import com.school.edsense_lite.utils.CircleTransform;
+import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_AVATAR_URL;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_BOARD_DATA;
@@ -50,9 +62,13 @@ public class NavigationDrawerActivity extends BaseActivity
     private static final String RECOMENDATION_FRAGMENT_TAG = "RECOMENDATION_FRAGMENT";
     private static final String MESSAGES_FRAGMENT_TAG = "MESSAGES_FRAGMENT";
 
+    @Inject
+    FCMApi fcmApi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityComponent().inject(this);
         setContentView(R.layout.activity_navigation_drawer);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -230,6 +246,56 @@ public class NavigationDrawerActivity extends BaseActivity
         return true;
     }
     private void doLogout(){
+        final ProgressDialog progressDialog = new ProgressDialog(NavigationDrawerActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.text_authenticating));
+        progressDialog.show();
+
+        //initiate gcm un registration call
+        FcmUnRegRequest fcmUnRegRequest = new FcmUnRegRequest();
+        FcmUnRegRequest.Value value = fcmUnRegRequest.new Value();
+        value.setPushChannel("");
+        fcmUnRegRequest.setValue(value);
+        fcmApi.fcmUnRegistration(fcmUnRegRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<FcmUnRegResponse>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        progressDialog.dismiss();
+                        // onLoginFailed();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(FcmUnRegResponse fcmUnRegResponse){
+                        progressDialog.dismiss();
+                        navigateToMainActivity();
+//                        if(fcmUnRegResponse.getIsSuccess().equals("true")) {
+//                           // onLoginSuccess(username, password, fcmUnRegResponse);
+//                        }
+//                        else if(!fcmUnRegResponse.getErrorCode().equals("200")){
+//                            //display error.
+//                            new CustomAlertDialog().showAlert1(
+//                                    NavigationDrawerActivity.this,
+//                                    R.string.text_failed,
+//                                    fcmUnRegResponse.getErrorMessage(),
+//                                    null);
+//                        }
+                    }
+                });
+    }
+    private void navigateToMainActivity(){
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         preferenceHelper.clear(NavigationDrawerActivity.this);
         Intent in = new Intent(NavigationDrawerActivity.this, MainActivity.class);

@@ -16,6 +16,9 @@ import com.school.edsense_lite.BaseActivity;
 import com.school.edsense_lite.MainActivity;
 import com.school.edsense_lite.NavigationDrawerActivity;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.firebase.FCMApi;
+import com.school.edsense_lite.firebase.FcmRegRequest;
+import com.school.edsense_lite.firebase.FcmRegResponse;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
@@ -65,6 +68,8 @@ public class LoginActivity extends BaseActivity {
 
     @Inject
     LoginApi loginApi;
+    @Inject
+    FCMApi fcmApi;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -192,7 +197,7 @@ public class LoginActivity extends BaseActivity {
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
                         onLoginFailed();
-                      //  displayNavigationActivity();
+                        //  displayNavigationActivity();
                     }
 
                     @Override
@@ -211,6 +216,8 @@ public class LoginActivity extends BaseActivity {
                         _loginButton.setEnabled(true);
                         if(profileResponse.getIsSuccess().equals(true)) {
                             processProfileData(profileResponse);
+                            //initiate gcm registration call
+                            initiateFcmRegistration();
                         }
                         else if(!profileResponse.getErrorCode().equals(200)){
                             //display error.
@@ -220,6 +227,54 @@ public class LoginActivity extends BaseActivity {
                                     profileResponse.getErrorMessage(),
                                     null);
                         }
+
+                    }
+                });
+    }
+    private void initiateFcmRegistration(){
+        String bearerToken = preferenceHelper.getString(LoginActivity.this, PREF_KEY_BEARER_TOKEN, "");
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.text_registering_device));
+        progressDialog.show();
+        FcmRegRequest fcmRegRequest = new FcmRegRequest();
+        fcmApi.fcmRegistration(bearerToken, fcmRegRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<FcmRegResponse>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        progressDialog.dismiss();
+                        onLoginFailed();
+                        displayNavigationActivity();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(FcmRegResponse fcmRegResponse){
+                        progressDialog.dismiss();
+                        displayNavigationActivity();
+//                        if(fcmRegResponse.getIsSuccess().equals(true)) {
+//
+//                        }
+//                        else if(!fcmRegResponse.getErrorCode().equals(200)){
+//                            //display error.
+//                            new CustomAlertDialog().showAlert1(
+//                                    LoginActivity.this,
+//                                    R.string.text_failed,
+//                                    fcmRegResponse.getErrorMessage(),
+//                                    null);
+//                        }
 
                     }
                 });
@@ -239,7 +294,6 @@ public class LoginActivity extends BaseActivity {
         List<ProfileResponse.Tag> tagList = response.getTags();
         setBoardData(tagList);
         setSubjectsData(tagList);
-        displayNavigationActivity();
     }
     private void setUserRoleData(String userRoleData){
         if(userRoleData.contains(TEACHER_STRING)){
@@ -271,7 +325,7 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         }
-         preferenceHelper.setString(LoginActivity.this, KEY_PREF_BOARD_DATA, boardData);
+        preferenceHelper.setString(LoginActivity.this, KEY_PREF_BOARD_DATA, boardData);
 
     }
     private void setSubjectsData(List<ProfileResponse.Tag> tagList){

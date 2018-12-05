@@ -5,6 +5,7 @@
 
     <string name="text_please_wait">Please wait...</string>
     <string name="text_retrieving_details">Retrieving your details</string>
+    <string name="text_registering_device">Registering your device</string>
     <string name="text_authenticating">Authenticating...</string>
     <string name="text_reconnecting">Reconnecting, please wait...</string>
 

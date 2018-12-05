@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.school.edsense_lite.attendance.AttendanceApi;
+import com.school.edsense_lite.firebase.FCMApi;
 import com.school.edsense_lite.injection.modules.AppModule;
 import com.school.edsense_lite.injection.modules.DataModule;
 //import com.school.edsense_lite.injection.modules.NetModule;
@@ -32,4 +33,5 @@ public interface AppComponent {
     AttendanceApi attendanceApi();
     SubsciptionApi subscriptionApi();
     MessagesApi messagesApi();
+    FCMApi fcmApi();
 }
