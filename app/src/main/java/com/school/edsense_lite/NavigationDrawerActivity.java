@@ -48,6 +48,7 @@ import static com.school.edsense_lite.utils.Constants.KEY_PREF_BOARD_DATA;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_DISPLAY_NAME;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_SUBJECT_DATA;
 import static com.school.edsense_lite.utils.Constants.PREF_KEY_BEARER_TOKEN;
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_FCM_TOKEN;
 
 public class NavigationDrawerActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -250,7 +251,7 @@ public class NavigationDrawerActivity extends BaseActivity
     }
     private void doLogout(){
         String bearerToken = preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_BEARER_TOKEN, "");
-
+        String fcmToken = preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_FCM_TOKEN, "");
         final ProgressDialog progressDialog = new ProgressDialog(NavigationDrawerActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -260,7 +261,7 @@ public class NavigationDrawerActivity extends BaseActivity
         //initiate gcm un registration call
         FcmUnRegRequest fcmUnRegRequest = new FcmUnRegRequest();
         FcmUnRegRequest.Value value = fcmUnRegRequest.new Value();
-        value.setPushChannel("shyamtestpush");
+        value.setPushChannel(fcmToken);
         fcmUnRegRequest.setValue(value);
         fcmApi.fcmUnRegistration(bearerToken, fcmUnRegRequest)
                 .subscribeOn(Schedulers.io())
@@ -303,7 +304,10 @@ public class NavigationDrawerActivity extends BaseActivity
     }
     private void navigateToMainActivity(){
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String fcmToken = preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_FCM_TOKEN, "");
         preferenceHelper.clear(NavigationDrawerActivity.this);
+        //clear will clear all data, so after clearing we are setting fcm token again in preferences.
+        preferenceHelper.setString(NavigationDrawerActivity.this, PREF_KEY_FCM_TOKEN, fcmToken);
         Intent in = new Intent(NavigationDrawerActivity.this, MainActivity.class);
         in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(in);

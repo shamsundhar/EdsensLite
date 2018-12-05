@@ -6,15 +6,18 @@ import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.school.edsense_lite.utils.PreferenceHelper;
+
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_FCM_TOKEN;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
-
+    PreferenceHelper preferenceHelper;
     @Override
     public void onTokenRefresh() {
         super.onTokenRefresh();
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-
+        preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         // Saving reg id to shared preferences
         storeRegIdInPref(refreshedToken);
 
@@ -37,6 +40,9 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 //        SharedPreferences.Editor editor = pref.edit();
 //        editor.putString("regId", token);
 //        editor.commit();
+
+        preferenceHelper.setString(getApplicationContext(), PREF_KEY_FCM_TOKEN, token);
+
     }
 
 }

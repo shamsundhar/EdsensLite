@@ -54,4 +54,6 @@ public class Constants {
     public static final String KEY_PREF_AVATAR_URL = "KEY_AVATAR_URL";
     public static final String KEY_PREF_BOARD_DATA = "KEY_BOARD_DATA";
     public static final String KEY_PREF_SUBJECT_DATA = "KEY_SUBJECT_DATA";
+
+    public static final String PREF_KEY_FCM_TOKEN = "KEY_FCM_TOKEN";
 }

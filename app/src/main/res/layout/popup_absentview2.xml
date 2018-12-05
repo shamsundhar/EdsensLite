@@ -74,6 +74,7 @@
         android:layout_gravity="center_horizontal"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
+        android:textSize="18sp"
         android:background="@drawable/layout_corners_primary_gradient"
         android:textAllCaps="false"
         android:textColor="@color/white"

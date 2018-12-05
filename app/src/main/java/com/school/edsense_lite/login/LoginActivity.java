@@ -44,6 +44,7 @@ import static com.school.edsense_lite.utils.Constants.KEY_PREF_SUBJECT_DATA;
 import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_STUDENT;
 import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_TEACHER;
 import static com.school.edsense_lite.utils.Constants.PREF_KEY_BEARER_TOKEN;
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_FCM_TOKEN;
 import static com.school.edsense_lite.utils.Constants.SECTION_STRING;
 import static com.school.edsense_lite.utils.Constants.SUBJECT_STRING;
 import static com.school.edsense_lite.utils.Constants.TEACHER_STRING;
@@ -197,7 +198,6 @@ public class LoginActivity extends BaseActivity {
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
                         onLoginFailed();
-                        //  displayNavigationActivity();
                     }
 
                     @Override
@@ -233,14 +233,15 @@ public class LoginActivity extends BaseActivity {
     }
     private void initiateFcmRegistration(){
         String bearerToken = preferenceHelper.getString(LoginActivity.this, PREF_KEY_BEARER_TOKEN, "");
+        String fcmToken = preferenceHelper.getString(LoginActivity.this, PREF_KEY_FCM_TOKEN, "");
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.text_registering_device));
         progressDialog.show();
         FcmRegRequest fcmRegRequest = new FcmRegRequest();
-        fcmRegRequest.setPlatform("Android");
-        fcmRegRequest.setPushChannel("shyamtestpush");
+        fcmRegRequest.setPlatform("gcm");
+        fcmRegRequest.setPushChannel(fcmToken);
         fcmApi.fcmRegistration(bearerToken, fcmRegRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -249,7 +250,6 @@ public class LoginActivity extends BaseActivity {
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
                         onLoginFailed();
-                        displayNavigationActivity();
                     }
 
                     @Override
@@ -265,18 +265,17 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onNext(FcmRegResponse fcmRegResponse){
                         progressDialog.dismiss();
-                        displayNavigationActivity();
-//                        if(fcmRegResponse.getIsSuccess().equals(true)) {
-//
-//                        }
-//                        else if(!fcmRegResponse.getErrorCode().equals(200)){
-//                            //display error.
-//                            new CustomAlertDialog().showAlert1(
-//                                    LoginActivity.this,
-//                                    R.string.text_failed,
-//                                    fcmRegResponse.getErrorMessage(),
-//                                    null);
-//                        }
+                        if(fcmRegResponse.getIsSuccess().equals(true)) {
+                            displayNavigationActivity();
+                        }
+                        else if(!fcmRegResponse.getErrorCode().equals(200)){
+                            //display error.
+                            new CustomAlertDialog().showAlert1(
+                                    LoginActivity.this,
+                                    R.string.text_failed,
+                                    fcmRegResponse.getErrorMessage(),
+                                    null);
+                        }
 
                     }
                 });
