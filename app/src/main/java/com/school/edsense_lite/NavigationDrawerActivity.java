@@ -47,6 +47,7 @@ import static com.school.edsense_lite.utils.Constants.KEY_PREF_AVATAR_URL;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_BOARD_DATA;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_DISPLAY_NAME;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_SUBJECT_DATA;
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_BEARER_TOKEN;
 
 public class NavigationDrawerActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -54,6 +55,7 @@ public class NavigationDrawerActivity extends BaseActivity
     TextView profileNameTV;
     TextView profileClassTV;
     TextView profileSubjectsTV;
+    PreferenceHelper preferenceHelper;
 
     String market_uri = "https://play.google.com/store/apps/details?id=";
     private static final String TODAY_FRAGMENT_TAG = "TODAY_FRAGMENT";
@@ -69,6 +71,7 @@ public class NavigationDrawerActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityComponent().inject(this);
+        preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         setContentView(R.layout.activity_navigation_drawer);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -246,6 +249,8 @@ public class NavigationDrawerActivity extends BaseActivity
         return true;
     }
     private void doLogout(){
+        String bearerToken = preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_BEARER_TOKEN, "");
+
         final ProgressDialog progressDialog = new ProgressDialog(NavigationDrawerActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -255,9 +260,9 @@ public class NavigationDrawerActivity extends BaseActivity
         //initiate gcm un registration call
         FcmUnRegRequest fcmUnRegRequest = new FcmUnRegRequest();
         FcmUnRegRequest.Value value = fcmUnRegRequest.new Value();
-        value.setPushChannel("");
+        value.setPushChannel("shyamtestpush");
         fcmUnRegRequest.setValue(value);
-        fcmApi.fcmUnRegistration(fcmUnRegRequest)
+        fcmApi.fcmUnRegistration(bearerToken, fcmUnRegRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<FcmUnRegResponse>() {
@@ -265,6 +270,7 @@ public class NavigationDrawerActivity extends BaseActivity
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
                         // onLoginFailed();
+                        navigateToMainActivity();
                     }
 
                     @Override

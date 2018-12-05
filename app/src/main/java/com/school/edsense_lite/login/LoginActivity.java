@@ -239,6 +239,8 @@ public class LoginActivity extends BaseActivity {
         progressDialog.setMessage(getString(R.string.text_registering_device));
         progressDialog.show();
         FcmRegRequest fcmRegRequest = new FcmRegRequest();
+        fcmRegRequest.setPlatform("Android");
+        fcmRegRequest.setPushChannel("shyamtestpush");
         fcmApi.fcmRegistration(bearerToken, fcmRegRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

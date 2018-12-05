@@ -18,5 +18,5 @@ public interface FCMApi {
     ///api/Portal/DeleteInstallation
     @POST("Portal/DeleteInstallation")
     @Headers({"Content-Type: application/json"})
-    Observable<FcmUnRegResponse> fcmUnRegistration(@Body FcmUnRegRequest fcmUnRegRequest);
+    Observable<FcmUnRegResponse> fcmUnRegistration(@Header("Authorization") String token, @Body FcmUnRegRequest fcmUnRegRequest);
 }
