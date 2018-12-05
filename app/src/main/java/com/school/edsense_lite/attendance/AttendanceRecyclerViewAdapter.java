@@ -81,7 +81,7 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 vh1.getStatus().setText("Absent");
             }
 
-              vh1.bind(attendanceModel, clickListener);
+              vh1.bind(attendanceModel, clickListener,position);
         }
     }
 
@@ -135,10 +135,10 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
           //  modifyButton.setOnClickListener(this);
         }
-        public void bind(final GetUserResponseModel attendance, final ClickListener listener) {
+        public void bind(final GetUserResponseModel attendance, final ClickListener listener, final int position) {
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    listener.onModifyButtonClicked(attendance);
+                    listener.onModifyButtonClicked(attendance,position);
                 }
             });
         }

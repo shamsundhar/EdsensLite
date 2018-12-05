@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,42 +19,30 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
-import com.school.edsense_lite.events.Event;
-import com.school.edsense_lite.events.EventsRecyclerViewAdapter;
 import com.school.edsense_lite.fragment.DatePickerFragment;
-import com.school.edsense_lite.login.LoginActivity;
-import com.school.edsense_lite.login.LoginApi;
-import com.school.edsense_lite.login.LoginRequest;
-import com.school.edsense_lite.login.LoginResponse;
 import com.school.edsense_lite.messages.MessagesFragment;
 import com.school.edsense_lite.model.SectionResponseModel;
 import com.school.edsense_lite.model.db.EdsenseDatabase;
-import com.school.edsense_lite.today.TodayFragment;
 import com.school.edsense_lite.utils.Common;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -135,8 +122,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         attendanceRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         attendanceRecyclerViewAdapter.setOnClickListener(new ClickListener() {
             @Override
-            public void onModifyButtonClicked(GetUserResponseModel attendanceModel) {
-                displayAbsentPopup(attendanceModel);
+            public void onModifyButtonClicked(GetUserResponseModel attendanceModel, int position) {
+                displayAbsentPopup(attendanceModel,position);
             }
         });
 
@@ -220,7 +207,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         dateTV.setTypeface(tf);
         chooseSection.setTypeface(tf);
     }
-    private void displayAbsentPopup(final GetUserResponseModel attendanceModel){
+    private void displayAbsentPopup(final GetUserResponseModel attendanceModel, final int position){
         final Dialog builder = new Dialog(getActivity());
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Window window = builder.getWindow();
@@ -314,70 +301,92 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                 progressDialog.show();
                 PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
                 String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
-                if(!bearerToken.isEmpty()) {
-                    SaveAttendanceRequest attendanceRequest = new SaveAttendanceRequest();
-                    ArrayList<SaveAttendanceRequest.User> usersList = new ArrayList<SaveAttendanceRequest.User>();
-                    SaveAttendanceRequest.User user = attendanceRequest.new User();
+                SaveAttendanceRequest attendanceRequest = new SaveAttendanceRequest();
+                ArrayList<SaveAttendanceRequest.User> usersList = new ArrayList<SaveAttendanceRequest.User>();
+                final SaveAttendanceRequest.User user = attendanceRequest.new User();
 
-                    user.setDisplayName(attendanceModel.getDisplayName());
-                    user.setIsAttended(isAttended);
-                    user.setIsEarlyOut(isEarlyout);
-                    user.setIsLateIn(isLatein);
-                    user.setStudentUserId(attendanceModel.getStudentUserId());
-                    if(attendanceModel.getUserAttendanceId() != null && attendanceModel.getUserAttendanceId() != "0"){
-                        user.setUserAttendanceId(Integer.parseInt(attendanceModel.getUserAttendanceId()));
-                    }
-                  //  user.setUserAttendanceId(1497);
-                    user.setTotalCount(Integer.parseInt(attendanceModel.getTotalCount()));
-                    user.setReason(reason);
-                //    user.setDate("2018-10-03T06:54:00.891Z");
-                    user.setDate(DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT3));
-                    usersList.add(user);
-                    Gson gson = new Gson();
-
-                    attendanceRequest.setUsers(gson.toJson(usersList).toString());
-                    attendanceApi.saveUserAttendance(bearerToken, attendanceRequest)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<SaveAttendanceResponse>() {
-                                @Override
-                                public void onError(Throwable e) {
-                                    System.out.println("error called::" + e.fillInStackTrace());
-                                    progressDialog.dismiss();
-                                    if(e instanceof StreamResetException)
-                                    {
-                                        //login again
-                                        e.printStackTrace();
-                                        relogin();
-                                    }
-                                }
-
-                                @Override
-                                public void onComplete() {
-                                    System.out.println("complete called");
-                                }
-
-                                @Override
-                                public void onSubscribe(Disposable d) {
-                                    System.out.println("onsubscribe called");
-                                }
-
-                                @Override
-                                public void onNext(SaveAttendanceResponse sectionResponse) {
-                                    progressDialog.dismiss();
-                                    if (sectionResponse.getIsSuccess().equals("true")) {
-                                        builder.dismiss();
-                                    } else if (!sectionResponse.getErrorCode().equals("200")) {
-                                        //display error.
-                                        new CustomAlertDialog().showAlert1(
-                                                getActivity(),
-                                                R.string.text_failed,
-                                                sectionResponse.getErrorMessage(),
-                                                null);
-                                    }
-                                }
-                            });
+                user.setDisplayName(attendanceModel.getDisplayName());
+                user.setIsAttended(isAttended);
+                user.setIsEarlyOut(isEarlyout);
+                user.setIsLateIn(isLatein);
+                user.setStudentUserId(attendanceModel.getStudentUserId());
+                if(attendanceModel.getUserAttendanceId() != null && attendanceModel.getUserAttendanceId() != "0"){
+                    user.setUserAttendanceId(Integer.parseInt(attendanceModel.getUserAttendanceId()));
                 }
+                //  user.setUserAttendanceId(1497);
+                user.setTotalCount(Integer.parseInt(attendanceModel.getTotalCount()));
+                user.setReason(reason);
+                //    user.setDate("2018-10-03T06:54:00.891Z");
+                user.setDate(DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT3));
+                usersList.add(user);
+                Gson gson = new Gson();
+
+                attendanceRequest.setUsers(gson.toJson(usersList).toString());
+                final Boolean finalIsAttended = isAttended;
+                final Boolean finalIsEarlyout = isEarlyout;
+                final Boolean finalIsLatein = isLatein;
+                if(attendanceModel != null) {
+                    attendanceModel.setReason(user.getReason());
+                    attendanceModel.setIsAttended(finalIsAttended.toString());
+                    attendanceModel.setIsEarlyOut(finalIsEarlyout.toString());
+                    attendanceModel.setIsLateIn(finalIsLatein.toString());
+                    attendanceModel.setSynced(false);
+                }
+                if(Common.isNetworkAvailable(getActivity())){
+                    if(!bearerToken.isEmpty()) {
+
+                        attendanceApi.saveUserAttendance(bearerToken, attendanceRequest)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<SaveAttendanceResponse>() {
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        System.out.println("error called::" + e.fillInStackTrace());
+                                        progressDialog.dismiss();
+                                        if(e instanceof StreamResetException)
+                                        {
+                                            //login again
+                                            e.printStackTrace();
+                                            relogin();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+                                        System.out.println("complete called");
+                                    }
+
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+                                        System.out.println("onsubscribe called");
+                                    }
+
+                                    @Override
+                                    public void onNext(SaveAttendanceResponse sectionResponse) {
+                                        progressDialog.dismiss();
+                                        if (sectionResponse.getIsSuccess().equals("true")) {
+                                            attendanceModel.setSynced(true);
+                                            updateUserResponseToDB(progressDialog, attendanceModel,position);
+                                            builder.dismiss();
+                                            //displayUserResponseFromDB(progressDialog);
+
+                                        } else if (!sectionResponse.getErrorCode().equals("200")) {
+                                            //display error.
+                                            new CustomAlertDialog().showAlert1(
+                                                    getActivity(),
+                                                    R.string.text_failed,
+                                                    sectionResponse.getErrorMessage(),
+                                                    null);
+                                        }
+                                    }
+                                });
+                    }
+                }else{
+                    updateUserResponseToDB(progressDialog, attendanceModel, position);
+                    //builder.dismiss();
+                    //displayUserResponseFromDB(progressDialog);
+                }
+
             }
         });
         builder.setCanceledOnTouchOutside(true);
@@ -499,6 +508,17 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         attendanceRecyclerViewAdapter.notifyDataSetChanged();
     }
 
+    private void updateUserResponseToDB(ProgressDialog progressDialog, GetUserResponseModel attendanceModel, int position){
+        if(attendanceModel != null){
+            MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(attendanceModel);
+        }
+        List<GetUserResponseModel> yourArray = MessagesFragment.mEdsenseDatabase.getUserResponseDao().getAllUserResponses();
+        userResponseList = new ArrayList<Object>(yourArray);
+        progressDialog.dismiss();
+        //attendanceRecyclerViewAdapter.setItems(userResponseList);
+
+        attendanceRecyclerViewAdapter.notifyItemChanged(position);
+    }
     private void setCurrentDate(){
         selectedDate = DateTimeUtils.getCurrentDateInString(DATE_FORMAT2);
         String date = DateTimeUtils.getCurrentDateInString(DATE_FORMAT1);
