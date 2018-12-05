@@ -1,9 +1,21 @@
 package com.school.edsense_lite.attendance;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+@Entity(tableName = "table_attendance")
 public class Attendance {
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "attendance_name")
     private String _name;
+    @ColumnInfo(name = "attendance_status")
     private String _status;
+    @ColumnInfo(name = "attendance_reason")
     private String _reason;
+    @ColumnInfo(name = "attendance_imageUrl")
     private String _imageUrl;
 
     public String get_name() {

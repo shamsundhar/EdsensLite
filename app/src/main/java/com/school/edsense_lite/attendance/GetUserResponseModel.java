@@ -26,6 +26,16 @@ public class GetUserResponseModel {
     private String isLateIn;
     @ColumnInfo(name = "getuser_reason")
     private String reason;
+    @ColumnInfo(name = "getuser_isSynced")
+    private transient boolean isSynced;
+
+    public boolean isSynced() {
+        return isSynced;
+    }
+
+    public void setSynced(boolean synced) {
+        isSynced = synced;
+    }
 
     public String getUserAttendanceId() {
         return userAttendanceId;
