@@ -545,10 +545,10 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
             if (!bearerToken.isEmpty()) {
                 String date = DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT3);
                 GetUserRequest request = new GetUserRequest(selectedSectionId, date);
-                attendanceApi.getUsersBasedOnSection(bearerToken, request)
+                attendanceApi.getNotes(bearerToken, request)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<GetUserResponse>() {
+                        .subscribe(new Observer<GetUserNotesResponse>() {
                             @Override
                             public void onError(Throwable e) {
                                 progressDialog.dismiss();
@@ -570,29 +570,30 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                             }
 
                             @Override
-                            public void onNext(GetUserResponse getUserResponse) {
+                            public void onNext(GetUserNotesResponse getUserNotesResponse) {
                                 progressDialog.dismiss();
-                                if (getUserResponse.getIsSuccess().equals("true")) {
-                                    String responseString = getUserResponse.getResponseString();
-                                    ArrayList<GetUserResponseModel> yourArray = new Gson().
-                                            fromJson(responseString,
-                                                    new TypeToken<List<GetUserResponseModel>>() {
-                                                    }.getType());
-                                    if(yourArray != null && yourArray.size()>0){
-                                        for(GetUserResponseModel model : yourArray){
-                                            MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
-                                        }
-                                    }
+//                                if (getUserNotesResponse.getIsSuccess().equals("true")) {
+//                                    String responseString = getUserNotesResponse.getResponseString();
+//                                    ArrayList<GetUserResponseModel> yourArray = new Gson().
+//                                            fromJson(responseString,
+//                                                    new TypeToken<List<GetUserResponseModel>>() {
+//                                                    }.getType());
+//                                    if(yourArray != null && yourArray.size()>0){
+//                                        for(GetUserResponseModel model : yourArray){
+//                                            MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
+//                                        }
+//                                    }
+//
+//                                    displayUserResponseFromDB(progressDialog);
+//                                } else if (!getUserNotesResponse.getErrorCode().equals("200")) {
+//                                    //display error.
+//                                    new CustomAlertDialog().showAlert1(
+//                                            getActivity(),
+//                                            R.string.text_failed,
+//                                            getUserNotesResponse.getErrorMessage(),
+//                                            null);
+//                                }
 
-                                    displayUserResponseFromDB(progressDialog);
-                                } else if (!getUserResponse.getErrorCode().equals("200")) {
-                                    //display error.
-                                    new CustomAlertDialog().showAlert1(
-                                            getActivity(),
-                                            R.string.text_failed,
-                                            getUserResponse.getErrorMessage(),
-                                            null);
-                                }
                             }
                         });
             }

@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">EdsenseLite</string>
+    <string name="app_name">EdSenseLite</string>
 
     <string name="crash_toast_text">Oops Crashe Occurred</string>
 
     <string name="text_please_wait">Please wait...</string>
     <string name="text_retrieving_details">Retrieving your details</string>
+    <string name="text_registering_device">Registering your device</string>
     <string name="text_authenticating">Authenticating...</string>
     <string name="text_reconnecting">Reconnecting, please wait...</string>
 

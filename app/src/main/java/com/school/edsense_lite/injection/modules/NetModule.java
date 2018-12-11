@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.school.edsense_lite.BuildConfig;
 import com.school.edsense_lite.attendance.AttendanceApi;
+import com.school.edsense_lite.firebase.FCMApi;
 import com.school.edsense_lite.injection.scopes.PerApplication;
 import com.school.edsense_lite.login.LoginApi;
 import com.school.edsense_lite.messages.MessagesApi;
@@ -114,6 +115,16 @@ public class NetModule {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .callFactory(httpClientBuilder.build())
                 .build().create(MessagesApi.class);
+    }
+    @Provides
+    @PerApplication
+    static FCMApi provideFCMApi(OkHttpClient.Builder httpClientBuilder){
+        return new Retrofit.Builder()
+                .baseUrl(BuildConfig.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .callFactory(httpClientBuilder.build())
+                .build().create(FCMApi.class);
     }
 
 //    @Provides

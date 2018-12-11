@@ -1,6 +1,7 @@
 package com.school.edsense_lite.injection.components;
 
 
+import com.school.edsense_lite.NavigationDrawerActivity;
 import com.school.edsense_lite.injection.modules.ActivityModule;
 import com.school.edsense_lite.injection.scopes.PerActivity;
 import com.school.edsense_lite.login.LoginActivity;
@@ -16,10 +17,11 @@ public interface ActivityComponent extends AppComponent {
 //    @ActivityFragmentManager FragmentManager defaultFragmentManager();
 
 
-    // create inject methods for your Activities here
+  // create inject methods for your Activities here
 
   //  void inject(SignupActivity activity);
-    void inject(LoginActivity activity);
-    void inject(SubscriptionActivity activity);
+  void inject(LoginActivity activity);
+  void inject(SubscriptionActivity activity);
+  void inject(NavigationDrawerActivity activity);
 
 }

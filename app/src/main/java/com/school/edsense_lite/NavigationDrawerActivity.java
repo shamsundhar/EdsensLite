@@ -1,5 +1,6 @@
 package com.school.edsense_lite;
 
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,23 +19,36 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.school.edsense_lite.attendance.AttendanceFragment;
+import com.school.edsense_lite.firebase.FCMApi;
+import com.school.edsense_lite.firebase.FcmUnRegRequest;
+import com.school.edsense_lite.firebase.FcmUnRegResponse;
 import com.school.edsense_lite.login.LoginActivity;
+import com.school.edsense_lite.login.LoginResponse;
 import com.school.edsense_lite.messages.MessagesFragment;
 import com.school.edsense_lite.notes.NotesFragment;
 import com.school.edsense_lite.recomendations.RecomendationFragment;
 import com.school.edsense_lite.today.TodayFragment;
 import com.school.edsense_lite.utils.CircleTransform;
+import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_AVATAR_URL;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_BOARD_DATA;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_DISPLAY_NAME;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_SUBJECT_DATA;
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_BEARER_TOKEN;
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_FCM_TOKEN;
 
 public class NavigationDrawerActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,6 +56,7 @@ public class NavigationDrawerActivity extends BaseActivity
     TextView profileNameTV;
     TextView profileClassTV;
     TextView profileSubjectsTV;
+    PreferenceHelper preferenceHelper;
 
     String market_uri = "https://play.google.com/store/apps/details?id=";
     private static final String TODAY_FRAGMENT_TAG = "TODAY_FRAGMENT";
@@ -50,9 +65,14 @@ public class NavigationDrawerActivity extends BaseActivity
     private static final String RECOMENDATION_FRAGMENT_TAG = "RECOMENDATION_FRAGMENT";
     private static final String MESSAGES_FRAGMENT_TAG = "MESSAGES_FRAGMENT";
 
+    @Inject
+    FCMApi fcmApi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityComponent().inject(this);
+        preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         setContentView(R.layout.activity_navigation_drawer);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -230,8 +250,64 @@ public class NavigationDrawerActivity extends BaseActivity
         return true;
     }
     private void doLogout(){
+        String bearerToken = preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_BEARER_TOKEN, "");
+        String fcmToken = preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_FCM_TOKEN, "");
+        final ProgressDialog progressDialog = new ProgressDialog(NavigationDrawerActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.text_authenticating));
+        progressDialog.show();
+
+        //initiate gcm un registration call
+        FcmUnRegRequest fcmUnRegRequest = new FcmUnRegRequest();
+        FcmUnRegRequest.Value value = fcmUnRegRequest.new Value();
+        value.setPushChannel(fcmToken);
+        fcmUnRegRequest.setValue(value);
+        fcmApi.fcmUnRegistration(bearerToken, fcmUnRegRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<FcmUnRegResponse>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        progressDialog.dismiss();
+                        // onLoginFailed();
+                        navigateToMainActivity();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(FcmUnRegResponse fcmUnRegResponse){
+                        progressDialog.dismiss();
+                        navigateToMainActivity();
+//                        if(fcmUnRegResponse.getIsSuccess().equals("true")) {
+//                           // onLoginSuccess(username, password, fcmUnRegResponse);
+//                        }
+//                        else if(!fcmUnRegResponse.getErrorCode().equals("200")){
+//                            //display error.
+//                            new CustomAlertDialog().showAlert1(
+//                                    NavigationDrawerActivity.this,
+//                                    R.string.text_failed,
+//                                    fcmUnRegResponse.getErrorMessage(),
+//                                    null);
+//                        }
+                    }
+                });
+    }
+    private void navigateToMainActivity(){
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String fcmToken = preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_FCM_TOKEN, "");
         preferenceHelper.clear(NavigationDrawerActivity.this);
+        //clear will clear all data, so after clearing we are setting fcm token again in preferences.
+        preferenceHelper.setString(NavigationDrawerActivity.this, PREF_KEY_FCM_TOKEN, fcmToken);
         Intent in = new Intent(NavigationDrawerActivity.this, MainActivity.class);
         in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(in);
