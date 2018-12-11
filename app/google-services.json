@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:499918108560:android:49e2c5948dc8e606",
+        "mobilesdk_app_id": "1:499918108560:android:f34391d6ecd2f79f",
         "android_client_info": {
-          "package_name": "com.school.edsense_lite.dev"
+          "package_name": "com.school.edsense_lite"
         }
       },
       "oauth_client": [
