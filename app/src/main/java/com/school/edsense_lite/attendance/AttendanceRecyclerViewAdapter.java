@@ -73,7 +73,9 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         GetUserResponseModel attendanceModel = (GetUserResponseModel) items.get(position);
         if (attendanceModel != null) {
             vh1.getName().setText(attendanceModel.getDisplayName());
-           // vh1.getReason().setText("fssadds");
+            if(attendanceModel.getReason() != null){
+                vh1.getReason().setText("Reason: "+attendanceModel.getReason());
+            }
             if(attendanceModel.getIsAttended().equals("true")){
                 vh1.getStatus().setText("Attended");
             }

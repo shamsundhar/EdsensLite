@@ -313,6 +313,9 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                 if(attendanceModel.getUserAttendanceId() != null && attendanceModel.getUserAttendanceId() != "0"){
                     user.setUserAttendanceId(Integer.parseInt(attendanceModel.getUserAttendanceId()));
                 }
+                else{
+                    user.setUserAttendanceId(0);
+                }
                 user.setTotalCount(Integer.parseInt(attendanceModel.getTotalCount()));
                 user.setReason(reason);
                 user.setDate(DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT3));
