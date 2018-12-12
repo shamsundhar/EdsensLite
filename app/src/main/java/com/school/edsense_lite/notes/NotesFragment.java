@@ -333,7 +333,8 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         final RelativeLayout severityLayout = (RelativeLayout) builder.findViewById(R.id.severityLayout);
         final RelativeLayout traitsLayout = (RelativeLayout)builder.findViewById(R.id.traitsLayout);
         final TextView dateTV = (TextView)builder.findViewById(R.id.date);
-        dateTV.setText(DateTimeUtils.getCurrentDateInString(DATE_FORMAT4));
+//        dateTV.setText(DateTimeUtils.getCurrentDateInString(DATE_FORMAT4));
+        dateTV.setText(DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT4));
         severityTv = (TextView)builder.findViewById(R.id.severityTV);
         traitsTv = (TextView)builder.findViewById(R.id.traitsTV);
         Button save = (Button)builder.findViewById(R.id.btn_save);
