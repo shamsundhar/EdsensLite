@@ -110,9 +110,9 @@ public class LoginActivity extends BaseActivity {
     }
     @OnClick(R.id.link_forgotpassword)
     public void forgotPassword(){
-        //  Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-        //   startActivityForResult(intent, REQUEST_FORGOT_PASSWORD);
-        comingSoon();
+          Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+           startActivityForResult(intent, REQUEST_FORGOT_PASSWORD);
+        //comingSoon();
     }
     @OnClick(R.id.btn_signin)
     public void login() {

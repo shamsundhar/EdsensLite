@@ -313,10 +313,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                 if(attendanceModel.getUserAttendanceId() != null && attendanceModel.getUserAttendanceId() != "0"){
                     user.setUserAttendanceId(Integer.parseInt(attendanceModel.getUserAttendanceId()));
                 }
-                //  user.setUserAttendanceId(1497);
                 user.setTotalCount(Integer.parseInt(attendanceModel.getTotalCount()));
                 user.setReason(reason);
-                //    user.setDate("2018-10-03T06:54:00.891Z");
                 user.setDate(DateTimeUtils.parseDateTime(selectedDate, DATE_FORMAT2, DATE_FORMAT3));
                 usersList.add(user);
                 Gson gson = new Gson();

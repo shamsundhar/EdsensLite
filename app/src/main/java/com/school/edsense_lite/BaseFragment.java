@@ -28,6 +28,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_FCM_TOKEN;
+
 
 public abstract class BaseFragment extends Fragment {
 
@@ -156,7 +158,10 @@ public abstract class BaseFragment extends Fragment {
     }
     public void signout(){
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String fcmToken = preferenceHelper.getString(getActivity(), PREF_KEY_FCM_TOKEN, "");
         preferenceHelper.clear(getActivity());
+        //clear will clear all data, so after clearing we are setting fcm token again in preferences.
+        preferenceHelper.setString(getActivity(), PREF_KEY_FCM_TOKEN, fcmToken);
         Intent in = new Intent(getActivity(), MainActivity.class);
         in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(in);

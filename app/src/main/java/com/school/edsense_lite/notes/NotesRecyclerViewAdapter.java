@@ -4,16 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.school.edsense_lite.R;
-import com.school.edsense_lite.attendance.Attendance;
-
-import com.school.edsense_lite.attendance.GetUserResponse;
-import com.school.edsense_lite.attendance.GetUserResponseModel;
-
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -66,24 +59,29 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof GetUserResponseModel) {
+        if (items.get(position) instanceof GetUserNotesResponse.Response) {
             return NOTES_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(NotesRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        GetUserResponseModel attendanceModel = (GetUserResponseModel) items.get(position);
-        if (attendanceModel != null) {
-            vh1.getName().setText(attendanceModel.getDisplayName());
-           // vh1.getReason().setText("fssadds");
-            if(attendanceModel.getIsAttended().equals("true")){
-                vh1.getTraits().setText("Attended");
-            }
-            else{
-                vh1.getTraits().setText("Absent");
-            }
-
-            //  vh1.bind(scheduleModel, listener);
+        GetUserNotesResponse.Response notesModel = (GetUserNotesResponse.Response) items.get(position);
+        if (notesModel != null) {
+            vh1.getName().setText(notesModel.getStudentName());
+           List<GetUserNotesResponse.Tag> tags =  notesModel.getTags();
+           String traitsString = "";
+           if(tags != null) {
+               for (int i = 0; i < tags.size(); i++) {
+                   GetUserNotesResponse.Tag tag = tags.get(i);
+                   if (traitsString.isEmpty()) {
+                       traitsString = tag.getTagName();
+                   } else {
+                       traitsString = traitsString + ", " + tag.getTagName();
+                   }
+               }
+           }
+               vh1.getTraits().setText("Traits: " + traitsString);
+            vh1.getReason().setText("Notes: "+notesModel.getNote());
         }
     }
 

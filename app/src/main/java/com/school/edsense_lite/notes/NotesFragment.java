@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -96,7 +97,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     TextView severityTv;
     TextView traitsTv;
     List<SectionResponseModel> sectionResponseList;
-    ArrayList<Object> userResponseList;
+    ArrayList<Object> notesResponseList;
     SectionsListAdapter sectionsListAdapter;
     SeverityListAdapter severityListAdapter;
     TraitsListAdapter traitsListAdapter;
@@ -571,41 +572,45 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 
                             @Override
                             public void onNext(GetUserNotesResponse getUserNotesResponse) {
+                                Toast.makeText(getActivity(), getUserNotesResponse.getResponse(), Toast.LENGTH_LONG).show();
                                 progressDialog.dismiss();
-//                                if (getUserNotesResponse.getIsSuccess().equals("true")) {
-//                                    String responseString = getUserNotesResponse.getResponseString();
-//                                    ArrayList<GetUserResponseModel> yourArray = new Gson().
-//                                            fromJson(responseString,
-//                                                    new TypeToken<List<GetUserResponseModel>>() {
-//                                                    }.getType());
-//                                    if(yourArray != null && yourArray.size()>0){
-//                                        for(GetUserResponseModel model : yourArray){
-//                                            MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
-//                                        }
-//                                    }
-//
-//                                    displayUserResponseFromDB(progressDialog);
-//                                } else if (!getUserNotesResponse.getErrorCode().equals("200")) {
-//                                    //display error.
-//                                    new CustomAlertDialog().showAlert1(
-//                                            getActivity(),
-//                                            R.string.text_failed,
-//                                            getUserNotesResponse.getErrorMessage(),
-//                                            null);
-//                                }
+                                if (getUserNotesResponse.getIsSuccess().equals(true)) {
+                                    String responseString = getUserNotesResponse.getResponse();
+                                    ArrayList<GetUserNotesResponse.Response> yourArray = new Gson().
+                                            fromJson(responseString,
+                                                    new TypeToken<List<GetUserNotesResponse.Response>>() {
+                                                    }.getType());
+                                    if(yourArray != null && yourArray.size()>0){
+                                      //  for(GetUserNotesResponse.Response model : yourArray){
+                                      //      MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
+                                      //  }
+                                    }
+                                  //  displayNotesResponseFromDB(progressDialog);
+                                    notesResponseList = new ArrayList<Object>(yourArray);
+                                    notesRecyclerViewAdapter.setItems(notesResponseList);
+                                    progressDialog.dismiss();
+                                    notesRecyclerViewAdapter.notifyDataSetChanged();
+                                } else if (!getUserNotesResponse.getErrorCode().equals(200)) {
+                                    //display error.
+                                    new CustomAlertDialog().showAlert1(
+                                            getActivity(),
+                                            R.string.text_failed,
+                                            getUserNotesResponse.getErrorMessage(),
+                                            null);
+                                }
 
                             }
                         });
             }
         }else{
-            displayUserResponseFromDB(progressDialog);
+          //  displayNotesResponseFromDB(progressDialog);
         }
     }
 
-    private void displayUserResponseFromDB(ProgressDialog progressDialog) {
+    private void displayNotesResponseFromDB(ProgressDialog progressDialog) {
         List<GetUserResponseModel> yourArray = MessagesFragment.mEdsenseDatabase.getUserResponseDao().getAllUserResponses();
-        userResponseList = new ArrayList<Object>(yourArray);
-        notesRecyclerViewAdapter.setItems(userResponseList);
+        notesResponseList = new ArrayList<Object>(yourArray);
+        notesRecyclerViewAdapter.setItems(notesResponseList);
         progressDialog.dismiss();
         notesRecyclerViewAdapter.notifyDataSetChanged();
     }
