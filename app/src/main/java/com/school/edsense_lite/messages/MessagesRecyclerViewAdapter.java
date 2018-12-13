@@ -6,7 +6,9 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,8 +83,15 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private void configureViewHolder1(ViewHolder1 vh1, int position) {
         MessagesResponseModel messagesModel = (MessagesResponseModel) items.get(position);
         if (messagesModel != null) {
-            vh1.getTitle().setText(messagesModel.getContextDisplayName());
-            vh1.getMessage().setText(messagesModel.getMessageBody());
+            vh1.getTitle().setText(messagesModel.getOrginator());
+
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                vh1.getMessage().setText(Html.fromHtml(messagesModel.getMessageBody(), Html.FROM_HTML_MODE_COMPACT));
+//            } else {
+//                vh1.getMessage().setText(Html.fromHtml(messagesModel.getSubject()));
+//
+//            }
+            vh1.getMessage().setText(messagesModel.getSubject());
 
 //            ShapeDrawable sd = new ShapeDrawable(new OvalShape());
 //            sd.setIntrinsicHeight(100);
@@ -175,7 +184,7 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             image = (ImageView)v.findViewById(R.id.imageView);
             messageTime = (TextView) v.findViewById(R.id.message_time);
             listenerRef = new WeakReference<>(clickListener);
-            applyFonts(v);
+            //applyFonts(v);
             v.setOnClickListener(this);
         }
         private void applyFonts(View v){
