@@ -11,8 +11,8 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ic_launcher"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"/>
+        android:scaleType="fitCenter"
+        android:background="@drawable/circle"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,12 +28,13 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textColor="@color/black"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:fontFamily="@font/framd"
                 android:layout_centerVertical="true"
-                android:text="title" />
+                android:text="" />
             <CheckBox
                 android:button="@null"
                 android:layout_width="25dp"
@@ -49,10 +50,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
-            android:textSize="16sp"
-            android:text="Message"
+            android:textSize="14sp"
+            android:text=" "
+            android:fontFamily="@font/framd"
             android:textColor="@color/aluminum"
-            android:lines="2"
+            android:lines="1"
             android:ellipsize="end"/>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -64,16 +66,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="Message"
+                android:text=" "
+                android:fontFamily="@font/framd"
                 android:ellipsize="end"
                 android:textColor="@color/aluminum"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
             <TextView
                 android:id="@+id/message_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="Message"
+                android:textSize="11sp"
+                android:text=" "
+                android:fontFamily="@font/framd"
                 android:textColor="@color/aluminum"
                 android:layout_alignParentRight="true"/>
 
