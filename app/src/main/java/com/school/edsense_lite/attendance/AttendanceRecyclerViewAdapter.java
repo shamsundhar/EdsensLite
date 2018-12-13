@@ -76,14 +76,45 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             if(attendanceModel.getReason() != null){
                 vh1.getReason().setText("Reason: "+attendanceModel.getReason());
             }
-            if(attendanceModel.getIsAttended().equals("true")){
-                vh1.getStatus().setText("Attended");
-            }
-            else{
-                vh1.getStatus().setText("Absent");
-            }
+            String status = "";
+            if(attendanceModel.getIsAttended() != null){
+                if(attendanceModel.getIsAttended().equals("true")) {
+                    status = "Attended";
+                    if (attendanceModel.getIsLateIn() != null) {
+                        if (attendanceModel.getIsLateIn().equals("true")) {
+                            status = "Late-in";
+                        } else {
+                            if (attendanceModel.getIsEarlyOut().equals("true")) {
+                                status = "Early-out";
+                            }
+                        }
+                    }
+                }
+                else{
+                    status = "Absent";
+                }
 
-              vh1.bind(attendanceModel, clickListener,position);
+            }
+            else if(attendanceModel.getIsLateIn() != null){
+                if (attendanceModel.getIsLateIn().equals("true")) {
+                    status = "Late-in";
+                } else {
+                    if (attendanceModel.getIsEarlyOut().equals("true")) {
+                        status = "Early-out";
+                    }
+                }
+            }
+            else if(attendanceModel.getIsEarlyOut() != null){
+                if (attendanceModel.getIsEarlyOut().equals("true")) {
+                    status = "Early-out";
+                } else {//i think late in not needed here to check.
+                    if (attendanceModel.getIsLateIn().equals("true")) {
+                        status = "Late-in";
+                    }
+                }
+            }
+            vh1.getStatus().setText(status);
+            vh1.bind(attendanceModel, clickListener,position);
         }
     }
 
@@ -135,7 +166,7 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             status = (TextView) v.findViewById(R.id.status);
             reason = (TextView) v.findViewById(R.id.reason);
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
-          //  modifyButton.setOnClickListener(this);
+            //  modifyButton.setOnClickListener(this);
         }
         public void bind(final GetUserResponseModel attendance, final ClickListener listener, final int position) {
             modifyButton.setOnClickListener(new View.OnClickListener() {
