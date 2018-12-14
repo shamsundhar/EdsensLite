@@ -33,6 +33,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="text_login_failed">Login Failed</string>
+    <string name="text_passwords_mismatch">Passwords are mismatching</string>
+    <string name="text_error">Error</string>
     <string name="text_failed">Failed</string>
     <string name="text_enter_details">Details are not matching</string>
     <string name="text_message_details">Message Details</string>

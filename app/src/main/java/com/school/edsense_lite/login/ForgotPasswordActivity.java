@@ -8,11 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import com.school.edsense_lite.BaseActivity;
 import com.school.edsense_lite.R;
 
+import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_RESET_PASSWORD_RESULT_FLAG;
+
 /**
  * Created by shyam on 2/19/2018.
  */
 
 public class ForgotPasswordActivity extends BaseActivity implements ResetPasswordEnterEmailFragment.ActivityListener {
+
+
     private static final String RESET_PASSWORD_FRAGMENT_TAG = "RESET_PASSWORD";
     private static final String RESET_PASSWORD_ENTER_OTP_FRAGMENT_TAG = "RESET_PASSWORD_ENTER_OTP";
     @Override
@@ -28,10 +32,16 @@ public class ForgotPasswordActivity extends BaseActivity implements ResetPasswor
 
     @Override
     public void resetPasswordResult(Boolean flag) {
-//        Intent intent = new Intent();
-//        intent.putExtra(BUNDLE_KEY_RESET_PASSWORD_RESULT_FLAG, flag);
-//        setResult(RESULT_OK, intent);
-//        finish();//finishing activity
+        Intent intent = new Intent();
+        intent.putExtra(BUNDLE_KEY_RESET_PASSWORD_RESULT_FLAG, flag);
+        setResult(RESULT_OK, intent);
+        finish();//finishing activity
+    }
+    @Override
+    public void cancelClicked() {
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
+        finish();//finishing activity
     }
 
     @Override

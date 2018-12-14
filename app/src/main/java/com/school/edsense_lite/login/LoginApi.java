@@ -8,6 +8,7 @@ import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface LoginApi {
 
@@ -19,4 +20,10 @@ public interface LoginApi {
     @GET("account/GetUserRegistrationDetails")
     @Headers({"Content-Type: application/json"})
     Observable<ProfileResponse> getUserRegistrationDetails(@Header("Authorization") String token);
+
+   // https://apitst.edsense.co.in/api/Account/GetUserByName?value=GLA468&subscriptionId=5
+   @GET("account/GetUserByName")
+   @Headers({"Content-Type: application/json"})
+   Observable<GetUserDetailsResponse> getUserByName(@Query("value") String username, @Query("subscriptionId") String subscriptionId);
+
 }

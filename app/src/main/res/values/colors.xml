@@ -31,6 +31,8 @@
 
     <color name="description_color">#a6a6ab</color>
     <color name="light_grey">#EFEFEF</color>
+    <color name="light_grey2">#7F7D7E</color>
+    <color name="dark_grey">#4D4D4D</color>
 
     <!--&lt;!&ndash; Indigo 500 &ndash;&gt;-->
     <!--<color name="primary_500">#3F51B5</color>-->
