@@ -579,7 +579,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 
                             @Override
                             public void onNext(GetUserNotesResponse getUserNotesResponse) {
-                                Toast.makeText(getActivity(), getUserNotesResponse.getResponse(), Toast.LENGTH_LONG).show();
+                            //    Toast.makeText(getActivity(), getUserNotesResponse.getResponse(), Toast.LENGTH_LONG).show();
                                 progressDialog.dismiss();
                                 if (getUserNotesResponse.getIsSuccess().equals(true)) {
                                     String responseString = getUserNotesResponse.getResponse();
