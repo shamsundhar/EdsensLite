@@ -73,6 +73,10 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
     @Inject
     LoginApi loginApi;
 
+    String selectedCommunicationType;
+    String selectedUserKey;
+    String provided_username;
+    String otp_entered;
     String user_email;
     String user_phonenumber;
 
@@ -133,11 +137,11 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
                             progressDialog.dismiss();
                             //onLoginFailed();
                             if(e instanceof HttpException){
-                                    new CustomAlertDialog().showAlert1(
-                                            getActivity(),
-                                            R.string.text_error,
-                                            "User not found",
-                                            null);
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_error,
+                                        "User not found",
+                                        null);
                             }
                         }
 
@@ -179,7 +183,6 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
 
                         }
                     });
-
         }
 
         // Animation leftToRight = AnimationUtils.loadAnimation(getActivity(), R.anim.lefttoright);
@@ -207,16 +210,159 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
     @OnClick(R.id.btn_sendotp)
     public void clickOnSendOtp(){
         if(validateSendOtpPage()) {
-            sendOtpLayout.setVisibility(View.GONE);
-            verifyOtpLayout.setVisibility(View.VISIBLE);
-            _usernameText.setEnabled(false);
+            final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                    R.style.AppTheme_Dark_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage(getString(R.string.text_please_wait));
+            progressDialog.show();
+
+            String subscriptionId = preferenceHelper.getString(getActivity(),
+                    Constants.PREF_KEY_SUBSCRIPTION_ID, "");
+            String username = _usernameText.getText().toString().trim();
+
+            SendOtpRequest sendOtpRequest = new SendOtpRequest();
+            SendOtpRequest.Value value = sendOtpRequest.new Value();
+            value.setCommunicationType(selectedCommunicationType);
+            value.setOtpContextId(1);
+            value.setSubscriptionId(Integer.parseInt(subscriptionId));
+            value.setUserKey(selectedUserKey);
+            value.setUserName(username);
+            sendOtpRequest.setValue(value);
+
+            loginApi.generateOtp(sendOtpRequest)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<SendOtpResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            progressDialog.dismiss();
+                            //onLoginFailed();
+                            if(e instanceof HttpException){
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_error,
+                                        "User not found",
+                                        null);
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(SendOtpResponse response){
+                            progressDialog.dismiss();
+                            buttonOk.setEnabled(true);
+                            if(response.getIsSuccess().equals(true)) {
+                                sendOtpLayout.setVisibility(View.GONE);
+                                verifyOtpLayout.setVisibility(View.VISIBLE);
+                                _usernameText.setEnabled(false);
+                            }
+                            else if(response.getErrorCode().equals(404)){
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_error,
+                                        response.getErrorMessage(),
+                                        null);
+                            }
+                            else if(!response.getErrorCode().equals(200)){
+                                //display error.
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_failed,
+                                        response.getErrorMessage(),
+                                        null);
+                            }
+
+                        }
+                    });
         }
     }
     @OnClick(R.id.btn_verify)
     public void clickOnVeify(){
         if(validateVerifyPage()){
-            forgotPasswordLayout.setVisibility(View.GONE);
-            changePasswordLayout.setVisibility(View.VISIBLE);
+            final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                    R.style.AppTheme_Dark_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage(getString(R.string.text_please_wait));
+            progressDialog.show();
+
+            String subscriptionId = preferenceHelper.getString(getActivity(),
+                    Constants.PREF_KEY_SUBSCRIPTION_ID, "");
+            provided_username = _usernameText.getText().toString().trim();
+
+            otp_entered = _otpText.getText().toString().trim();
+
+            ValidateOtpRequest validateOtpRequest = new ValidateOtpRequest();
+            ValidateOtpRequest.Value value = validateOtpRequest.new Value();
+
+            value.setOtpContextId(1);
+            value.setSubscriptionId(Integer.parseInt(subscriptionId));
+            value.setOtpDetails(otp_entered);
+            value.setUserKey(selectedUserKey);
+            value.setUserName(provided_username);
+            validateOtpRequest.setValue(value);
+
+            loginApi.validateOtp(validateOtpRequest)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ValidateOtpResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            progressDialog.dismiss();
+                            //onLoginFailed();
+                            if(e instanceof HttpException){
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_error,
+                                        "User not found",
+                                        null);
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(ValidateOtpResponse response){
+                            progressDialog.dismiss();
+                            buttonOk.setEnabled(true);
+                            if(response.getIsSuccess().equals(true)) {
+                                forgotPasswordLayout.setVisibility(View.GONE);
+                                changePasswordLayout.setVisibility(View.VISIBLE);
+                            }
+                            else if(response.getErrorCode().equals(404)){
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_error,
+                                        response.getErrorMessage(),
+                                        null);
+                            }
+                            else if(!response.getErrorCode().equals(200)){
+                                //display error.
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_failed,
+                                        response.getErrorMessage(),
+                                        null);
+                            }
+
+                        }
+                    });
         }
     }
     @OnClick(R.id.btn_submit)
@@ -229,42 +375,77 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage(getString(R.string.text_please_wait));
             progressDialog.show();
-//            loginApi.forgotPassword(new ForgotPasswordRequest(mobileNumber))
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new Observer<BaseResponse>() {
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            progressDialog.dismiss();
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onSubscribe(Disposable d) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onNext(BaseResponse baseResponse){
-//                            progressDialog.dismiss();
-//                            if(baseResponse.getStatus().equals("200")) {
-//                                ((ActivityListener)getActivity()).displayOtpPage(mobileNumber);
-//                            }
-//                            else if(baseResponse.getStatus().equals("206")){
-//                                //display error.
-//                                new CustomAlertDialog().showAlert1(
-//                                        getActivity(),
-//                                        R.string.text_reset_password_failed,
-//                                        baseResponse.getMessage(),
-//                                        null);
-//                            }
-//
-//                        }
-//                    });
+            ChangePasswordRequest request = new ChangePasswordRequest();
+            request.setKey(otp_entered);
+            request.setNewPassword(newpswd);
+            request.setConfirmPassword(confpswd);
+            request.setUserKey(provided_username);
+            loginApi.changePassword(request)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ChangePasswordResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            progressDialog.dismiss();
+                            if(e.getMessage().contains("HTTP 406"))
+                            {
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_failed,
+                                        "Wrong OTP",
+                                        new CustomAlertDialog.Callback() {
+                                            @Override
+                                            public void onSucess(int t) {
+                                                ((ActivityListener)getActivity()).resetPasswordResult(true);
+                                            }
+                                        });
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(ChangePasswordResponse baseResponse){
+                            progressDialog.dismiss();
+                            if(baseResponse.getErrorCode().equals(200)) {
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_success,
+                                        "Password changed successfully",
+                                        new CustomAlertDialog.Callback() {
+                                            @Override
+                                            public void onSucess(int t) {
+                                                ((ActivityListener)getActivity()).resetPasswordResult(true);
+                                            }
+                                        });
+                            }
+                            else if(!baseResponse.getErrorCode().equals(406)){
+                                //display error.
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_failed,
+                                        baseResponse.getErrorMessage(),
+                                        null);
+                            }
+                            else if(!baseResponse.getErrorCode().equals(200)){
+                                //display error.
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_failed,
+                                        baseResponse.getErrorMessage(),
+                                        null);
+                            }
+
+                        }
+                    });
         }
 
     }
@@ -302,6 +483,8 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
                 }
                 else{
                     _emailText.setError(null);
+                    selectedCommunicationType = "email";
+                    selectedUserKey = email;
                 }
             }
         }
@@ -317,6 +500,8 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
                 }
                 else{
                     _mobileText.setError(null);
+                    selectedCommunicationType = "phone";
+                    selectedUserKey = phone;
                 }
             }
         }

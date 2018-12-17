@@ -1,6 +1,8 @@
 package com.school.edsense_lite.attendance;
 
 import com.school.edsense_lite.notes.GetUserNotesResponse;
+import com.school.edsense_lite.notes.SaveNotesRequest;
+import com.school.edsense_lite.notes.SaveNotesResponse;
 import com.school.edsense_lite.today.AssignmentResponse;
 
 import io.reactivex.Observable;
@@ -39,5 +41,10 @@ public interface AttendanceApi {
     @POST("Academic/GetNotes")
     @Headers({"Content-Type: application/json"})
     Observable<GetUserNotesResponse> getNotes(@Header("Authorization") String token, @Body GetUserRequest getUserRequest);
+
+    //https://apitst.edsense.co.in/api/Academic/SaveStudentNotes
+    @POST("Academic/SaveStudentNotes")
+    @Headers({"Content-Type: application/json"})
+    Observable<SaveNotesResponse> saveNotes(@Header("Authorization") String token, @Body SaveNotesRequest saveUserNotesRequest);
 
 }

@@ -147,8 +147,8 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         notesRecyclerViewAdapter.setOnClickListener(new ClickListener() {
             @Override
-            public void onModifyButtonClicked(View v, int position) {
-                displayNotesPopup();
+            public void onModifyButtonClicked(GetUserNotesResponse.Response notesModel, int position) {
+                displayNotesPopup(notesModel);
             }
         });
 
@@ -320,7 +320,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         dateTV.setTypeface(tf);
         chooseSection.setTypeface(tf);
     }
-    private void displayNotesPopup(){
+    private void displayNotesPopup(final GetUserNotesResponse.Response notesModel){
         final Dialog builder = new Dialog(getActivity());
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Window window = builder.getWindow();
@@ -373,44 +373,51 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                 String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
                 if(!bearerToken.isEmpty()) {
                     SaveNotesRequest saveNotesRequest = new SaveNotesRequest();
-//
-//
-//               //     attendanceRequest.setUsers(gson.toJson(usersList).toString());
-//                    attendanceApi.saveUserAttendance(bearerToken, saveNotesRequest)
-//                            .subscribeOn(Schedulers.io())
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribe(new Observer<SaveAttendanceResponse>() {
-//                                @Override
-//                                public void onError(Throwable e) {
-//                                    System.out.println("error called::" + e.fillInStackTrace());
-//                                    progressDialog.dismiss();
-//                                }
-//
-//                                @Override
-//                                public void onComplete() {
-//                                    System.out.println("complete called");
-//                                }
-//
-//                                @Override
-//                                public void onSubscribe(Disposable d) {
-//                                    System.out.println("onsubscribe called");
-//                                }
-//
-//                                @Override
-//                                public void onNext(SaveAttendanceResponse sectionResponse) {
-//                                    progressDialog.dismiss();
-//                                    if (sectionResponse.getIsSuccess().equals("true")) {
-//                                        builder.dismiss();
-//                                    } else if (!sectionResponse.getErrorCode().equals("200")) {
-//                                        //display error.
-//                                        new CustomAlertDialog().showAlert1(
-//                                                getActivity(),
-//                                                R.string.text_failed,
-//                                                sectionResponse.getErrorMessage(),
-//                                                null);
-//                                    }
-//                                }
-//                            });
+                    saveNotesRequest.setIsDelete(false);
+                    saveNotesRequest.setIsPublic(false);
+                    saveNotesRequest.setIsVisibletoParent(false);
+//                    notesModel.get
+//                    saveNotesRequest.setStudentid();
+//                    saveNotesRequest.setNote();
+//                    saveNotesRequest.setTags();
+//                    saveNotesRequest.setDateCommented();
+//                    saveNotesRequest.setSeverityTypeId();
+//                    saveNotesRequest.setMeetingTypeId();
+                    attendanceApi.saveNotes(bearerToken, saveNotesRequest)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<SaveNotesResponse>() {
+                                @Override
+                                public void onError(Throwable e) {
+                                    System.out.println("error called::" + e.fillInStackTrace());
+                                    progressDialog.dismiss();
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    System.out.println("complete called");
+                                }
+
+                                @Override
+                                public void onSubscribe(Disposable d) {
+                                    System.out.println("onsubscribe called");
+                                }
+
+                                @Override
+                                public void onNext(SaveNotesResponse saveNotesResponse) {
+                                    progressDialog.dismiss();
+                                    if (saveNotesResponse.getIsSuccess().equals("true")) {
+                                        builder.dismiss();
+                                    } else if (!saveNotesResponse.getErrorCode().equals("200")) {
+                                        //display error.
+                                        new CustomAlertDialog().showAlert1(
+                                                getActivity(),
+                                                R.string.text_failed,
+                                                saveNotesResponse.getErrorMessage(),
+                                                null);
+                                    }
+                                }
+                            });
                 }
             }
         });

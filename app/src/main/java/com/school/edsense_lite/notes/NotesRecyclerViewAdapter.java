@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.attendance.GetUserResponseModel;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -68,20 +70,21 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         GetUserNotesResponse.Response notesModel = (GetUserNotesResponse.Response) items.get(position);
         if (notesModel != null) {
             vh1.getName().setText(notesModel.getStudentName());
-           List<GetUserNotesResponse.Tag> tags =  notesModel.getTags();
-           String traitsString = "";
-           if(tags != null) {
-               for (int i = 0; i < tags.size(); i++) {
-                   GetUserNotesResponse.Tag tag = tags.get(i);
-                   if (traitsString.isEmpty()) {
-                       traitsString = tag.getTagName();
-                   } else {
-                       traitsString = traitsString + ", " + tag.getTagName();
-                   }
-               }
-           }
-               vh1.getTraits().setText("Traits: " + traitsString);
-            vh1.getReason().setText("Notes: "+notesModel.getNote());
+            List<GetUserNotesResponse.Tag> tags =  notesModel.getTags();
+            String traitsString = "";
+            if(tags != null) {
+                for (int i = 0; i < tags.size(); i++) {
+                    GetUserNotesResponse.Tag tag = tags.get(i);
+                    if (traitsString.isEmpty()) {
+                        traitsString = tag.getTagName();
+                    } else {
+                        traitsString = traitsString + ", " + tag.getTagName();
+                    }
+                }
+            }
+            vh1.getTraits().setText("Traits: " + traitsString);
+            vh1.getReason().setText("Notes: " + notesModel.getNote());
+            vh1.bind(notesModel, clickListener, position);
         }
     }
 
@@ -132,20 +135,20 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             traits = (TextView) v.findViewById(R.id.status);
             reason = (TextView) v.findViewById(R.id.reason);
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
-            modifyButton.setOnClickListener(this);
+            //modifyButton.setOnClickListener(this);
         }
-//        public void bind(final Note note, final AdapterView.OnItemClickListener listener) {
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override public void onClick(View v) {
-//                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
-//                }
-//            });
-//        }
+        public void bind(final GetUserNotesResponse.Response notesModel, final ClickListener listener, final int position) {
+            modifyButton.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onModifyButtonClicked(notesModel, position);
+                }
+            });
+        }
         @Override
         public void onClick(View v) {
-            if(v.getId() == modifyButton.getId()){
-                listenerRef.get().onModifyButtonClicked(v, getAdapterPosition());
-            }
+//            if(v.getId() == modifyButton.getId()){
+//                listenerRef.get().onModifyButtonClicked( , getAdapterPosition());
+//            }
         }
     }
 

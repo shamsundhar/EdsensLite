@@ -364,6 +364,8 @@ public class LoginActivity extends BaseActivity {
 //                if(data.getExtras().getBoolean(BUNDLE_KEY_RESET_PASSWORD_RESULT_FLAG, false)){
 //                    //display alert reset password completed successfully
 //                }
+
+
             }
         }
     }
