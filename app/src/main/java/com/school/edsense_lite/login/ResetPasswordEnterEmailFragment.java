@@ -342,8 +342,17 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
                             progressDialog.dismiss();
                             buttonOk.setEnabled(true);
                             if(response.getIsSuccess().equals(true)) {
-                                forgotPasswordLayout.setVisibility(View.GONE);
-                                changePasswordLayout.setVisibility(View.VISIBLE);
+                                if(response.getResponse().equals(true)) {
+                                    forgotPasswordLayout.setVisibility(View.GONE);
+                                    changePasswordLayout.setVisibility(View.VISIBLE);
+                                }
+                                else{
+                                    new CustomAlertDialog().showAlert1(
+                                            getActivity(),
+                                            R.string.text_error,
+                                            "Invalid OTP",
+                                            null);
+                                }
                             }
                             else if(response.getErrorCode().equals(404)){
                                 new CustomAlertDialog().showAlert1(

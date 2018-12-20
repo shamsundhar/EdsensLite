@@ -103,6 +103,13 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
           //  vh1.getTraits().setText("Traits: " + traitsString);
             vh1.getReason().setText("Notes: " + notesModel.getNote());
             vh1.getBy().setText("By: "+notesModel.getCreatedByName());
+            if(notesModel.getIsEditable() == 1)
+            {
+                vh1.getModifyButton().setVisibility(View.VISIBLE);
+            }
+            else{
+                vh1.getModifyButton().setVisibility(View.GONE);
+            }
             vh1.bind(notesModel, clickListener, position);
         }
     }
@@ -166,11 +173,18 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             //modifyButton.setOnClickListener(this);
         }
         public void bind(final GetUserNotesResponse.Response notesModel, final ClickListener listener, final int position) {
-            modifyButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    listener.onModifyButtonClicked(notesModel, position);
-                }
-            });
+            if(notesModel.getIsEditable() == 1)
+            {
+                modifyButton.setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View v) {
+                        listener.onModifyButtonClicked(notesModel, position);
+                    }
+                });
+            }
+            else{
+                modifyButton.setOnClickListener(null);
+            }
+
         }
         @Override
         public void onClick(View v) {

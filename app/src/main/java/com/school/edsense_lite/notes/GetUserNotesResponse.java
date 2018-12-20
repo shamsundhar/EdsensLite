@@ -52,8 +52,10 @@ public class GetUserNotesResponse {
 
     public class Response implements Serializable {
         private Integer StudentNotesId;
+        private String StudentId;
         private String Note;
         private Boolean IsPublic;
+        private Integer IsEditable;
         private Boolean IsVisibletoParent;
         private String DateCommented;
         private Integer SeverityTypeId;
@@ -71,7 +73,20 @@ public class GetUserNotesResponse {
         private String Image;
         private List<Tag> Tags = null;
         private Integer IsAdmin;
+        public Integer getIsEditable() {
+            return IsEditable;
+        }
 
+        public void setIsEditable(Integer isEditable) {
+            IsEditable = isEditable;
+        }
+        public String getStudentId() {
+            return StudentId;
+        }
+
+        public void setStudentId(String studentId) {
+            StudentId = studentId;
+        }
         public Integer getStudentNotesId() {
             return StudentNotesId;
         }

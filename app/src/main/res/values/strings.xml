@@ -9,6 +9,7 @@
     <string name="text_authenticating">Authenticating...</string>
     <string name="text_reconnecting">Reconnecting, please wait...</string>
     <string name="text_notes_success">Notes saved successfully</string>
+    <string name="text_notes_deleted_success">Notes deleted successfully</string>
 
     <string name="text_today">Today</string>
     <string name="text_messages">Messages</string>

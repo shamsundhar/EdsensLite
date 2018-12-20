@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -97,11 +98,17 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
     Button btnSave;
     @BindView(R.id.tv1)
     TextView pageTitle;
+    @BindView(R.id.editButtonLayout)
+    LinearLayout editButtonLayout;
+    @BindView(R.id.addButtonLayout)
+    LinearLayout addButtonLayout;
     SeverityListAdapter severityListAdapter;
     TraitsListAdapter traitsListAdapter;
     UsersListAdapter usersListAdapter;
     private int selectedSeverityId;
     private String selectedStudentId;
+    private int selectedStudentNotesId;
+    private Boolean inEditingMode = false;
     private int selectedTraitsId;
     private String selectedDate;
     Bundle bundle;
@@ -135,9 +142,13 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
         dateTV.setError(null);
         displayDateDialog();
     }
-    @OnClick(R.id.btn_save)
+    @OnClick({R.id.btn_save, R.id.btn_save2})
     public void clickOnSaveButton(){
-        saveNotes();
+        saveNotes(false);
+    }
+    @OnClick(R.id.btn_delete)
+    public void clickOnDeleteButton(){
+        deleteNotes();
     }
     // TODO: Rename and change types and number of parameters
     public static AddNotesFragment newInstance() {
@@ -170,6 +181,9 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
         return view;
     }
     private void processEditNotesFlow(){
+        inEditingMode = true;
+        addButtonLayout.setVisibility(View.GONE);
+        editButtonLayout.setVisibility(View.VISIBLE);
         GetUserNotesResponse.Response userNotesModel = (GetUserNotesResponse.Response)bundle.getSerializable(BUNDLE_KEY_NOTES_MODEL);
         String date = userNotesModel.getDateCommented();
         studentTV.setText(userNotesModel.getStudentName());
@@ -182,6 +196,8 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
         response.setTagName(tagList.get(0).getTagName());
         response.setSelected(true);
         selectedTrait = response;
+        selectedStudentNotesId = userNotesModel.getStudentNotesId();
+        selectedStudentId = userNotesModel.getStudentId();
         traitsTV.setText(tagList.get(0).getTagName());
         selectedDate = DateTimeUtils.parseDateTime(date,DATE_FORMAT8, DATE_FORMAT2);
         selectedSeverityId = userNotesModel.getSeverityTypeId();
@@ -195,6 +211,8 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
         traitsLayout.setOnClickListener(null);
     }
     private void processAddNotesFlow(){
+        addButtonLayout.setVisibility(View.VISIBLE);
+        editButtonLayout.setVisibility(View.GONE);
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -456,7 +474,10 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
             str = "0"+str;
         return str;
     }
-    private void saveNotes(){
+    private void deleteNotes(){
+        saveNotes(true);
+    }
+    private void saveNotes(final Boolean isDelete){
         if(validate()){
             String notes = notesET.getText().toString().trim();
             final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
@@ -468,13 +489,15 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
             String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
             if(!bearerToken.isEmpty()) {
                 SaveNotesRequest saveNotesRequest = new SaveNotesRequest();
-                saveNotesRequest.setIsDelete(false);
+                saveNotesRequest.setIsDelete(isDelete);
                 saveNotesRequest.setIsPublic(false);
                 saveNotesRequest.setIsVisibletoParent(false);
                 saveNotesRequest.setStudentid(selectedStudentId);
                 saveNotesRequest.setNote(notes);
+                if(inEditingMode){
+                    saveNotesRequest.setStudentNotesId(selectedStudentNotesId);
+                }
                 List<SaveNotesRequest.Tag> tagsList = new ArrayList<SaveNotesRequest.Tag>();
-                //  selectedTrait.getParentTags();
                 SaveNotesRequest.Tag tag = saveNotesRequest.new Tag();
                 tag.setTagId(selectedTrait.getTagId());
                 tag.setTagName(selectedTrait.getTagName());
@@ -509,8 +532,19 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
                                 progressDialog.dismiss();
                                 if (saveNotesResponse.getIsSuccess().equals(true)) {
 //TODO save this info to database.
-                                    Toast.makeText(getActivity(), R.string.text_notes_success, Toast.LENGTH_SHORT).show();
-                                    resetFormData();
+                                    if(isDelete){
+                                        Toast.makeText(getActivity(), R.string.text_notes_deleted_success, Toast.LENGTH_SHORT).show();
+                                    }
+                                    else{
+                                        Toast.makeText(getActivity(), R.string.text_notes_success, Toast.LENGTH_SHORT).show();
+                                    }
+                                    if(inEditingMode){
+                                        getActivity().finish();
+                                    }
+                                    else{
+                                        resetFormData();
+                                    }
+
                                 } else if (!saveNotesResponse.getErrorCode().equals(200)) {
                                     //display error.
                                     new CustomAlertDialog().showAlert1(

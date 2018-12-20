@@ -9,10 +9,17 @@ public class SaveNotesRequest {
     private List<Tag> tags = null;
     private Integer meetingTypeId;
     private Integer severityTypeId;
+    private Integer studentNotesId;
     private String note;
     private String studentid;
     private Boolean isDelete;
+    public Integer getStudentNotesId() {
+        return studentNotesId;
+    }
 
+    public void setStudentNotesId(Integer studentNotesId) {
+        this.studentNotesId = studentNotesId;
+    }
     public Boolean getIsPublic() {
         return isPublic;
     }
