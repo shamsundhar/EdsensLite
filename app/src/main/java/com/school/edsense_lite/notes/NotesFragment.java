@@ -159,7 +159,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         fragmentComponent().inject(this);
         applyFonts();
         setCurrentDate();
-        notesRecyclerViewAdapter = new NotesRecyclerViewAdapter();
+        notesRecyclerViewAdapter = new NotesRecyclerViewAdapter(getActivity());
         notesRecyclerView.setAdapter(notesRecyclerViewAdapter);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         notesRecyclerViewAdapter.setOnClickListener(new ClickListener() {

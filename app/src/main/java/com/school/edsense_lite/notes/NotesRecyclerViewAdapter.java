@@ -1,11 +1,18 @@
 package com.school.edsense_lite.notes;
 
+import android.app.Activity;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.school.edsense_lite.NavigationDrawerActivity;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.attendance.GetUserResponseModel;
 
@@ -18,8 +25,11 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     private List<Object> items;
     private final int NOTES_LIST_ITEM = 0;
     private ClickListener clickListener;
+    Activity activity;
 
-    public NotesRecyclerViewAdapter(){}
+    public NotesRecyclerViewAdapter(Activity activity){
+        this.activity = activity;
+    }
     public void setOnClickListener(ClickListener clickListener){
         this.clickListener = clickListener;
     }
@@ -84,7 +94,13 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                     }
                 }
             }
-            vh1.getTraits().setText("Traits: " + traitsString);
+            String text = "Traits: " + traitsString;
+            Spannable spannable = new SpannableString(text);
+
+            spannable.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.primary)), 0, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            vh1.getTraits().setText(spannable, TextView.BufferType.SPANNABLE);
+          //  vh1.getTraits().setText("Traits: " + traitsString);
             vh1.getReason().setText("Notes: " + notesModel.getNote());
             vh1.getBy().setText("By: "+notesModel.getCreatedByName());
             vh1.bind(notesModel, clickListener, position);
