@@ -97,9 +97,6 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         private TextView name;
         private TextView traits;
         private TextView reason;
-
-
-
         private TextView by;
         private ImageView modifyButton;
         private WeakReference<ClickListener> listenerRef;
