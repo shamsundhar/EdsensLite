@@ -1,5 +1,6 @@
 package com.school.edsense_lite.notes;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class GetUserNotesResponse {
@@ -49,7 +50,7 @@ public class GetUserNotesResponse {
         this.isUserActive = isUserActive;
     }
 
-    public class Response {
+    public class Response implements Serializable {
         private Integer StudentNotesId;
         private String Note;
         private Boolean IsPublic;
@@ -234,7 +235,7 @@ public class GetUserNotesResponse {
 
 
 
-    public class Tag {
+    public class Tag implements Serializable{
 
         private Integer TagId;
         private String Value;

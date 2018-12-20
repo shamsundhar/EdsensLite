@@ -113,7 +113,13 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
             Log.e(TAG, "title: " + title);
             Log.e(TAG, "message: " + message);
             Log.e(TAG, "isBackground: " + isBackground);
-            Log.e(TAG, "payload: " + payload.toString());
+            if(payload != null)
+            {
+                Log.e(TAG, "payload: " +  payload.toString());
+            }
+            else{
+                Log.e(TAG, "payload was null");
+            }
             Log.e(TAG, "imageUrl: " + imageUrl);
             Log.e(TAG, "timestamp: " + timestamp);
 

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.arch.persistence.room.Room;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.school.edsense_lite.AWFActivity;
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.attendance.Attendance;
@@ -75,6 +77,12 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.internal.http2.StreamResetException;
 
+import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
+import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_NOTES_MODEL;
+import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_SECTION_ID;
+import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_ADD_NOTES;
+import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_EDIT_NOTES;
+import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT3;
@@ -92,6 +100,8 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     TextView titleTV;
     @BindView(R.id.textChooseSection)
     TextView chooseSection;
+    @BindView(R.id.addNotes)
+    TextView addNotesTV;
     @Inject
     AttendanceApi attendanceApi;
     TextView severityTv;
@@ -116,6 +126,13 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     @OnClick(R.id.calendar)
     public void ClickOnCalendar(){
         displayDateDialog();
+    }
+    @OnClick(R.id.addNotes)
+    public void clickOnAddNotes(){
+        Intent in = new Intent(getActivity(), AWFActivity.class);
+        in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_ADD_NOTES);
+        in.putExtra(BUNDLE_KEY_SECTION_ID, selectedSectionId);
+        getActivity().startActivity(in);
     }
     NotesRecyclerViewAdapter notesRecyclerViewAdapter;
     /**
@@ -148,7 +165,8 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         notesRecyclerViewAdapter.setOnClickListener(new ClickListener() {
             @Override
             public void onModifyButtonClicked(GetUserNotesResponse.Response notesModel, int position) {
-                displayNotesPopup(notesModel);
+           //     displayNotesPopup(notesModel);
+                displayEditNotesFragment(notesModel);
             }
         });
 
@@ -319,6 +337,13 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         titleTV.setTypeface(tf);
         dateTV.setTypeface(tf);
         chooseSection.setTypeface(tf);
+    }
+    private void displayEditNotesFragment(GetUserNotesResponse.Response userNotesModel){
+        Intent in = new Intent(getActivity(), AWFActivity.class);
+        in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_EDIT_NOTES);
+        in.putExtra(BUNDLE_KEY_SECTION_ID, selectedSectionId);
+        in.putExtra(BUNDLE_KEY_NOTES_MODEL, userNotesModel);
+        getActivity().startActivity(in);
     }
     private void displayNotesPopup(final GetUserNotesResponse.Response notesModel){
         final Dialog builder = new Dialog(getActivity());
@@ -579,7 +604,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 
                             @Override
                             public void onNext(GetUserNotesResponse getUserNotesResponse) {
-                            //    Toast.makeText(getActivity(), getUserNotesResponse.getResponse(), Toast.LENGTH_LONG).show();
+                                //    Toast.makeText(getActivity(), getUserNotesResponse.getResponse(), Toast.LENGTH_LONG).show();
                                 progressDialog.dismiss();
                                 if (getUserNotesResponse.getIsSuccess().equals(true)) {
                                     String responseString = getUserNotesResponse.getResponse();
@@ -588,11 +613,11 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                                                     new TypeToken<List<GetUserNotesResponse.Response>>() {
                                                     }.getType());
                                     if(yourArray != null && yourArray.size()>0){
-                                      //  for(GetUserNotesResponse.Response model : yourArray){
-                                      //      MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
-                                      //  }
+                                        //  for(GetUserNotesResponse.Response model : yourArray){
+                                        //      MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
+                                        //  }
                                     }
-                                  //  displayNotesResponseFromDB(progressDialog);
+                                    //  displayNotesResponseFromDB(progressDialog);
                                     notesResponseList = new ArrayList<Object>(yourArray);
                                     notesRecyclerViewAdapter.setItems(notesResponseList);
                                     progressDialog.dismiss();
@@ -610,7 +635,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                         });
             }
         }else{
-          //  displayNotesResponseFromDB(progressDialog);
+            //  displayNotesResponseFromDB(progressDialog);
         }
     }
 
@@ -628,6 +653,9 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         selectedDate = strDate;
         strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
         dateTV.setText(strDate);
+        if(selectedSectionId != null && !selectedSectionId.trim().isEmpty()){
+            getUsersBasedOnSection();
+        }
     }
     String padding(int value)
     {

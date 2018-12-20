@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.attendance.GetUserResponseModel;
 
+import org.w3c.dom.Text;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -84,6 +86,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             }
             vh1.getTraits().setText("Traits: " + traitsString);
             vh1.getReason().setText("Notes: " + notesModel.getNote());
+            vh1.getBy().setText("By: "+notesModel.getCreatedByName());
             vh1.bind(notesModel, clickListener, position);
         }
     }
@@ -94,6 +97,10 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         private TextView name;
         private TextView traits;
         private TextView reason;
+
+
+
+        private TextView by;
         private ImageView modifyButton;
         private WeakReference<ClickListener> listenerRef;
         public ImageView getModifyButton() {
@@ -127,6 +134,13 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         public void setReason(TextView reason) {
             this.reason = reason;
         }
+        public TextView getBy() {
+            return by;
+        }
+
+        public void setBy(TextView by) {
+            this.by = by;
+        }
 
         public ViewHolder1(View v) {
             super(v);
@@ -134,6 +148,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             name = (TextView) v.findViewById(R.id.name);
             traits = (TextView) v.findViewById(R.id.status);
             reason = (TextView) v.findViewById(R.id.reason);
+            by = (TextView)v.findViewById(R.id.by);
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
             //modifyButton.setOnClickListener(this);
         }

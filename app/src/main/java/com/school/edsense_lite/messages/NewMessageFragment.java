@@ -46,15 +46,15 @@ import static com.school.edsense_lite.utils.Constants.RECIPIENT_DELIMETER;
 
 public class NewMessageFragment extends BaseFragment {
 
-@BindView(R.id.pagetitle)
-TextView pageTitle;
+    @BindView(R.id.pagetitle)
+    TextView pageTitle;
     @BindView(R.id.txtMsg)
     EditText message;
     @BindView(R.id.txtSub)
     EditText subject;
     @BindView(R.id.toEditText)
     DelayAutoCompleteTextView to;
-//    @BindView(R.id.ccEditText)
+    //    @BindView(R.id.ccEditText)
 //    DelayAutoCompleteTextView cc;
     private int THRESHOLD = 4;
     @Inject
@@ -138,55 +138,59 @@ TextView pageTitle;
     }
     @OnClick(R.id.send_message_button)
     public void newMessage(){
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getString(R.string.text_please_wait));
-        progressDialog.show();
-        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-        String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
-    //    <recipients><to><recipient groupTypeId=\"1\">29693,32012</recipient>" +
-     //           "<recipient groupTypeId=\"2\">33004,33005</recipient></to>" +
-     //           "</recipients>
-        String recipientsString = "<recipients><to><recipient groupTypeId=\"1\">"+selectedToId+"</recipient></to></recipients>";
-        SendMessageRequest sendMessageRequest = new SendMessageRequest();
-        sendMessageRequest.setBody(message.getText().toString().trim());
-        sendMessageRequest.setContextTypeId(1);
-        sendMessageRequest.setMapId(2);
-        sendMessageRequest.setRecipientsInfo(recipientsString);
-        sendMessageRequest.setSubject(subject.getText().toString().trim());
-        messagesApi.sendNotification(bearerToken, sendMessageRequest)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MessagesResponse>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        progressDialog.dismiss();
-                    }
-                    @Override
-                    public void onComplete() {
-
-                    }
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-                    @Override
-                    public void onNext(MessagesResponse messagesResponse) {
-                        progressDialog.dismiss();
-                        if (messagesResponse.isIsSuccess() == true) {
-                           getActivity().finish();
-                        } else if (messagesResponse.getErrorCode() != 200) {
-                            //display error.
-                            new CustomAlertDialog().showAlert1(
-                                    getActivity(),
-                                    R.string.text_failed,
-                                    messagesResponse.getErrorMessage(),
-                                    null);
+        if(validate()) {
+            final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                    R.style.AppTheme_Dark_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage(getString(R.string.text_please_wait));
+            progressDialog.show();
+            PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+            String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
+            //    <recipients><to><recipient groupTypeId=\"1\">29693,32012</recipient>" +
+            //           "<recipient groupTypeId=\"2\">33004,33005</recipient></to>" +
+            //           "</recipients>
+            String recipientsString = "<recipients><to><recipient groupTypeId=\"1\">" + selectedToId + "</recipient></to></recipients>";
+            SendMessageRequest sendMessageRequest = new SendMessageRequest();
+            sendMessageRequest.setBody(message.getText().toString().trim());
+            sendMessageRequest.setContextTypeId(1);
+            sendMessageRequest.setMapId(2);
+            sendMessageRequest.setRecipientsInfo(recipientsString);
+            sendMessageRequest.setSubject(subject.getText().toString().trim());
+            messagesApi.sendNotification(bearerToken, sendMessageRequest)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<MessagesResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            progressDialog.dismiss();
                         }
-                    }
-                });
 
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(MessagesResponse messagesResponse) {
+                            progressDialog.dismiss();
+                            if (messagesResponse.isIsSuccess() == true) {
+                                getActivity().finish();
+                            } else if (messagesResponse.getErrorCode() != 200) {
+                                //display error.
+                                new CustomAlertDialog().showAlert1(
+                                        getActivity(),
+                                        R.string.text_failed,
+                                        messagesResponse.getErrorMessage(),
+                                        null);
+                            }
+                        }
+                    });
+        }
     }
     class BookAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
@@ -310,5 +314,35 @@ TextView pageTitle;
 //        }
             return usersList;
         }
+    }
+    private Boolean validate(){
+        Boolean flag = true;
+        String msgString = message.getText().toString().trim();
+        String subjectString = subject.getText().toString().trim();
+        if(selectedToId != null && selectedToId > 0){
+            to.setError(null);
+            if(msgString.isEmpty())
+            {
+                flag = false;
+                message.setError("Message should not be empty");
+            }
+            else{
+                message.setError(null);
+                if(subjectString.isEmpty()){
+                    flag = false;
+                    subject.setError("Subject should not be empty");
+                }
+                else{
+                    subject.setError(null);
+                }
+            }
+
+        }
+        else{
+            flag = false;
+            to.setError("To should not be empty");
+        }
+
+        return flag;
     }
 }
