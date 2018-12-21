@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.school.edsense_lite.AWFActivity;
 import com.school.edsense_lite.BaseFragment;
@@ -231,7 +232,7 @@ public class NewMessageFragment extends BaseFragment {
             messagesApi.sendNotification(bearerToken, sendMessageRequest)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<MessagesResponse>() {
+                    .subscribe(new Observer<SendMessageResponse>() {
                         @Override
                         public void onError(Throwable e) {
                             progressDialog.dismiss();
@@ -248,9 +249,10 @@ public class NewMessageFragment extends BaseFragment {
                         }
 
                         @Override
-                        public void onNext(MessagesResponse messagesResponse) {
+                        public void onNext(SendMessageResponse messagesResponse) {
                             progressDialog.dismiss();
-                            if (messagesResponse.isIsSuccess() == true) {
+                            if (messagesResponse.getIsSuccess() == true) {
+                                Toast.makeText(getActivity(), "Message sent successfully", Toast.LENGTH_SHORT).show();
                                 getActivity().finish();
                             } else if (messagesResponse.getErrorCode() != 200) {
                                 //display error.
