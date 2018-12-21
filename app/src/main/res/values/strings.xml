@@ -41,6 +41,11 @@
     <string name="text_success">Success</string>
     <string name="text_enter_details">Details are not matching</string>
     <string name="text_message_details">Message Details</string>
+    <string name="empty_attendance_list_message">Attendance List is empty</string>
+    <string name="empty_message">Messages are empty</string>
+    <string name="empty_events_list_message">No events available to display</string>
+    <string name="empty_news_list_message">No news available to display</string>
+    <string name="empty_notes_list_message">No notes available to display</string>
 
     <string-array name="sections_array">
         <item>VII - A, B</item>

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.events.Event;
+import com.school.edsense_lite.model.AttendanceBySectionModel;
 
 
 import java.lang.ref.WeakReference;
@@ -64,13 +65,13 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof GetUserResponseModel) {
+        if (items.get(position) instanceof AttendanceBySectionModel) {
             return ATTENDANCE_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(AttendanceRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        GetUserResponseModel attendanceModel = (GetUserResponseModel) items.get(position);
+        AttendanceBySectionModel attendanceModel = (AttendanceBySectionModel) items.get(position);
         if (attendanceModel != null) {
             vh1.getName().setText(attendanceModel.getDisplayName());
             if(attendanceModel.getReason() != null){
@@ -177,7 +178,7 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
             //  modifyButton.setOnClickListener(this);
         }
-        public void bind(final GetUserResponseModel attendance, final ClickListener listener, final int position) {
+        public void bind(final AttendanceBySectionModel attendance, final ClickListener listener, final int position) {
             modifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onModifyButtonClicked(attendance,position);

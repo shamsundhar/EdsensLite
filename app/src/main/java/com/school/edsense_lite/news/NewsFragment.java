@@ -38,6 +38,8 @@ import okhttp3.internal.http2.StreamResetException;
 public class NewsFragment extends BaseFragment {
     @BindView(R.id.newsRecyclerview)
     RecyclerView newsRecyclerView;
+    @BindView(R.id.empty_view)
+    TextView empty_view;
     @BindView(R.id.tv1)
     TextView tv1;
     private NewsRecyclerViewAdapter newsRecyclerViewAdapter;
@@ -69,7 +71,7 @@ public class NewsFragment extends BaseFragment {
         fragmentComponent().inject(this);
 
         applyFonts();
-
+        empty_view.setText(R.string.empty_news_list_message);
         newsRecyclerViewAdapter = new NewsRecyclerViewAdapter();
         newsRecyclerView.setAdapter(newsRecyclerViewAdapter);
         newsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -115,8 +117,16 @@ public class NewsFragment extends BaseFragment {
                         public void onNext(NewsResponse newsResponse) {
                             progressDialog.dismiss();
                             if (newsResponse.getIsSuccess().equals(true)) {
-                                newsRecyclerViewAdapter.setItems(new ArrayList<Object>(newsResponse.getResponse()));
-                                newsRecyclerViewAdapter.notifyDataSetChanged();
+                                if(newsResponse.getResponse() != null && !newsResponse.getResponse().isEmpty()){
+                                    empty_view.setVisibility(View.GONE);
+                                    newsRecyclerView.setVisibility(View.VISIBLE);
+                                    newsRecyclerViewAdapter.setItems(new ArrayList<Object>(newsResponse.getResponse()));
+                                    newsRecyclerViewAdapter.notifyDataSetChanged();
+                                }else{
+                                    empty_view.setVisibility(View.VISIBLE);
+                                    newsRecyclerView.setVisibility(View.GONE);
+                                }
+
 
                             } else if (!newsResponse.getErrorCode().equals(200)) {
                                 //display error.

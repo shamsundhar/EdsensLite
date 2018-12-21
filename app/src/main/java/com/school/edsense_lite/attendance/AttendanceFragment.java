@@ -35,6 +35,7 @@ import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.fragment.DatePickerFragment;
 import com.school.edsense_lite.messages.MessagesFragment;
+import com.school.edsense_lite.model.AttendanceBySectionModel;
 import com.school.edsense_lite.model.SectionResponseModel;
 import com.school.edsense_lite.model.db.EdsenseDatabase;
 import com.school.edsense_lite.utils.Common;
@@ -45,6 +46,7 @@ import com.school.edsense_lite.utils.PreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -66,6 +68,8 @@ import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 public class AttendanceFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     @BindView(R.id.attendanceRecyclerview)
     RecyclerView attendanceRecyclerView;
+    @BindView(R.id.empty_view)
+    TextView empty_view;
     @BindView(R.id.sectionTV)
     TextView sectionTV;
     @BindView(R.id.date)
@@ -93,6 +97,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
     //List<Object> userResponseList;
     private String selectedDate;
     private String selectedSectionId;
+    private String selectedSection;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -117,12 +122,13 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         fragmentComponent().inject(this);
         applyFonts();
         setCurrentDate();
+        empty_view.setText(R.string.empty_attendance_list_message);
         attendanceRecyclerViewAdapter = new AttendanceRecyclerViewAdapter();
         attendanceRecyclerView.setAdapter(attendanceRecyclerViewAdapter);
         attendanceRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         attendanceRecyclerViewAdapter.setOnClickListener(new ClickListener() {
             @Override
-            public void onModifyButtonClicked(GetUserResponseModel attendanceModel, int position) {
+            public void onModifyButtonClicked(AttendanceBySectionModel attendanceModel, int position) {
                 displayAbsentPopup(attendanceModel,position);
             }
         });
@@ -207,7 +213,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         dateTV.setTypeface(tf);
         chooseSection.setTypeface(tf);
     }
-    private void displayAbsentPopup(final GetUserResponseModel attendanceModel, final int position){
+    private void displayAbsentPopup(final AttendanceBySectionModel attendanceModel, final int position){
         final Dialog builder = new Dialog(getActivity());
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Window window = builder.getWindow();
@@ -418,7 +424,8 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                 // TODO Auto-generated method stub
                 builder.dismiss();
                 SectionResponseModel dataModel = sectionResponseList.get(position);
-                sectionTV.setText(dataModel.getCompositeTagName());
+                selectedSection = dataModel.getCompositeTagName();
+                sectionTV.setText(selectedSection);
                 selectedSectionId = dataModel.getCompositeTagId();
                 //  Snackbar.make(view, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
                 //          .setAction("No action", null).show();
@@ -478,7 +485,20 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                                     //     userResponseList.addAll(yourArray);
                                     if(yourArray != null && yourArray.size()>0){
                                         for(GetUserResponseModel model : yourArray){
-                                            MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
+                                            AttendanceBySectionModel attendanceBySectionModel = new AttendanceBySectionModel();
+                                            attendanceBySectionModel.setCompositeTagId(selectedSectionId);
+                                            attendanceBySectionModel.setCompositeTagName(selectedSection);
+                                            attendanceBySectionModel.setDate(selectedDate);
+                                            attendanceBySectionModel.setStudentUserId(model.getStudentUserId());
+                                            attendanceBySectionModel.setDisplayName(model.getDisplayName());
+                                            attendanceBySectionModel.setIsAttended(model.getIsAttended());
+                                            attendanceBySectionModel.setIsEarlyOut(model.getIsEarlyOut());
+                                            attendanceBySectionModel.setIsLateIn(model.getIsLateIn());
+                                            attendanceBySectionModel.setReason(model.getReason());
+                                            attendanceBySectionModel.setTotalCount(model.getTotalCount());
+                                            attendanceBySectionModel.setSynced(false);
+                                            MessagesFragment.mEdsenseDatabase.getAttendanceBySectionDao().insert(attendanceBySectionModel);
+//                                            MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
                                         }
                                     }
 
@@ -501,24 +521,41 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
 
     private void displayUserResponseFromDB(ProgressDialog progressDialog) {
 
-        List<GetUserResponseModel> yourArray = MessagesFragment.mEdsenseDatabase.getUserResponseDao().getAllUserResponses();
+        List<AttendanceBySectionModel> yourArray = MessagesFragment.mEdsenseDatabase.getAttendanceBySectionDao().findAttendanceByDateAndSection(selectedDate,selectedSection);
         userResponseList = new ArrayList<Object>(yourArray);
         progressDialog.dismiss();
-        attendanceRecyclerViewAdapter.setItems(userResponseList);
+        if(userResponseList != null && !userResponseList.isEmpty()){
+            attendanceRecyclerView.setVisibility(View.VISIBLE);
+            empty_view.setVisibility(View.GONE);
+            attendanceRecyclerViewAdapter.setItems(userResponseList);
+            attendanceRecyclerViewAdapter.notifyDataSetChanged();
+        }else{
+            attendanceRecyclerView.setVisibility(View.GONE);
+            empty_view.setVisibility(View.VISIBLE);
 
-        attendanceRecyclerViewAdapter.notifyDataSetChanged();
+        }
+
     }
 
-    private void updateUserResponseToDB(ProgressDialog progressDialog, GetUserResponseModel attendanceModel, int position){
+    private void updateUserResponseToDB(ProgressDialog progressDialog, AttendanceBySectionModel attendanceModel, int position){
         if(attendanceModel != null){
-            MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(attendanceModel);
+            MessagesFragment.mEdsenseDatabase.getAttendanceBySectionDao().insert(attendanceModel);
         }
-        List<GetUserResponseModel> yourArray = MessagesFragment.mEdsenseDatabase.getUserResponseDao().getAllUserResponses();
+        List<AttendanceBySectionModel> yourArray = MessagesFragment.mEdsenseDatabase.getAttendanceBySectionDao().findAttendanceByDateAndSection(selectedDate,selectedSection);
         userResponseList = new ArrayList<Object>(yourArray);
         progressDialog.dismiss();
         //attendanceRecyclerViewAdapter.setItems(userResponseList);
 
-        attendanceRecyclerViewAdapter.notifyItemChanged(position);
+
+        if(userResponseList != null && !userResponseList.isEmpty()){
+            attendanceRecyclerView.setVisibility(View.VISIBLE);
+            empty_view.setVisibility(View.GONE);
+            attendanceRecyclerViewAdapter.notifyItemChanged(position);
+        }else{
+            attendanceRecyclerView.setVisibility(View.GONE);
+            empty_view.setVisibility(View.VISIBLE);
+
+        }
     }
     private void setCurrentDate(){
         selectedDate = DateTimeUtils.getCurrentDateInString(DATE_FORMAT2);

@@ -26,6 +26,7 @@
             android:id="@+id/messagesRecyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <include layout="@layout/empty_text"/>
     </RelativeLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/new_message_button"
