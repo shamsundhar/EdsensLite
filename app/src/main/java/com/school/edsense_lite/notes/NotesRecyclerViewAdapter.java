@@ -184,7 +184,6 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             else{
                 modifyButton.setOnClickListener(null);
             }
-
         }
         @Override
         public void onClick(View v) {
