@@ -153,10 +153,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private void configureViewHolder1(ViewHolder1 vh1, int position) {
         Row scheduleModel = (Row) items.get(position);
         if (scheduleModel != null) {
-            vh1.getClas().setText(scheduleModel.getGradeName());
+            vh1.getClas().setText(scheduleModel.getGradeName()+" ("+scheduleModel.getSectionName()+")");
             vh1.getSubject().setText(scheduleModel.getSubject());
             vh1.getTopic().setText(scheduleModel.getTitle());
-            vh1.getTime().setText(scheduleModel.getStartTimeSlot());
+            vh1.getTime().setText(scheduleModel.getStartTimeSlot() + "\n"+ scheduleModel.getTimePeriod());
             //  vh1.bind(scheduleModel, listener);
         }
     }

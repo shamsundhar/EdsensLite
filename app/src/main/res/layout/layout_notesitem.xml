@@ -53,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/traitsLabel"
                 android:textColor="@color/primary"
+                android:visibility="gone"
                 android:text="Traits: "
                 android:textSize="16sp"
                 android:layout_alignParentLeft="true"/>
@@ -71,13 +72,21 @@
             android:layout_height="wrap_content"
             android:id="@+id/reason"
             android:textSize="14sp"
-            android:minLines="2"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/description_color"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/by"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/aluminum"
+            android:text=""/>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginTop="5dp"
             android:background="@color/divider_color2"/>
     </LinearLayout>
 </LinearLayout>

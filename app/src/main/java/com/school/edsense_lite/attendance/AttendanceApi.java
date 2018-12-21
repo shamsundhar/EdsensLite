@@ -1,6 +1,8 @@
 package com.school.edsense_lite.attendance;
 
 import com.school.edsense_lite.notes.GetUserNotesResponse;
+import com.school.edsense_lite.notes.GetUsersForNotesRequest;
+import com.school.edsense_lite.notes.GetUsersForNotesResponse;
 import com.school.edsense_lite.notes.SaveNotesRequest;
 import com.school.edsense_lite.notes.SaveNotesResponse;
 import com.school.edsense_lite.today.AssignmentResponse;
@@ -22,6 +24,12 @@ public interface AttendanceApi {
     @POST("Academic/getUsers")
     @Headers({"Content-Type: application/json"})
     Observable<GetUserResponse> getUsersBasedOnSection(@Header("Authorization") String token, @Body GetUserRequest getUserRequest);
+
+    //https://apitst.edsense.co.in/api/Account/SearchUser
+    @POST("Account/SearchUser")
+    @Headers({"Content-Type: application/json"})
+    Observable<GetUsersForNotesResponse> getUsersForAddingNotes(@Header("Authorization") String token, @Body GetUsersForNotesRequest getUsersForNotesRequest);
+
 
     //https://apitst.edsense.co.in/api/Academic/UsersSaveAttendance
     @POST("Academic/UsersSaveAttendance")

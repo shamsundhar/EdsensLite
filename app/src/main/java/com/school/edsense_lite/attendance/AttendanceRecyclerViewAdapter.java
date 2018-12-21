@@ -75,7 +75,16 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         if (attendanceModel != null) {
             vh1.getName().setText(attendanceModel.getDisplayName());
             if(attendanceModel.getReason() != null){
-                vh1.getReason().setText("Reason: "+attendanceModel.getReason());
+                if(attendanceModel.getReason().isEmpty()){
+                    vh1.getReason().setText("Reason not mentioned");
+                }
+                else{
+                    vh1.getReason().setText("Reason: "+attendanceModel.getReason());
+                }
+
+            }
+            else{
+                vh1.getReason().setText("Reason not mentioned");
             }
             String status = "";
             if(attendanceModel.getIsAttended() != null){

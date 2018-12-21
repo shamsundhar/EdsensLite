@@ -66,19 +66,12 @@ public class MessageDetailsFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.layout_message_details, container, false);
-
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
         applyFonts();
-
         displayMessage();
-
-
-
         return view;
-
     }
 
     private void displayMessage(){
@@ -88,12 +81,11 @@ public class MessageDetailsFragment extends BaseFragment {
         messageDetailsRequest.getValue().setId(getArguments().getString(KEY_MESSAGE_ID));
         messageDetailsRequest.getValue().setMapId(getArguments().getString(KEY_MESSAGE_MAP_ID));
 
-
-
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.text_please_wait));
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");

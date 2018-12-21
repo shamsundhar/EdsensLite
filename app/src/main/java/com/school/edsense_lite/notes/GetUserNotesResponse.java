@@ -1,5 +1,6 @@
 package com.school.edsense_lite.notes;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class GetUserNotesResponse {
@@ -49,10 +50,12 @@ public class GetUserNotesResponse {
         this.isUserActive = isUserActive;
     }
 
-    public class Response {
+    public class Response implements Serializable {
         private Integer StudentNotesId;
+        private String StudentId;
         private String Note;
         private Boolean IsPublic;
+        private Integer IsEditable;
         private Boolean IsVisibletoParent;
         private String DateCommented;
         private Integer SeverityTypeId;
@@ -70,7 +73,20 @@ public class GetUserNotesResponse {
         private String Image;
         private List<Tag> Tags = null;
         private Integer IsAdmin;
+        public Integer getIsEditable() {
+            return IsEditable;
+        }
 
+        public void setIsEditable(Integer isEditable) {
+            IsEditable = isEditable;
+        }
+        public String getStudentId() {
+            return StudentId;
+        }
+
+        public void setStudentId(String studentId) {
+            StudentId = studentId;
+        }
         public Integer getStudentNotesId() {
             return StudentNotesId;
         }
@@ -234,7 +250,7 @@ public class GetUserNotesResponse {
 
 
 
-    public class Tag {
+    public class Tag implements Serializable{
 
         private Integer TagId;
         private String Value;

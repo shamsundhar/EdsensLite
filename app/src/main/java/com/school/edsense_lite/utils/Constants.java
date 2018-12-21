@@ -12,10 +12,14 @@ public class Constants {
     public static final String BUNDLE_KEY_DISPLAY_ORDER_SUCCESS_POPUP = "BUNDLE_DISPLAY_ORDER_POPUP";
     public static final String BUNDLE_KEY_OTP = "BUNDLE_OTP";
     public static final String BUNDLE_KEY_USER_ID = "BUNDLE_USER_ID";
+    public static final String BUNDLE_KEY_SECTION_ID = "SECTION_ID";
+    public static final String BUNDLE_KEY_NOTES_MODEL = "NOTES_MODEL";
     public static final String BUNDLE_KEY_RESET_PASSWORD_RESULT_FLAG = "RESET_PASSWORD_RESULT_FLAG";
 
     public static final String BUNDLE_KEY_DISPLAY_FRAGMENT = "DISPLAY_FRAGMENT";
     public static final String BUNDLE_VALUE_NEWS = "NEWS";
+    public static final String BUNDLE_VALUE_ADD_NOTES = "ADD_NOTES";
+    public static final String BUNDLE_VALUE_EDIT_NOTES = "EDIT_NOTES";
     public static final String BUNDLE_VALUE_EVENTS = "EVENTS";
     public static final String BUNDLE_VALUE_COMPOSE_MESSAGE = "COMPOSE_MESSAGE";
     public static final String BUNDLE_VALUE_MESSAGE_DETAILS = "DISPLAY_MESSAGE";
@@ -38,6 +42,7 @@ public class Constants {
     public static final String DATE_FORMAT5 = "yyyy-MM-dd'T'HH:mm:ss'+'SSS:XXX";
     public static final String DATE_FORMAT6 = "yyyy-MM-dd'T'HH:mm:ssZ";
     public static final String DATE_FORMAT7 = "MMM dd,yyyy";
+    public static final String DATE_FORMAT8 = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String CONST_CUSTOMER_USER_TYPE = "1";
     public static final String BUNDLE_KEY_OTP_VERIFIED_MESSAGE = "OTP_VERIFIED_MESSAGE";
 

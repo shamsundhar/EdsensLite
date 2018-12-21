@@ -18,14 +18,36 @@
             android:id="@+id/date"
             android:textSize="14sp"
             android:text="Monday, 08 October"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/pagetitle"
-            android:textStyle="bold"
-            android:textSize="30sp"
-            android:textColor="@color/black"
-            android:text="Notes"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pagetitle"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/black"
+                android:text="Notes"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/addNotes"
+                android:text="Add Notes"
+                android:layout_alignParentRight="true"
+                android:textSize="16sp"
+                android:layout_centerVertical="true"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary"
+                android:clickable="true"
+                android:background="@drawable/layout_corners_primary_border"
+                android:fontFamily="@font/framd"/>
+        </RelativeLayout>
+
 
     </LinearLayout>
 

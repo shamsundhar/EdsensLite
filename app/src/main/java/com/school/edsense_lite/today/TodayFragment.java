@@ -110,14 +110,6 @@ public class TodayFragment extends BaseFragment {
             requests.add(todayApi.getSchedules(bearerToken));
             requests.add(todayApi.getAssignmentsForLoginUser(bearerToken));
 
-//            Observable<ScheduleResponse> scheduleResponseObservable = todayApi.getSchedules(bearerToken)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread());
-//
-//            Observable<AssignmentResponse> assignmentResponseObservable = todayApi.getAssignmentsForLoginUser(bearerToken)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread());
-
             if(Common.isNetworkAvailable(getActivity())) {
                 // Zip all requests with the Function, which will receive the results.
                 Observable.zip(
@@ -181,72 +173,6 @@ public class TodayFragment extends BaseFragment {
             }else{
                 displayAssignmentsAndSchedulesFromDB(progressDialog);
             }
-
-
-//            todayApi.getSchedules(bearerToken)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new Observer<ScheduleResponse>() {
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            progressDialog.dismiss();
-//                        }
-//                        @Override
-//                        public void onComplete() {
-//
-//                        }
-//                        @Override
-//                        public void onSubscribe(Disposable d) {
-//
-//                        }
-//                        @Override
-//                        public void onNext(ScheduleResponse scheduleResponse) {
-//                            progressDialog.dismiss();
-//                            if (scheduleResponse.getIsSuccess().equals("true")) {
-//                             //   scheduleRecyclerViewAdapter.setItems(prepareList(scheduleResponse));
-//                            //    scheduleRecyclerViewAdapter.notifyDataSetChanged();
-//                            } else if (!scheduleResponse.getErrorCode().equals("200")) {
-//                                //display error.
-//                                new CustomAlertDialog().showAlert1(
-//                                        getActivity(),
-//                                        R.string.text_login_failed,
-//                                        scheduleResponse.getErrorMessage(),
-//                                        null);
-//                            }
-//                        }
-//                    });
-//            todayApi.getAssignmentsForLoginUser(bearerToken)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new Observer<AssignmentResponse>() {
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            progressDialog.dismiss();
-//                        }
-//                        @Override
-//                        public void onComplete() {
-//
-//                        }
-//                        @Override
-//                        public void onSubscribe(Disposable d) {
-//
-//                        }
-//                        @Override
-//                        public void onNext(AssignmentResponse assignmentResponse) {
-//                            progressDialog.dismiss();
-//                            if (assignmentResponse.getIsSuccess().equals("true")) {
-//                                scheduleRecyclerViewAdapter.setItems(prepareList2(assignmentResponse));
-//                                scheduleRecyclerViewAdapter.notifyDataSetChanged();
-//                            } else if (!assignmentResponse.getErrorCode().equals("200")) {
-//                                //display error.
-//                                new CustomAlertDialog().showAlert1(
-//                                        getActivity(),
-//                                        R.string.text_login_failed,
-//                                        assignmentResponse.getErrorMessage(),
-//                                        null);
-//                            }
-//                        }
-//                    });
         }
 
         scheduleRecyclerViewAdapter.setOnClickListener(new ClickListener() {
@@ -302,96 +228,5 @@ public class TodayFragment extends BaseFragment {
         titleTV.setTypeface(tf);
         dateTV.setTypeface(tf);
     }
-//    private ArrayList<Object> prepareList(ScheduleResponse scheduleResponse){
-//        ArrayList<Object> items = new ArrayList<>();
-//        items.addAll(scheduleResponse.getResponse().getRows());
-//
-//        items.add(new NewsEvents());
-//
-//        items.add(new Header("Assignments"));
-//
-//        items.add(new Assignment("12-1-2018", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2013", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2015", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2019", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-//        return items;
-//    }
-//    private ArrayList<Object> prepareList2(AssignmentResponse assignmentResponse){
-//        ArrayList<Object> items = new ArrayList<>();
-//        items.add(new Schedule("9:30", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:31", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:32", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:33", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:34", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:35", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:36", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:37", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:38", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:39", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:40", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:41", "French","IX","Lorem Ipsum"));
-//
-//        items.add(new NewsEvents());
-//
-//        items.add(new Header("Assignments"));
-//        items.addAll(assignmentResponse.getResponse());
-//
-//        return items;
-//    }
-//    private ArrayList<Object> getScheduleList() {
-//        ArrayList<Object> items = new ArrayList<>();
-//        items.add(new Schedule("9:30", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:31", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:32", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:33", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:34", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:35", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:36", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:37", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:38", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:39", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:40", "French","IX","Lorem Ipsum"));
-//        items.add(new Schedule("9:41", "French","IX","Lorem Ipsum"));
-//
-//        items.add(new NewsEvents());
-//
-//        items.add(new Header("Assignments"));
-//
-//        items.add(new Assignment("12-1-2018", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2013", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2015", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2019", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-//        return items;
-//    }
-//    private ArrayList<Object> getAssignmentList(){
-//        ArrayList<Object> items = new ArrayList<>();
-//        items.add(new Assignment("12-1-2018", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2013", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2015", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2016", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2012", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2019", "12-12-2014","Pending","Lorem Ipsum"));
-//        items.add(new Assignment("12-1-2014", "12-12-2014","Pending","Lorem Ipsum"));
-//
-//        return items;
-//    }
 
 }

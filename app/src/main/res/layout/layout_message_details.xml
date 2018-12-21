@@ -7,7 +7,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:text="Sample message"
+    android:text=""
     android:id="@+id/txt_msg_title"
     android:textStyle="bold"
     android:textColor="@color/black"
@@ -22,7 +22,6 @@
             android:id="@+id/imageView"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_launcher"
             android:scaleType="fitCenter"
             android:background="@drawable/circle"
             />
@@ -47,7 +46,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:layout_centerVertical="true"
-                    android:text="sender name" />
+                    android:text="" />
 
             </RelativeLayout>
 
@@ -57,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txt_sender_name"
                 android:textSize="14sp"
-                android:text="sender mail"
+                android:text=""
                 android:fontFamily="@font/framd"
                 android:textColor="@color/aluminum"
                 android:lines="2"

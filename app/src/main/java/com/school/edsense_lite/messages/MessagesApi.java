@@ -19,7 +19,7 @@ public interface MessagesApi {
 
     @POST("NC/SaveNotification")
     @Headers({"Content-Type: application/json"})
-    Observable<MessagesResponse> sendNotification(@Header("Authorization") String token, @Body SendMessageRequest messageRequest);
+    Observable<SendMessageResponse> sendNotification(@Header("Authorization") String token, @Body SendMessageRequest messageRequest);
 
     //://apitst.edsense.co.in/api/Portal/SearchTagsByCategoryId
     @POST("Portal/SearchTagsByCategoryId")

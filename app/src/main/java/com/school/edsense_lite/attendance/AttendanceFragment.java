@@ -599,6 +599,9 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         selectedDate = strDate;
         strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
         dateTV.setText(strDate);
+        if(selectedSectionId != null && !selectedSectionId.trim().isEmpty()){
+            getUsersBasedOnSection();
+        }
     }
     String padding(int value)
     {

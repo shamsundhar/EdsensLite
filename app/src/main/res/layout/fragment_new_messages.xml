@@ -13,40 +13,19 @@
         android:textColor="@color/black"
         android:layout_alignParentTop="true"
         android:text="New Message"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/layoutTo"
-        android:layout_below="@id/pagetitle">
-        <com.school.edsense_lite.messages.DelayAutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="To"
-            android:id="@+id/toEditText"
-            />
-        <ProgressBar
-            android:id="@+id/pb_loading_indicator"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:visibility="gone"/>
-    </RelativeLayout>
     <!--<RelativeLayout-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/layoutCC"-->
-        <!--android:layout_below="@id/layoutTo">-->
+        <!--android:id="@+id/layoutTo"-->
+        <!--android:layout_below="@id/pagetitle">-->
         <!--<com.school.edsense_lite.messages.DelayAutoCompleteTextView-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
-            <!--android:hint="CC"-->
-            <!--android:id="@+id/ccEditText"-->
+            <!--android:hint="To"-->
+            <!--android:id="@+id/toEditText"-->
             <!--/>-->
         <!--<ProgressBar-->
-            <!--android:id="@+id/cc_pb_loading_indicator"-->
+            <!--android:id="@+id/pb_loading_indicator"-->
             <!--style="?android:attr/progressBarStyleSmall"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
@@ -55,12 +34,20 @@
             <!--android:layout_marginRight="10dp"-->
             <!--android:visibility="gone"/>-->
     <!--</RelativeLayout>-->
+    <android.support.v7.widget.AppCompatAutoCompleteTextView
+        android:id="@+id/toEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pagetitle"
+        android:hint="To"
+        android:inputType="text"
+        android:maxLines="1"/>
     <EditText
         android:id="@+id/txtSub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Subject"
-        android:layout_below="@id/layoutTo"/>
+        android:layout_below="@id/toEditText"/>
     <EditText
         android:id="@+id/txtMsg"
         android:layout_width="match_parent"
