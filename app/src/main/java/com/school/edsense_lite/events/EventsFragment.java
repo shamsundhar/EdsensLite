@@ -39,6 +39,8 @@ import okhttp3.internal.http2.StreamResetException;
 public class EventsFragment extends BaseFragment {
     @BindView(R.id.eventsRecyclerview)
     RecyclerView eventsRecyclerView;
+    @BindView(R.id.empty_view)
+    TextView empty_view;
     EventsRecyclerViewAdapter eventsRecyclerViewAdapter;
     @BindView(R.id.tv1)
     TextView tv1;
@@ -68,6 +70,7 @@ public class EventsFragment extends BaseFragment {
         fragmentComponent().inject(this);
 
         applyFonts();
+        empty_view.setText(R.string.empty_events_list_message);
         eventsRecyclerViewAdapter = new EventsRecyclerViewAdapter();
         eventsRecyclerView.setAdapter(eventsRecyclerViewAdapter);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -114,8 +117,16 @@ public class EventsFragment extends BaseFragment {
                         public void onNext(EventsResponse eventsResponse) {
                             progressDialog.dismiss();
                             if (eventsResponse.getIsSuccess().equals(true)) {
-                                eventsRecyclerViewAdapter.setItems(new ArrayList<Object>(eventsResponse.getResponse()));
-                                eventsRecyclerViewAdapter.notifyDataSetChanged();
+                                if(eventsResponse.getResponse() != null && !eventsResponse.getResponse().isEmpty()){
+                                    eventsRecyclerView.setVisibility(View.VISIBLE);
+                                    empty_view.setVisibility(View.GONE);
+                                    eventsRecyclerViewAdapter.setItems(new ArrayList<Object>(eventsResponse.getResponse()));
+                                    eventsRecyclerViewAdapter.notifyDataSetChanged();
+                                }else{
+                                    eventsRecyclerView.setVisibility(View.GONE);
+                                    empty_view.setVisibility(View.VISIBLE);
+                                }
+
 
                             } else if (!eventsResponse.getErrorCode().equals(200)) {
                                 //display error.

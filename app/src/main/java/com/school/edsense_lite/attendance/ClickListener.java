@@ -1,5 +1,7 @@
 package com.school.edsense_lite.attendance;
 
+import com.school.edsense_lite.model.AttendanceBySectionModel;
+
 public interface ClickListener {
-    void onModifyButtonClicked(GetUserResponseModel attendanceModel, int position);
+    void onModifyButtonClicked(AttendanceBySectionModel attendanceModel, int position);
 }

@@ -49,6 +49,8 @@ import static com.school.edsense_lite.utils.Constants.KEY_MESSAGE_MAP_ID;
 public class MessagesFragment extends BaseFragment {
     @BindView(R.id.messagesRecyclerview)
     RecyclerView messagesRecyclerView;
+    @BindView(R.id.empty_view)
+    TextView empty_view;
     @BindView(R.id.pagetitle)
     TextView titleTV;
     @BindView(R.id.new_message_button)
@@ -89,7 +91,7 @@ public class MessagesFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
         applyFonts();
-
+        empty_view.setText(R.string.empty_message);
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String primaryUrl = preferenceHelper.getString(getActivity(),Constants.PREF_KEY_SUBSCRIPTION_PRIMARY_URL,"");
         messagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(getActivity().getApplicationContext(), primaryUrl);
@@ -213,28 +215,18 @@ public class MessagesFragment extends BaseFragment {
     private void displayMessagesFromDB(ProgressDialog progressDialog){
         messagesResponseList =  (ArrayList<MessagesResponseModel>) mEdsenseDatabase.messagesDao().getAllMessages();
         progressDialog.dismiss();
-        messagesRecyclerViewAdapter.setItems(messagesResponseList);
-        messagesRecyclerView.setAdapter(messagesRecyclerViewAdapter);
-        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        messagesRecyclerViewAdapter.notifyDataSetChanged();
+        if(messagesResponseList != null && !messagesResponseList.isEmpty()){
+            empty_view.setVisibility(View.GONE);
+            messagesRecyclerView.setVisibility(View.VISIBLE);
+            messagesRecyclerViewAdapter.setItems(messagesResponseList);
+            messagesRecyclerView.setAdapter(messagesRecyclerViewAdapter);
+            messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            messagesRecyclerViewAdapter.notifyDataSetChanged();
+        }else{
+            empty_view.setVisibility(View.VISIBLE);
+            messagesRecyclerView.setVisibility(View.GONE);
+        }
+
     }
 
-    private ArrayList<MessagesResponseModel> getMessagesList() {
-        ArrayList<MessagesResponseModel> items = new ArrayList<>();
-        items.add(new MessagesResponseModel(1,111,"org1","org","sub","12-12-1998","high",1122,
-                "Sample context displayname",12345,4,1,12,"14321423","https://raw.githubusercontent.com/gcacace/android-socialbuttons/master/screenshot.png",
-                "Sample message from dev","sample image"));
-        //items.add(new MessagesResponseModel("Aanya Rajeev Kumar", "Lorem Ipsum is simply dummy text","12-12-1998"));
-//        items.add(new MessagesModel("Maanvi Mittal", "Lorem Ipsum is simply dummy text","12-12-1994"));
-//        items.add(new MessagesModel("Ridhisri Chowdhary Vajendla", "Lorem Ipsum is simply dummy text","12-12-1991"));
-//        items.add(new MessagesModel("Ravi Sarayu Reddy", "Lorem Ipsum is simply dummy text","12-12-1995"));
-//        items.add(new MessagesModel("Aanya Rajeev Kumar", "Lorem Ipsum is simply dummy text","12-12-1997"));
-//        items.add(new MessagesModel("Ridhisri Chowdhary Vajendla", "Lorem Ipsum is simply dummy text","12-12-1994"));
-//        items.add(new MessagesModel("Maanvi Mittal", "Lorem Ipsum is simply dummy text","12-12-1999"));
-//        items.add(new MessagesModel("Aanya Rajeev Kumar", "Lorem Ipsum is simply dummy text","12-12-1990"));
-//        items.add(new MessagesModel("Maanvi Mittal", "Lorem Ipsum is simply dummy text","12-12-1993"));
-//        items.add(new MessagesModel("Ravi Sarayu Reddy", "Lorem Ipsum is simply dummy text","12-12-1996"));
-
-        return items;
-    }
 }

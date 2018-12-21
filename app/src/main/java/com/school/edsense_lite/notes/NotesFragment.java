@@ -84,6 +84,8 @@ import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     @BindView(R.id.notesRecyclerview)
     RecyclerView notesRecyclerView;
+    @BindView(R.id.empty_view)
+    TextView empty_view;
     @BindView(R.id.sectionTV)
     TextView sectionTV;
     @BindView(R.id.date)
@@ -142,6 +144,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         fragmentComponent().inject(this);
         applyFonts();
         setCurrentDate();
+        empty_view.setText(R.string.empty_notes_list_message);
         notesRecyclerViewAdapter = new NotesRecyclerViewAdapter();
         notesRecyclerView.setAdapter(notesRecyclerViewAdapter);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -579,7 +582,6 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 
                             @Override
                             public void onNext(GetUserNotesResponse getUserNotesResponse) {
-                            //    Toast.makeText(getActivity(), getUserNotesResponse.getResponse(), Toast.LENGTH_LONG).show();
                                 progressDialog.dismiss();
                                 if (getUserNotesResponse.getIsSuccess().equals(true)) {
                                     String responseString = getUserNotesResponse.getResponse();
@@ -587,16 +589,18 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                                             fromJson(responseString,
                                                     new TypeToken<List<GetUserNotesResponse.Response>>() {
                                                     }.getType());
-                                    if(yourArray != null && yourArray.size()>0){
-                                      //  for(GetUserNotesResponse.Response model : yourArray){
-                                      //      MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
-                                      //  }
-                                    }
-                                  //  displayNotesResponseFromDB(progressDialog);
-                                    notesResponseList = new ArrayList<Object>(yourArray);
-                                    notesRecyclerViewAdapter.setItems(notesResponseList);
                                     progressDialog.dismiss();
-                                    notesRecyclerViewAdapter.notifyDataSetChanged();
+                                    if(yourArray != null && yourArray.size()>0){
+                                        empty_view.setVisibility(View.GONE);
+                                        notesRecyclerView.setVisibility(View.VISIBLE);
+                                        notesResponseList = new ArrayList<Object>(yourArray);
+                                        notesRecyclerViewAdapter.setItems(notesResponseList);
+                                        notesRecyclerViewAdapter.notifyDataSetChanged();
+                                    }else{
+                                        empty_view.setVisibility(View.VISIBLE);
+                                        notesRecyclerView.setVisibility(View.GONE);
+                                    }
+
                                 } else if (!getUserNotesResponse.getErrorCode().equals(200)) {
                                     //display error.
                                     new CustomAlertDialog().showAlert1(

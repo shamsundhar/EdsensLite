@@ -18,6 +18,6 @@ public interface GetUserResponseDao {
     @Query("DELETE FROM table_getuser_response")
     void deleteAll();
 
-    @Query("SELECT * from table_getuser_response") // ORDER BY message_id ASC")
+    @Query("SELECT * from table_getuser_response ORDER BY getuser_DisplayName ASC")
     List<GetUserResponseModel> getAllUserResponses();
 }
