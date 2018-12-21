@@ -38,6 +38,8 @@ public class AttendanceBySectionModel {
     private String totalCount;
     @ColumnInfo(name = "attendancebysection_isSynced")
     private transient boolean isSynced;
+    @ColumnInfo(name = "attendancebysection_Gender")
+    private int Gender;
 
     @NonNull
     public String getStudentUserId() {
@@ -47,7 +49,13 @@ public class AttendanceBySectionModel {
     public void setStudentUserId(@NonNull String studentUserId) {
         this.studentUserId = studentUserId;
     }
+    public int getGender() {
+        return Gender;
+    }
 
+    public void setGender(int gender) {
+        Gender = gender;
+    }
     public String getDisplayName() {
         return DisplayName;
     }

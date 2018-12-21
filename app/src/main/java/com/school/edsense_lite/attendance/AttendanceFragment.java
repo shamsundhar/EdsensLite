@@ -497,6 +497,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                                             attendanceBySectionModel.setReason(model.getReason());
                                             attendanceBySectionModel.setTotalCount(model.getTotalCount());
                                             attendanceBySectionModel.setSynced(false);
+                                            attendanceBySectionModel.setGender(model.getGender());
                                             MessagesFragment.mEdsenseDatabase.getAttendanceBySectionDao().insert(attendanceBySectionModel);
 //                                            MessagesFragment.mEdsenseDatabase.getUserResponseDao().insert(model);
                                         }

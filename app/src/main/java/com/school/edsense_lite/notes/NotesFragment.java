@@ -148,6 +148,15 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         NotesFragment fragment = new NotesFragment();
         return fragment;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(selectedSectionId != null && !selectedSectionId.trim().isEmpty()){
+            getUsersBasedOnSection();
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

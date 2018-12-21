@@ -73,6 +73,13 @@ public class GetUserNotesResponse {
         private String Image;
         private List<Tag> Tags = null;
         private Integer IsAdmin;
+        private Integer Gender;
+        public Integer getGender() {
+            return Gender;
+        }
+        public void setGender(Integer gender) {
+            Gender = gender;
+        }
         public Integer getIsEditable() {
             return IsEditable;
         }

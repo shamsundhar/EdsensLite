@@ -103,6 +103,13 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
           //  vh1.getTraits().setText("Traits: " + traitsString);
             vh1.getReason().setText("Notes: " + notesModel.getNote());
             vh1.getBy().setText("By: "+notesModel.getCreatedByName());
+            if(notesModel.getGender() == 1){
+                vh1.getAvatar().setImageResource(R.drawable.boy);
+            }
+            else{
+                vh1.getAvatar().setImageResource(R.drawable.girl);
+            }
+
             if(notesModel.getIsEditable() == 1)
             {
                 vh1.getModifyButton().setVisibility(View.VISIBLE);
@@ -121,6 +128,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         private TextView traits;
         private TextView reason;
         private TextView by;
+        private ImageView avatar;
         private ImageView modifyButton;
         private WeakReference<ClickListener> listenerRef;
         public ImageView getModifyButton() {
@@ -146,7 +154,13 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         public void setTraits(TextView status) {
             this.traits = status;
         }
+        public ImageView getAvatar() {
+            return avatar;
+        }
 
+        public void setAvatar(ImageView avatar) {
+            this.avatar = avatar;
+        }
         public TextView getReason() {
             return reason;
         }
@@ -169,6 +183,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             traits = (TextView) v.findViewById(R.id.status);
             reason = (TextView) v.findViewById(R.id.reason);
             by = (TextView)v.findViewById(R.id.by);
+            avatar = (ImageView)v.findViewById(R.id.avatar);
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
             //modifyButton.setOnClickListener(this);
         }

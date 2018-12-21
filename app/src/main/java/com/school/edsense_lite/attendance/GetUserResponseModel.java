@@ -29,6 +29,10 @@ public class GetUserResponseModel {
     @ColumnInfo(name = "getuser_isSynced")
     private transient boolean isSynced;
 
+
+    @ColumnInfo(name = "getuser_Gender")
+    private int Gender;
+
     public boolean isSynced() {
         return isSynced;
     }
@@ -70,7 +74,13 @@ public class GetUserResponseModel {
     }
 
 
+    public int getGender() {
+        return Gender;
+    }
 
+    public void setGender(int gender) {
+        Gender = gender;
+    }
     public String getDisplayName() {
         return DisplayName;
     }

@@ -86,6 +86,12 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             else{
                 vh1.getReason().setText("Reason not mentioned");
             }
+            if(attendanceModel.getGender() == 1){
+                vh1.getAvatar().setImageResource(R.drawable.boy);
+            }
+            else{
+                vh1.getAvatar().setImageResource(R.drawable.girl);
+            }
             String status = "";
             if(attendanceModel.getIsAttended() != null){
                 if(attendanceModel.getIsAttended().equals("true")) {
@@ -134,6 +140,7 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         private TextView name;
         private TextView status;
         private TextView reason;
+        private ImageView avatar;
         private ImageView modifyButton;
         private WeakReference<ClickListener> listenerRef;
 
@@ -168,13 +175,20 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         public void setReason(TextView reason) {
             this.reason = reason;
         }
+        public ImageView getAvatar() {
+            return avatar;
+        }
 
+        public void setAvatar(ImageView avatar) {
+            this.avatar = avatar;
+        }
         public ViewHolder1(View v) {
             super(v);
             listenerRef = new WeakReference<>(clickListener);
             name = (TextView) v.findViewById(R.id.name);
             status = (TextView) v.findViewById(R.id.status);
             reason = (TextView) v.findViewById(R.id.reason);
+            avatar = (ImageView)v.findViewById(R.id.avatar);
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
             //  modifyButton.setOnClickListener(this);
         }
