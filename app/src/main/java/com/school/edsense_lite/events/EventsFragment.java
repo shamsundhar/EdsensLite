@@ -1,6 +1,7 @@
 package com.school.edsense_lite.events;
 
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,19 +13,24 @@ import android.widget.TextView;
 
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.model.MessagesResponseModel;
+import com.school.edsense_lite.model.db.EdsenseDatabase;
 import com.school.edsense_lite.news.News;
 import com.school.edsense_lite.news.NewsFragment;
 import com.school.edsense_lite.news.NewsRecyclerViewAdapter;
 import com.school.edsense_lite.today.EventsRequest;
 import com.school.edsense_lite.today.EventsResponse;
+import com.school.edsense_lite.today.EventsResponseModel;
 import com.school.edsense_lite.today.NewsRequest;
 import com.school.edsense_lite.today.NewsResponse;
 import com.school.edsense_lite.today.TodayApi;
+import com.school.edsense_lite.utils.Common;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,6 +42,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.internal.http2.StreamResetException;
 
+import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
+
 public class EventsFragment extends BaseFragment {
     @BindView(R.id.eventsRecyclerview)
     RecyclerView eventsRecyclerView;
@@ -46,6 +54,8 @@ public class EventsFragment extends BaseFragment {
     TextView tv1;
     @Inject
     TodayApi todayApi;
+    public static EdsenseDatabase mEdsenseDatabase;
+    private ArrayList<EventsResponseModel> eventsList;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -60,6 +70,9 @@ public class EventsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
+                .allowMainThreadQueries()
+                .build();
     }
 
     @Override
@@ -87,7 +100,8 @@ public class EventsFragment extends BaseFragment {
         value.setValue("0");
         value.setTop("2");
         eventsRequest.setValue(value);
-        if(!bearerToken.isEmpty()) {
+        if(Common.isNetworkAvailable(getActivity())) {
+        if (!bearerToken.isEmpty()) {
             todayApi.getEvents(bearerToken, eventsRequest)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -95,8 +109,7 @@ public class EventsFragment extends BaseFragment {
                         @Override
                         public void onError(Throwable e) {
                             progressDialog.dismiss();
-                            if(e instanceof StreamResetException)
-                            {
+                            if (e instanceof StreamResetException) {
                                 //login again
                                 e.printStackTrace();
                                 relogin();
@@ -117,14 +130,13 @@ public class EventsFragment extends BaseFragment {
                         public void onNext(EventsResponse eventsResponse) {
                             progressDialog.dismiss();
                             if (eventsResponse.getIsSuccess().equals(true)) {
-                                if(eventsResponse.getResponse() != null && !eventsResponse.getResponse().isEmpty()){
-                                    eventsRecyclerView.setVisibility(View.VISIBLE);
-                                    empty_view.setVisibility(View.GONE);
-                                    eventsRecyclerViewAdapter.setItems(new ArrayList<Object>(eventsResponse.getResponse()));
-                                    eventsRecyclerViewAdapter.notifyDataSetChanged();
-                                }else{
-                                    eventsRecyclerView.setVisibility(View.GONE);
-                                    empty_view.setVisibility(View.VISIBLE);
+                                if (eventsResponse.getResponse() != null && !eventsResponse.getResponse().isEmpty()) {
+                                    for (EventsResponseModel event : eventsResponse.getResponse()) {
+                                        if (event != null) {
+                                            mEdsenseDatabase.getEventsDao().insert(event);
+                                        }
+                                    }
+                                    displayEventsFromDB();
                                 }
 
 
@@ -139,8 +151,25 @@ public class EventsFragment extends BaseFragment {
                         }
                     });
         }
+    }else{
+            progressDialog.dismiss();
+            displayEventsFromDB();
+        }
 
         return view;
+    }
+
+    public void displayEventsFromDB(){
+        eventsList = (ArrayList<EventsResponseModel>)mEdsenseDatabase.getEventsDao().getAllEvents();
+        if (eventsList != null && !eventsList.isEmpty()) {
+            eventsRecyclerView.setVisibility(View.VISIBLE);
+            empty_view.setVisibility(View.GONE);
+            eventsRecyclerViewAdapter.setItems(eventsList);
+            eventsRecyclerViewAdapter.notifyDataSetChanged();
+        } else {
+            eventsRecyclerView.setVisibility(View.GONE);
+            empty_view.setVisibility(View.VISIBLE);
+        }
     }
     private void applyFonts(){
         // Font path

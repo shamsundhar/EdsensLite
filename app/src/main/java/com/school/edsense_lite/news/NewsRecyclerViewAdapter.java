@@ -18,11 +18,11 @@ import com.school.edsense_lite.utils.DateTimeUtils;
 import java.util.List;
 
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Object> items;
+    private List<News> items;
     private final int NEWS_LIST_ITEM = 0;
 
     public NewsRecyclerViewAdapter(){}
-    public void setItems(List<Object> items) {
+    public void setItems(List<News> items) {
         this.items = items;
     }
     @Override
@@ -62,13 +62,13 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof NewsResponse.Response) {
+        if (items.get(position) instanceof News) {
             return NEWS_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(NewsRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        NewsResponse.Response newsModel = (NewsResponse.Response) items.get(position);
+        News newsModel = (News) items.get(position);
         if (newsModel != null) {
             vh1.getTitle().setText(newsModel.getNewsName());
             if(newsModel.getDescription() != null && newsModel.getDescription().trim().length() > 0) {

@@ -12,13 +12,14 @@ import android.widget.TextView;
 
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.today.EventsResponse;
+import com.school.edsense_lite.today.EventsResponseModel;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.DateTimeUtils;
 
 import java.util.List;
 
 public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Object> items;
+    private List<EventsResponseModel> items;
     private final int EVENTS_LIST_ITEM = 0;
     private AdapterView.OnItemClickListener listener;
 
@@ -26,7 +27,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public void setOnItemClickListener(AdapterView.OnItemClickListener clickListener){
         this.listener = clickListener;
     }
-    public void setItems(List<Object> items) {
+    public void setItems(List<EventsResponseModel> items) {
         this.items = items;
     }
     @Override
@@ -66,13 +67,13 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof EventsResponse.Response) {
+        if (items.get(position) instanceof EventsResponseModel) {
             return EVENTS_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(EventsRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        EventsResponse.Response eventModel = (EventsResponse.Response) items.get(position);
+        EventsResponseModel eventModel = (EventsResponseModel) items.get(position);
         if (eventModel != null) {
             vh1.getTitle().setText(eventModel.getTitle());
             if(eventModel.getDescription() != null && eventModel.getDescription().trim().length() > 0) {
