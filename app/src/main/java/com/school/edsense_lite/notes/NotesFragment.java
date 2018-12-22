@@ -131,10 +131,19 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     }
     @OnClick(R.id.addNotes)
     public void clickOnAddNotes(){
-        Intent in = new Intent(getActivity(), AWFActivity.class);
-        in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_ADD_NOTES);
-        in.putExtra(BUNDLE_KEY_SECTION_ID, selectedSectionId);
-        getActivity().startActivity(in);
+        if(selectedSectionId != null && !selectedSectionId.isEmpty()) {
+            Intent in = new Intent(getActivity(), AWFActivity.class);
+            in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_ADD_NOTES);
+            in.putExtra(BUNDLE_KEY_SECTION_ID, selectedSectionId);
+            getActivity().startActivity(in);
+        }
+        else{
+            new CustomAlertDialog().showAlert1(
+                    getActivity(),
+                    R.string.text_error,
+                    "Select section",
+                    null);
+        }
     }
     NotesRecyclerViewAdapter notesRecyclerViewAdapter;
     /**
