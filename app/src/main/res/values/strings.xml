@@ -47,12 +47,9 @@
     <string name="empty_news_list_message">No news available to display</string>
     <string name="empty_notes_list_message">No notes available to display</string>
 
-    <string-array name="sections_array">
-        <item>VII - A, B</item>
-        <item>VI - A</item>
-        <item>IX - B</item>
-        <item>V - A</item>
-        <item>IV - B</item>
-        <item>III - A</item>
-    </string-array>
+    <string name="text_password_error1">\u2022 Atleast one upper case letter (ex: ABC)</string>
+    <string name="text_password_error2">\u2022 Atleast one numerical value (ex: 123)</string>
+    <string name="text_password_error3">\u2022 Atleast one special character (ex: @, #, $)</string>
+    <string name="text_password_error4">\u2022 Atleast 8 characters</string>
+
 </resources>

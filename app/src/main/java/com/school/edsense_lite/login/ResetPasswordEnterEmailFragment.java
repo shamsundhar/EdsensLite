@@ -68,6 +68,10 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
     Button buttonOk;
     @BindView(R.id.radioGroup)
     RadioGroup radioGroup;
+    @BindView(R.id.passwordErrorLayout)
+    LinearLayout passwordErrorLayout;
+    @BindView(R.id.bottomImage)
+    ImageView bottomImage;
     ActivityListener activityListener;
     PreferenceHelper preferenceHelper;
     @Inject
@@ -94,6 +98,8 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
                     .error(R.drawable.logo)
                     .into(logo);
         }
+        bottomImage.setVisibility(View.VISIBLE);
+        passwordErrorLayout.setVisibility(View.GONE);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
@@ -164,6 +170,8 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
                                 user_phonenumber = response.getResponse().getPhoneNumber();
                                 sendOtpLayout.setVisibility(View.VISIBLE);
                                 buttonOk.setVisibility(View.GONE);
+                                bottomImage.setVisibility(View.VISIBLE);
+                                passwordErrorLayout.setVisibility(View.GONE);
                             }
                             else if(response.getErrorCode().equals(404)){
                                 new CustomAlertDialog().showAlert1(
@@ -345,6 +353,8 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
                                 if(response.getResponse().equals(true)) {
                                     forgotPasswordLayout.setVisibility(View.GONE);
                                     changePasswordLayout.setVisibility(View.VISIBLE);
+                                    bottomImage.setVisibility(View.GONE);
+                                    passwordErrorLayout.setVisibility(View.VISIBLE);
                                 }
                                 else{
                                     new CustomAlertDialog().showAlert1(
@@ -552,6 +562,22 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
                     R.string.text_error,
                     "Passwords are not matching",
                     null);
+        }
+        //  String pattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$";
+        String pattern2 = "(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
+        if(!newpswd.matches(pattern2)){
+            valid = false;
+            newPassword.setError("Password criteria not met");
+        }
+        else{
+            newPassword.setError(null);
+        }
+        if(!confpswd.matches(pattern2)){
+            valid = false;
+            confPassword.setError("Password criteria not met");
+        }
+        else{
+            confPassword.setError(null);
         }
         return valid;
     }
