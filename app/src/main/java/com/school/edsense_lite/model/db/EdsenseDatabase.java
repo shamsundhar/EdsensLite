@@ -15,10 +15,10 @@ import com.school.edsense_lite.model.Subscription;
 import com.school.edsense_lite.model.dao.AssignmentDao;
 import com.school.edsense_lite.model.dao.AttendanceBySectionDao;
 import com.school.edsense_lite.model.dao.AttendanceDao;
+import com.school.edsense_lite.model.dao.EventsDao;
 import com.school.edsense_lite.model.dao.GetUserResponseDao;
 import com.school.edsense_lite.model.dao.MessagesDao;
 import com.school.edsense_lite.model.dao.NewsDao;
-import com.school.edsense_lite.model.dao.NotesDao;
 import com.school.edsense_lite.model.dao.RecomendationDao;
 import com.school.edsense_lite.model.dao.ScheduleRowDao;
 import com.school.edsense_lite.model.dao.SectionResponseDao;
@@ -26,22 +26,26 @@ import com.school.edsense_lite.model.dao.UserNotesResponseDao;
 import com.school.edsense_lite.news.News;
 import com.school.edsense_lite.notes.Note;
 import com.school.edsense_lite.notes.UserNotesResponseModel;
+import com.school.edsense_lite.today.EventsResponseModel;
 
 @Database(entities = {MessagesResponseModel.class,AssignmentResponseModel.class,
         RecomendationModel.class,Row.class,Subscription.class,News.class,GetUserResponseModel.class,
-        SectionResponseModel.class,Note.class,Attendance.class,AttendanceBySectionModel.class},version = 1)
+        SectionResponseModel.class,Note.class,Attendance.class,AttendanceBySectionModel.class,
+        EventsResponseModel.class},version = 1)
 
 public abstract class EdsenseDatabase extends RoomDatabase {
     public abstract MessagesDao messagesDao();
     public abstract AssignmentDao assignmentDao();
-    public abstract NewsDao newsDao();
-    public abstract NotesDao notesDao();
-    public abstract RecomendationDao recomendationDao();
-    public abstract ScheduleRowDao scheduleRowDao();
+    public abstract NewsDao getNewsDao();
+//    public abstract NotesDao getNotesDao();
+//    public abstract NotesTagDao getNotesTagDao();
+    public abstract RecomendationDao getRecomendationDao();
+    public abstract ScheduleRowDao getScheduleRowDao();
     public abstract GetUserResponseDao getUserResponseDao();
-    public abstract SectionResponseDao sectionResponseDao();
-    public abstract AttendanceDao attendanceDao();
+    public abstract SectionResponseDao getSectionResponseDao();
+    public abstract AttendanceDao getAttendanceDao();
     public abstract AttendanceBySectionDao getAttendanceBySectionDao();
+    public abstract EventsDao getEventsDao();
 //    public abstract UserNotesResponseDao getUserNotesResponseDao();
 
 }

@@ -18,6 +18,6 @@ public interface NewsDao {
     @Query("DELETE FROM table_news")
     void deleteAll();
 
-    @Query("SELECT * from table_news ORDER BY news_title ASC")
+    @Query("SELECT * from table_news ORDER BY news_newsId ASC")
     List<News> getAllNews();
 }

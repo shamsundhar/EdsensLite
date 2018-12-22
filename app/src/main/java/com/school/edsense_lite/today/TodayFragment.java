@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +26,12 @@ import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -198,6 +203,19 @@ public class TodayFragment extends BaseFragment {
         List<Object> objectList = new ArrayList<Object>();
         objectList.add(new Header("My Schedule", SCHEDULE_HEADER));
         List<Row> scheduleRows = MessagesFragment.mEdsenseDatabase.scheduleRowDao().getAllRows();
+        Collections.sort(scheduleRows, new Comparator<Row>() {
+            public int compare(Row o1, Row o2) {
+                String strDateFormat = "HH:MM a";
+                SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+                try {
+                    return (sdf.parse(o1.getStartTimeSlot()+" "+o1.getTimePeriod())).compareTo(sdf.parse(o2.getStartTimeSlot()+" "+o2.getTimePeriod()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        });
+
         objectList.addAll(scheduleRows);
 //        for(int i = 0; i<scheduleRows.size(); i++){
 //            objectList.add(scheduleRows.get(i));

@@ -1,6 +1,7 @@
 package com.school.edsense_lite.news;
 
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,9 +16,12 @@ import com.google.gson.reflect.TypeToken;
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.R;
 import com.school.edsense_lite.attendance.SectionResponse;
+import com.school.edsense_lite.model.db.EdsenseDatabase;
+import com.school.edsense_lite.today.EventsResponseModel;
 import com.school.edsense_lite.today.NewsRequest;
 import com.school.edsense_lite.today.NewsResponse;
 import com.school.edsense_lite.today.TodayApi;
+import com.school.edsense_lite.utils.Common;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
@@ -35,6 +39,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.internal.http2.StreamResetException;
 
+import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
+
 public class NewsFragment extends BaseFragment {
     @BindView(R.id.newsRecyclerview)
     RecyclerView newsRecyclerView;
@@ -46,6 +52,9 @@ public class NewsFragment extends BaseFragment {
 
     @Inject
     TodayApi todayApi;
+
+    public static EdsenseDatabase mEdsenseDatabase;
+    private ArrayList<News> newsList;
 
     /**
      * Use this factory method to create a new instance of
@@ -61,6 +70,9 @@ public class NewsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
+                .allowMainThreadQueries()
+                .build();
     }
 
     @Override
@@ -87,60 +99,74 @@ public class NewsFragment extends BaseFragment {
         NewsRequest.Value value = newsRequest.new Value();
         value.setNewsTypeId("2");
         newsRequest.setValue(value);
-        if(!bearerToken.isEmpty()) {
-            todayApi.getNews(bearerToken, newsRequest)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<NewsResponse>() {
-                        @Override
-                        public void onError(Throwable e) {
-                            progressDialog.dismiss();
-                            if(e instanceof StreamResetException)
-                            {
-                                //login again
-                                e.printStackTrace();
-                                relogin();
-                            }
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            System.out.println("complete called");
-                        }
-
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            System.out.println("onsubscribe called");
-                        }
-
-                        @Override
-                        public void onNext(NewsResponse newsResponse) {
-                            progressDialog.dismiss();
-                            if (newsResponse.getIsSuccess().equals(true)) {
-                                if(newsResponse.getResponse() != null && !newsResponse.getResponse().isEmpty()){
-                                    empty_view.setVisibility(View.GONE);
-                                    newsRecyclerView.setVisibility(View.VISIBLE);
-                                    newsRecyclerViewAdapter.setItems(new ArrayList<Object>(newsResponse.getResponse()));
-                                    newsRecyclerViewAdapter.notifyDataSetChanged();
-                                }else{
-                                    empty_view.setVisibility(View.VISIBLE);
-                                    newsRecyclerView.setVisibility(View.GONE);
+        if(Common.isNetworkAvailable(getActivity())) {
+            if (!bearerToken.isEmpty()) {
+                todayApi.getNews(bearerToken, newsRequest)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<NewsResponse>() {
+                            @Override
+                            public void onError(Throwable e) {
+                                progressDialog.dismiss();
+                                if (e instanceof StreamResetException) {
+                                    //login again
+                                    e.printStackTrace();
+                                    relogin();
                                 }
-
-
-                            } else if (!newsResponse.getErrorCode().equals(200)) {
-                                //display error.
-                                new CustomAlertDialog().showAlert1(
-                                        getActivity(),
-                                        R.string.text_failed,
-                                        newsResponse.getErrorMessage(),
-                                        null);
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onComplete() {
+                                System.out.println("complete called");
+                            }
+
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                System.out.println("onsubscribe called");
+                            }
+
+                            @Override
+                            public void onNext(NewsResponse newsResponse) {
+                                progressDialog.dismiss();
+                                if (newsResponse.getIsSuccess().equals(true)) {
+                                    if (newsResponse.getResponse() != null && !newsResponse.getResponse().isEmpty()) {
+                                        for(News newsObject : newsResponse.getResponse()){
+                                            mEdsenseDatabase.getNewsDao().insert(newsObject);
+                                        }
+                                    }
+                                    displayNewsFromDB();
+
+
+                                } else if (!newsResponse.getErrorCode().equals(200)) {
+                                    //display error.
+                                    new CustomAlertDialog().showAlert1(
+                                            getActivity(),
+                                            R.string.text_failed,
+                                            newsResponse.getErrorMessage(),
+                                            null);
+                                }
+                            }
+                        });
+            }
+        }else {
+        progressDialog.dismiss();
+        displayNewsFromDB();
         }
 
         return view;
+    }
+
+    private void displayNewsFromDB(){
+        newsList = (ArrayList<News>)mEdsenseDatabase.getNewsDao().getAllNews();
+        if(newsList != null && !newsList.isEmpty()){
+            empty_view.setVisibility(View.GONE);
+            newsRecyclerView.setVisibility(View.VISIBLE);
+            newsRecyclerViewAdapter.setItems(newsList);
+            newsRecyclerViewAdapter.notifyDataSetChanged();
+        }else{
+            empty_view.setVisibility(View.VISIBLE);
+            newsRecyclerView.setVisibility(View.GONE);
+        }
     }
     private void applyFonts(){
         // Font path
