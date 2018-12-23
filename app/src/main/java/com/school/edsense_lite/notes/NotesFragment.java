@@ -242,10 +242,10 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 
                                     if (yourArray != null && yourArray.size() > 0) {
                                         for (SectionResponseModel model : yourArray) {
-                                            MessagesFragment.mEdsenseDatabase.sectionResponseDao().insert(model);
+                                            MessagesFragment.mEdsenseDatabase.getSectionResponseDao().insert(model);
                                         }
                                     }
-                                    sectionResponseList = MessagesFragment.mEdsenseDatabase.sectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
+                                    sectionResponseList = MessagesFragment.mEdsenseDatabase.getSectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
 
 
                                 } else if (!sectionResponse.getErrorCode().equals("200")) {
@@ -344,7 +344,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                         });
             }
         }else{
-            sectionResponseList = MessagesFragment.mEdsenseDatabase.sectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
+            sectionResponseList = MessagesFragment.mEdsenseDatabase.getSectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
         }
 
         return view;
