@@ -3,6 +3,7 @@ package com.school.edsense_lite.notes;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -33,6 +34,7 @@ import com.school.edsense_lite.attendance.SeverityListAdapter;
 import com.school.edsense_lite.attendance.SeverityTypeResponse;
 import com.school.edsense_lite.attendance.TraitsListAdapter;
 import com.school.edsense_lite.fragment.DatePickerFragment;
+import com.school.edsense_lite.model.db.EdsenseDatabase;
 import com.school.edsense_lite.news.NewsFragment;
 import com.school.edsense_lite.news.NewsRecyclerViewAdapter;
 import com.school.edsense_lite.today.NewsRequest;
@@ -70,6 +72,7 @@ import static com.school.edsense_lite.utils.Constants.DATE_FORMAT3;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT4;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT6;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT8;
+import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 
 public class AddNotesFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     /**
@@ -122,6 +125,8 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
     @BindView(R.id.dateLayout)
     RelativeLayout dateLayout;
 
+    public static EdsenseDatabase mEdsenseDatabase;
+
     @OnClick(R.id.studentLayout)
     public void clickOnStudentLayout(){
         studentTV.setError(null);
@@ -158,6 +163,9 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
+                .allowMainThreadQueries()
+                .build();
     }
 
     @Override
@@ -184,23 +192,26 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
         inEditingMode = true;
         addButtonLayout.setVisibility(View.GONE);
         editButtonLayout.setVisibility(View.VISIBLE);
-        GetUserNotesResponse.Response userNotesModel = (GetUserNotesResponse.Response)bundle.getSerializable(BUNDLE_KEY_NOTES_MODEL);
+        Note userNotesModel = (Note)bundle.getSerializable(BUNDLE_KEY_NOTES_MODEL);
         String date = userNotesModel.getDateCommented();
         studentTV.setText(userNotesModel.getStudentName());
         dateTV.setText(DateTimeUtils.parseDateTime(date, DATE_FORMAT8, DATE_FORMAT4));
         severityTV.setText(userNotesModel.getSeverityTypeName());
         notesET.setText(userNotesModel.getNote());
         GetTraitsResponse.Response response = new GetTraitsResponse().new Response();
-        List<GetUserNotesResponse.Tag> tagList = userNotesModel.getTags();
-        response.setTagId(tagList.get(0).getTagId());
-        response.setTagName(tagList.get(0).getTagName());
+        List<Tag> tagList = userNotesModel.getTags();
+        if(tagList != null && !tagList.isEmpty() && tagList.get(0) != null) {
+            response.setTagId(Integer.valueOf(tagList.get(0).getTagId()));
+            response.setTagName(tagList.get(0).getTagName());
+            traitsTV.setText(tagList.get(0).getTagName());
+        }
         response.setSelected(true);
         selectedTrait = response;
-        selectedStudentNotesId = userNotesModel.getStudentNotesId();
+        selectedStudentNotesId = Integer.valueOf(userNotesModel.getStudentNotesId());
         selectedStudentId = userNotesModel.getStudentId();
-        traitsTV.setText(tagList.get(0).getTagName());
+
         selectedDate = DateTimeUtils.parseDateTime(date,DATE_FORMAT8, DATE_FORMAT2);
-        selectedSeverityId = userNotesModel.getSeverityTypeId();
+        selectedSeverityId = Integer.valueOf(userNotesModel.getSeverityTypeId());
         studentLayout.setBackgroundResource(R.drawable.layout_corners_grey_border_solid_grey);
         dateLayout.setBackgroundResource(R.drawable.layout_corners_grey_border_solid_grey);
         severityLayout.setBackgroundResource(R.drawable.layout_corners_grey_border_solid_grey);
@@ -533,6 +544,7 @@ public class AddNotesFragment extends BaseFragment implements DatePickerDialog.O
                                 if (saveNotesResponse.getIsSuccess().equals(true)) {
 //TODO save this info to database.
                                     if(isDelete){
+                                        mEdsenseDatabase.getNotesDao().deleteSelectedNotes(selectedStudentNotesId);
                                         Toast.makeText(getActivity(), R.string.text_notes_deleted_success, Toast.LENGTH_SHORT).show();
                                     }
                                     else{

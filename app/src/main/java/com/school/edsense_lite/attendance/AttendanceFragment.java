@@ -526,15 +526,15 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         userResponseList = new ArrayList<Object>(yourArray);
         progressDialog.dismiss();
         if(userResponseList != null && !userResponseList.isEmpty()){
-            attendanceRecyclerView.setVisibility(View.VISIBLE);
+//            attendanceRecyclerView.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);
-            attendanceRecyclerViewAdapter.setItems(userResponseList);
-            attendanceRecyclerViewAdapter.notifyDataSetChanged();
         }else{
-            attendanceRecyclerView.setVisibility(View.GONE);
+//            attendanceRecyclerView.setVisibility(View.GONE);
             empty_view.setVisibility(View.VISIBLE);
 
         }
+        attendanceRecyclerViewAdapter.setItems(userResponseList);
+        attendanceRecyclerViewAdapter.notifyDataSetChanged();
 
     }
 

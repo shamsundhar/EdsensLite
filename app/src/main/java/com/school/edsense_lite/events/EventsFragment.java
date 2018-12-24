@@ -162,14 +162,15 @@ public class EventsFragment extends BaseFragment {
     public void displayEventsFromDB(){
         eventsList = (ArrayList<EventsResponseModel>)mEdsenseDatabase.getEventsDao().getAllEvents();
         if (eventsList != null && !eventsList.isEmpty()) {
-            eventsRecyclerView.setVisibility(View.VISIBLE);
+//            eventsRecyclerView.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);
-            eventsRecyclerViewAdapter.setItems(eventsList);
-            eventsRecyclerViewAdapter.notifyDataSetChanged();
+
         } else {
-            eventsRecyclerView.setVisibility(View.GONE);
+//            eventsRecyclerView.setVisibility(View.GONE);
             empty_view.setVisibility(View.VISIBLE);
         }
+        eventsRecyclerViewAdapter.setItems(eventsList);
+        eventsRecyclerViewAdapter.notifyDataSetChanged();
     }
     private void applyFonts(){
         // Font path
