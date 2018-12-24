@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.school.edsense_lite.BaseFragment;
 import com.school.edsense_lite.NavigationDrawerActivity;
 import com.school.edsense_lite.R;
+import com.school.edsense_lite.login.ResetPasswordEnterEmailFragment;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
@@ -48,6 +49,8 @@ public class MessageDetailsFragment extends BaseFragment {
     TextView txt_sender_name;
     @BindView(R.id.txt_sender_mail)
     TextView txt_sender_mail;
+    @BindView(R.id.txt_reciever_mail)
+    TextView txt_reciever_mail;
 
     @Inject
     MessagesApi messagesApi;
@@ -96,6 +99,16 @@ public class MessageDetailsFragment extends BaseFragment {
                     @Override
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
+                        new CustomAlertDialog().showAlert1(
+                                getActivity(),
+                                R.string.text_failed,
+                                "Try Again",
+                                new CustomAlertDialog.Callback() {
+                                    @Override
+                                    public void onSucess(int t) {
+                                        getActivity().finish();
+                                    }
+                                });
                     }
                     @Override
                     public void onComplete() {
@@ -116,8 +129,9 @@ public class MessageDetailsFragment extends BaseFragment {
                             } else {
                                 txt_msg_body.setText(Html.fromHtml(messagesResponse.getResponse().getRows().get(0).getBody()));
                             }
-                            txt_sender_name.setText(messagesResponse.getResponse().getRows().get(0).getToName());
+                            txt_sender_name.setText(messagesResponse.getResponse().getRows().get(0).getFromName());
                             txt_sender_mail.setText(messagesResponse.getResponse().getRows().get(0).getSenderemail());
+                            txt_reciever_mail.setText("to "+messagesResponse.getResponse().getRows().get(0).getToName());
 
 
 

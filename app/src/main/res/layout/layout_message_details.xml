@@ -23,7 +23,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="fitCenter"
-            android:background="@drawable/circle"
+            android:background="@drawable/drawable_round_bg_light_grey"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,12 +54,20 @@
                 android:id="@+id/txt_sender_mail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txt_sender_name"
                 android:textSize="14sp"
                 android:text=""
                 android:fontFamily="@font/framd"
                 android:textColor="@color/aluminum"
-                android:lines="2"
+                android:lines="1"
+                android:ellipsize="end"/>
+            <TextView
+                android:id="@+id/txt_reciever_mail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                 android:textSize="14sp"
+                android:text=""
+                android:fontFamily="@font/framd"
+                android:textColor="@color/aluminum"
                 android:ellipsize="end"/>
         </LinearLayout>
     </RelativeLayout>

@@ -340,30 +340,32 @@ public class NewMessageFragment extends BaseFragment {
         Boolean flag = true;
         String msgString = message.getText().toString().trim();
         String subjectString = subject.getText().toString().trim();
-        if(selectedToId != null && selectedToId > 0){
-            to.setError(null);
-            if(msgString.isEmpty())
-            {
-                flag = false;
-                message.setError("Message should not be empty");
-            }
-            else{
-                message.setError(null);
-                if(subjectString.isEmpty()){
+        String toString = to.getText().toString().trim();
+        if(!toString.isEmpty()) {
+            if (selectedToId != null && selectedToId > 0) {
+                to.setError(null);
+                if (msgString.isEmpty()) {
                     flag = false;
-                    subject.setError("Subject should not be empty");
+                    message.setError("Message should not be empty");
+                } else {
+                    message.setError(null);
+                    if (subjectString.isEmpty()) {
+                        flag = false;
+                        subject.setError("Subject should not be empty");
+                    } else {
+                        subject.setError(null);
+                    }
                 }
-                else{
-                    subject.setError(null);
-                }
-            }
 
+            } else {
+                flag = false;
+                to.setError("Enter valid username");
+            }
         }
         else{
             flag = false;
             to.setError("To should not be empty");
         }
-
         return flag;
     }
     private List<SearchUserResponse.Response> findRecipients(final Context context, String keyword) {
