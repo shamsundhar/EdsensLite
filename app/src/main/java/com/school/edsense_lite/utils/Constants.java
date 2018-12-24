@@ -43,6 +43,7 @@ public class Constants {
     public static final String DATE_FORMAT6 = "yyyy-MM-dd'T'HH:mm:ssZ";
     public static final String DATE_FORMAT7 = "MMM dd,yyyy";
     public static final String DATE_FORMAT8 = "yyyy-MM-dd'T'HH:mm:ss";
+    public static final String DATE_FORMAT9 = "yyyy-MM-dd";
     public static final String CONST_CUSTOMER_USER_TYPE = "1";
     public static final String BUNDLE_KEY_OTP_VERIFIED_MESSAGE = "OTP_VERIFIED_MESSAGE";
 

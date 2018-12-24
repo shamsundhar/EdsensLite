@@ -54,6 +54,7 @@ import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_EVENTS;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT9;
 import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 
 public class TodayFragment extends BaseFragment {
@@ -106,13 +107,13 @@ public class TodayFragment extends BaseFragment {
         progressDialog.show();
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
-        String currentDate = DateTimeUtils.getCurrentDateInString(DATE_FORMAT2);
+        String currentDate = DateTimeUtils.getCurrentDateInString(DATE_FORMAT9);
         if(!bearerToken.isEmpty()) {
 
             List<Observable<?>> requests = new ArrayList<>();
 
             // Make a collection of all requests you need to call at once, there can be any number of requests, not only 3. You can have 2 or 5, or 100.
-            requests.add(todayApi.getSchedules(bearerToken));
+            requests.add(todayApi.getSchedules(currentDate, bearerToken));
             requests.add(todayApi.getAssignmentsForLoginUser(bearerToken));
 
             if(Common.isNetworkAvailable(getActivity())) {

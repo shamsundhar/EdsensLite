@@ -37,5 +37,5 @@ public interface LoginApi {
     //https://apitst.edsense.co.in/api/account/ForgetPasswordChange
     @POST("account/ForgetPasswordChange")
     @Headers({"Content-Type: application/json"})
-    Observable<ChangePasswordResponse> changePassword(@Body ChangePasswordRequest changePasswordRequest);
+    Observable<ChangePasswordResponse> changePassword(@Query("subscriptionId") Integer subscriptionId, @Body ChangePasswordRequest changePasswordRequest);
 }

@@ -394,12 +394,14 @@ public class ResetPasswordEnterEmailFragment extends BaseFragment {
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage(getString(R.string.text_please_wait));
             progressDialog.show();
+            String subscriptionId = preferenceHelper.getString(getActivity(),
+                    Constants.PREF_KEY_SUBSCRIPTION_ID, "");
             ChangePasswordRequest request = new ChangePasswordRequest();
             request.setKey(otp_entered);
             request.setNewPassword(newpswd);
             request.setConfirmPassword(confpswd);
             request.setUserKey(provided_username);
-            loginApi.changePassword(request)
+            loginApi.changePassword(Integer.parseInt(subscriptionId), request)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ChangePasswordResponse>() {

@@ -37,6 +37,7 @@
     <string name="text_login_failed">Login Failed</string>
     <string name="text_passwords_mismatch">Passwords are mismatching</string>
     <string name="text_error">Error</string>
+    <string name="text_warning">Warning</string>
     <string name="text_failed">Failed</string>
     <string name="text_success">Success</string>
     <string name="text_enter_details">Details are not matching</string>

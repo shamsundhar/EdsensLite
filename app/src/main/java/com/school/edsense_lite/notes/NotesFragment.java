@@ -140,7 +140,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         else{
             new CustomAlertDialog().showAlert1(
                     getActivity(),
-                    R.string.text_error,
+                    R.string.text_warning,
                     "Select section",
                     null);
         }
