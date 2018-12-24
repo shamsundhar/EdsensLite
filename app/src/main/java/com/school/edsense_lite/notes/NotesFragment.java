@@ -54,6 +54,7 @@ import com.school.edsense_lite.fragment.DatePickerFragment;
 import com.school.edsense_lite.messages.MessagesFragment;
 import com.school.edsense_lite.model.SectionResponseModel;
 import com.school.edsense_lite.model.db.EdsenseDatabase;
+import com.school.edsense_lite.news.News;
 import com.school.edsense_lite.utils.Common;
 import com.school.edsense_lite.utils.Constants;
 import com.school.edsense_lite.utils.CustomAlertDialog;
@@ -87,6 +88,7 @@ import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT3;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT4;
+import static com.school.edsense_lite.utils.Constants.DATE_FORMAT6;
 import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 
 public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
@@ -109,7 +111,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     TextView severityTv;
     TextView traitsTv;
     List<SectionResponseModel> sectionResponseList;
-    ArrayList<Object> notesResponseList;
+    ArrayList<Note> notesResponseList;
     SectionsListAdapter sectionsListAdapter;
     SeverityListAdapter severityListAdapter;
     TraitsListAdapter traitsListAdapter;
@@ -137,6 +139,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         getActivity().startActivity(in);
     }
     NotesRecyclerViewAdapter notesRecyclerViewAdapter;
+    public static EdsenseDatabase mEdsenseDatabase;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -160,6 +163,9 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
+                .allowMainThreadQueries()
+                .build();
     }
 
     @Override
@@ -176,7 +182,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         notesRecyclerViewAdapter.setOnClickListener(new ClickListener() {
             @Override
-            public void onModifyButtonClicked(GetUserNotesResponse.Response notesModel, int position) {
+            public void onModifyButtonClicked(Note notesModel, int position) {
            //     displayNotesPopup(notesModel);
                 displayEditNotesFragment(notesModel);
             }
@@ -190,9 +196,6 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.text_please_wait));
         progressDialog.show();
-        MessagesFragment.mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
-                .allowMainThreadQueries()
-                .build();
         PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String bearerToken = preferenceHelper.getString(getActivity(), Constants.PREF_KEY_BEARER_TOKEN, "");
         if(Common.isNetworkAvailable(getActivity())) {
@@ -233,10 +236,10 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
 
                                     if (yourArray != null && yourArray.size() > 0) {
                                         for (SectionResponseModel model : yourArray) {
-                                            MessagesFragment.mEdsenseDatabase.sectionResponseDao().insert(model);
+                                            mEdsenseDatabase.getSectionResponseDao().insert(model);
                                         }
                                     }
-                                    sectionResponseList = MessagesFragment.mEdsenseDatabase.sectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
+                                    sectionResponseList = mEdsenseDatabase.getSectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
 
 
                                 } else if (!sectionResponse.getErrorCode().equals("200")) {
@@ -335,7 +338,7 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                         });
             }
         }else{
-            sectionResponseList = MessagesFragment.mEdsenseDatabase.sectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
+            sectionResponseList = mEdsenseDatabase.getSectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
         }
 
         return view;
@@ -350,14 +353,14 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         dateTV.setTypeface(tf);
         chooseSection.setTypeface(tf);
     }
-    private void displayEditNotesFragment(GetUserNotesResponse.Response userNotesModel){
+    private void displayEditNotesFragment(Note userNotesModel){
         Intent in = new Intent(getActivity(), AWFActivity.class);
         in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_EDIT_NOTES);
         in.putExtra(BUNDLE_KEY_SECTION_ID, selectedSectionId);
         in.putExtra(BUNDLE_KEY_NOTES_MODEL, userNotesModel);
         getActivity().startActivity(in);
     }
-    private void displayNotesPopup(final GetUserNotesResponse.Response notesModel){
+    private void displayNotesPopup(final Note notesModel){
         final Dialog builder = new Dialog(getActivity());
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Window window = builder.getWindow();
@@ -620,21 +623,24 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                                 progressDialog.dismiss();
                                 if (getUserNotesResponse.getIsSuccess().equals(true)) {
                                     String responseString = getUserNotesResponse.getResponse();
-                                    ArrayList<GetUserNotesResponse.Response> yourArray = new Gson().
+                                    ArrayList<Note> yourArray = new Gson().
                                             fromJson(responseString,
-                                                    new TypeToken<List<GetUserNotesResponse.Response>>() {
+                                                    new TypeToken<List<Note>>() {
                                                     }.getType());
                                     
-                                    if(yourArray != null && yourArray.size()>0){
-                                        empty_view.setVisibility(View.GONE);
-                                        notesRecyclerView.setVisibility(View.VISIBLE);
-                                        notesResponseList = new ArrayList<Object>(yourArray);
-                                        notesRecyclerViewAdapter.setItems(notesResponseList);
-                                        notesRecyclerViewAdapter.notifyDataSetChanged();
-                                    }else{
-                                        empty_view.setVisibility(View.VISIBLE);
-                                        notesRecyclerView.setVisibility(View.GONE);
+                                    if(yourArray != null && yourArray.size()>0) {
+                                        for (Note note : yourArray) {
+                                            note.setCreatedDate(selectedDate);
+                                            note.set_Class(selectedSectionId);
+                                            mEdsenseDatabase.getNotesDao().insert(note);
+                                            if(note.getTags() != null && !note.getTags().isEmpty()) {
+                                                for(Tag tag : note.getTags()) {
+                                                    mEdsenseDatabase.getNotesTagDao().insert(tag);
+                                                }
+                                            }
+                                        }
                                     }
+                                    displayNotesResponseFromDB(progressDialog);
                                 } else if (!getUserNotesResponse.getErrorCode().equals(200)) {
                                     //display error.
                                     new CustomAlertDialog().showAlert1(
@@ -648,15 +654,31 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
                         });
             }
         }else{
-            //  displayNotesResponseFromDB(progressDialog);
+            progressDialog.dismiss();
+            displayNotesResponseFromDB(progressDialog);
         }
     }
 
     private void displayNotesResponseFromDB(ProgressDialog progressDialog) {
-        List<GetUserResponseModel> yourArray = MessagesFragment.mEdsenseDatabase.getUserResponseDao().getAllUserResponses();
-        notesResponseList = new ArrayList<Object>(yourArray);
-        notesRecyclerViewAdapter.setItems(notesResponseList);
         progressDialog.dismiss();
+        notesResponseList = (ArrayList<Note>) mEdsenseDatabase.getNotesDao().getAllNotesByDateAndSection(selectedDate,selectedSectionId);
+
+        if(notesResponseList != null && notesResponseList.size()>0){
+            for(int i=0;i<notesResponseList.size();i++){
+                List<Tag> tags = mEdsenseDatabase.getNotesTagDao().getAllNotesTags(notesResponseList.get(i).getStudentNotesId());
+                if(tags!= null && !tags.isEmpty()){
+                    notesResponseList.get(i).setTags(tags);
+                }
+            }
+            empty_view.setVisibility(View.GONE);
+            //notesRecyclerView.setVisibility(View.VISIBLE);
+
+        }else{
+            empty_view.setVisibility(View.VISIBLE);
+
+            //notesRecyclerView.setVisibility(View.INVISIBLE);
+        }
+        notesRecyclerViewAdapter.setItems(notesResponseList);
         notesRecyclerViewAdapter.notifyDataSetChanged();
     }
 

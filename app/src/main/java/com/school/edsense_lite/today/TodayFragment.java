@@ -144,7 +144,7 @@ public class TodayFragment extends BaseFragment {
                                         List<Row> scheduleRows = scheduleAndAssignment.getScheduleResponse().getResponse().getRows();
                                         for (int i = 0; i < scheduleRows.size(); i++) {
                                             //objectList.add(scheduleRows.get(i));
-                                            MessagesFragment.mEdsenseDatabase.scheduleRowDao().insert(scheduleRows.get(i));
+                                            MessagesFragment.mEdsenseDatabase.getScheduleRowDao().insert(scheduleRows.get(i));
                                         }
                                         //objectList.add(scheduleAndAssignment.getScheduleResponse());
                                         //objectList.add(new NewsEvents());
@@ -202,7 +202,7 @@ public class TodayFragment extends BaseFragment {
     private void displayAssignmentsAndSchedulesFromDB(ProgressDialog progressDialog) {
         List<Object> objectList = new ArrayList<Object>();
         objectList.add(new Header("My Schedule", SCHEDULE_HEADER));
-        List<Row> scheduleRows = MessagesFragment.mEdsenseDatabase.scheduleRowDao().getAllRows();
+        List<Row> scheduleRows = MessagesFragment.mEdsenseDatabase.getScheduleRowDao().getAllRows();
         Collections.sort(scheduleRows, new Comparator<Row>() {
             public int compare(Row o1, Row o2) {
                 String strDateFormat = "HH:MM a";

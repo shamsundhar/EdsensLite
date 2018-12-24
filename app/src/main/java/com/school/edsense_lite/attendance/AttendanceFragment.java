@@ -181,10 +181,10 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                                                     }.getType());
                                     if(yourArray != null && yourArray.size()>0){
                                         for(SectionResponseModel model : yourArray){
-                                            MessagesFragment.mEdsenseDatabase.sectionResponseDao().insert(model);
+                                            MessagesFragment.mEdsenseDatabase.getSectionResponseDao().insert(model);
                                         }
                                     }
-                                    sectionResponseList = MessagesFragment.mEdsenseDatabase.sectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
+                                    sectionResponseList = MessagesFragment.mEdsenseDatabase.getSectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
 
                                 } else if (!sectionResponse.getErrorCode().equals("200")) {
                                     //display error.
@@ -198,7 +198,7 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
                         });
             }
         }else{
-            sectionResponseList = MessagesFragment.mEdsenseDatabase.sectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
+            sectionResponseList = MessagesFragment.mEdsenseDatabase.getSectionResponseDao().getAllSectionResponses();//new ArrayList<SectionResponseModel>(yourArray);
             progressDialog.dismiss();
         }
         return view;
@@ -526,15 +526,15 @@ public class AttendanceFragment extends BaseFragment implements DatePickerDialog
         userResponseList = new ArrayList<Object>(yourArray);
         progressDialog.dismiss();
         if(userResponseList != null && !userResponseList.isEmpty()){
-            attendanceRecyclerView.setVisibility(View.VISIBLE);
+//            attendanceRecyclerView.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);
-            attendanceRecyclerViewAdapter.setItems(userResponseList);
-            attendanceRecyclerViewAdapter.notifyDataSetChanged();
         }else{
-            attendanceRecyclerView.setVisibility(View.GONE);
+//            attendanceRecyclerView.setVisibility(View.GONE);
             empty_view.setVisibility(View.VISIBLE);
 
         }
+        attendanceRecyclerViewAdapter.setItems(userResponseList);
+        attendanceRecyclerViewAdapter.notifyDataSetChanged();
 
     }
 
