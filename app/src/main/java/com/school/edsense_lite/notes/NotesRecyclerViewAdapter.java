@@ -103,16 +103,13 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
           //  vh1.getTraits().setText("Traits: " + traitsString);
             vh1.getReason().setText("Notes: " + notesModel.getNote());
             vh1.getBy().setText("By: "+notesModel.getCreatedByName());
-            if(notesModel.getGender() != null) {
-                if (notesModel.getGender() == 1) {
-                    vh1.getAvatar().setImageResource(R.drawable.boy);
-                } else {
-                    vh1.getAvatar().setImageResource(R.drawable.girl);
-                }
+            if(notesModel.getGender() == 1){
+                vh1.getAvatar().setImageResource(R.drawable.boy);
             }
             else{
-                vh1.getAvatar().setImageResource(R.drawable.logo);
+                vh1.getAvatar().setImageResource(R.drawable.girl);
             }
+
             if(notesModel.getIsEditable() == 1)
             {
                 vh1.getModifyButton().setVisibility(View.VISIBLE);

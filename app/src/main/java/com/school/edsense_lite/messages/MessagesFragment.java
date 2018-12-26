@@ -217,15 +217,16 @@ public class MessagesFragment extends BaseFragment {
         progressDialog.dismiss();
         if(messagesResponseList != null && !messagesResponseList.isEmpty()){
             empty_view.setVisibility(View.GONE);
-            messagesRecyclerView.setVisibility(View.VISIBLE);
-            messagesRecyclerViewAdapter.setItems(messagesResponseList);
-            messagesRecyclerView.setAdapter(messagesRecyclerViewAdapter);
-            messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            messagesRecyclerViewAdapter.notifyDataSetChanged();
+//            messagesRecyclerView.setVisibility(View.VISIBLE);
+
         }else{
             empty_view.setVisibility(View.VISIBLE);
-            messagesRecyclerView.setVisibility(View.GONE);
+//            messagesRecyclerView.setVisibility(View.GONE);
         }
+        messagesRecyclerViewAdapter.setItems(messagesResponseList);
+        messagesRecyclerView.setAdapter(messagesRecyclerViewAdapter);
+        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        messagesRecyclerViewAdapter.notifyDataSetChanged();
 
     }
 

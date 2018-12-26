@@ -160,13 +160,14 @@ public class NewsFragment extends BaseFragment {
         newsList = (ArrayList<News>)mEdsenseDatabase.getNewsDao().getAllNews();
         if(newsList != null && !newsList.isEmpty()){
             empty_view.setVisibility(View.GONE);
-            newsRecyclerView.setVisibility(View.VISIBLE);
-            newsRecyclerViewAdapter.setItems(newsList);
-            newsRecyclerViewAdapter.notifyDataSetChanged();
+//            newsRecyclerView.setVisibility(View.VISIBLE);
+
         }else{
             empty_view.setVisibility(View.VISIBLE);
-            newsRecyclerView.setVisibility(View.GONE);
+//            newsRecyclerView.setVisibility(View.GONE);
         }
+        newsRecyclerViewAdapter.setItems(newsList);
+        newsRecyclerViewAdapter.notifyDataSetChanged();
     }
     private void applyFonts(){
         // Font path

@@ -18,6 +18,11 @@ public interface NotesDao {
     @Query("DELETE FROM table_notes")
     void deleteAll();
 
-    @Query("SELECT * from table_notes ORDER BY notes_name ASC")
+    @Query("SELECT * from table_notes ORDER BY notes_StudentNotesId ASC")
     List<Note> getAllNotes();
+    @Query("SELECT * from table_notes WHERE notes_CreatedDate=:cDate AND notes_Class=:sectionID ORDER BY notes_StudentNotesId ASC")
+    List<Note> getAllNotesByDateAndSection(String cDate,String sectionID);
+
+    @Query("DELETE FROM table_notes WHERE notes_StudentNotesId=:selectedStudentNotesId")
+    void deleteSelectedNotes(int selectedStudentNotesId);
 }
