@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.school.edsense_lite.BaseActivity;
 import com.school.edsense_lite.MainActivity;
 import com.school.edsense_lite.NavigationDrawerActivity;
@@ -45,6 +46,7 @@ import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_STUDENT;
 import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_TEACHER;
 import static com.school.edsense_lite.utils.Constants.PREF_KEY_BEARER_TOKEN;
 import static com.school.edsense_lite.utils.Constants.PREF_KEY_FCM_TOKEN;
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_TOKEN_IS_REFRESHED;
 import static com.school.edsense_lite.utils.Constants.SECTION_STRING;
 import static com.school.edsense_lite.utils.Constants.SUBJECT_STRING;
 import static com.school.edsense_lite.utils.Constants.TEACHER_STRING;
@@ -61,6 +63,7 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.input_username) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_signin) Button _loginButton;
+    @BindView(R.id.btn_reset) Button _resetButton;
     @BindView(R.id.link_forgotpassword)
     TextView _forgotPasswordTV;
     @BindView(R.id.logo)
@@ -84,8 +87,8 @@ public class LoginActivity extends BaseActivity {
         if(loginToken.isEmpty()){
             setContentView(R.layout.activity_login);
             ButterKnife.bind(this);
-            _emailText.setText("GLA468");
-            _passwordText.setText("Joselives199*");
+            //    _emailText.setText("GLA468");
+            //    _passwordText.setText("Joselives199*");
             applyFonts();
             if(!logoUrl.isEmpty()) {
                 Picasso.with(LoginActivity.this).load(logoUrl).fit()
@@ -110,9 +113,23 @@ public class LoginActivity extends BaseActivity {
     }
     @OnClick(R.id.link_forgotpassword)
     public void forgotPassword(){
-          Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-           startActivityForResult(intent, REQUEST_FORGOT_PASSWORD);
+        Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+        startActivityForResult(intent, REQUEST_FORGOT_PASSWORD);
         //comingSoon();
+    }
+    @OnClick(R.id.btn_reset)
+    public void clickOnReset(){
+        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        String fcmToken = preferenceHelper.getString(LoginActivity.this, PREF_KEY_FCM_TOKEN, "");
+        preferenceHelper.clear(LoginActivity.this);
+        //clear will clear all data, so after clearing we are setting fcm token again in preferences.
+        preferenceHelper.setString(LoginActivity.this, PREF_KEY_FCM_TOKEN, fcmToken);
+
+
+        Intent in = new Intent(LoginActivity.this, MainActivity.class);
+        in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(in);
+        finish();
     }
     @OnClick(R.id.btn_signin)
     public void login() {
@@ -150,7 +167,15 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
-                        onLoginFailed();
+                        _loginButton.setEnabled(true);
+                        if(e.getMessage().contains("HTTP 404"))
+                        {
+                            new CustomAlertDialog().showAlert1(
+                                    LoginActivity.this,
+                                    R.string.text_login_failed,
+                                    "Please enter valid credentials",
+                                    null);
+                        }
                     }
 
                     @Override
@@ -234,6 +259,9 @@ public class LoginActivity extends BaseActivity {
     private void initiateFcmRegistration(){
         String bearerToken = preferenceHelper.getString(LoginActivity.this, PREF_KEY_BEARER_TOKEN, "");
         String fcmToken = preferenceHelper.getString(LoginActivity.this, PREF_KEY_FCM_TOKEN, "");
+        if(fcmToken.trim().isEmpty()){
+           fcmToken = FirebaseInstanceId.getInstance().getToken();
+        }
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -266,6 +294,8 @@ public class LoginActivity extends BaseActivity {
                     public void onNext(FcmRegResponse fcmRegResponse){
                         progressDialog.dismiss();
                         if(fcmRegResponse.getIsSuccess().equals(true)) {
+                            preferenceHelper.setBoolean(getApplicationContext(), PREF_KEY_TOKEN_IS_REFRESHED, false);
+
                             displayNavigationActivity();
                         }
                         else if(!fcmRegResponse.getErrorCode().equals(200)){
@@ -306,6 +336,10 @@ public class LoginActivity extends BaseActivity {
             preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_STUDENT, true);
 
         }
+
+       // preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_TEACHER, false);
+      //  preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_STUDENT, true);
+
     }
     private void setBoardData(List<ProfileResponse.Tag> tagList){
         String boardData = "";
@@ -405,7 +439,7 @@ public class LoginActivity extends BaseActivity {
 
         String username = _emailText.getText().toString().trim();
         String password = _passwordText.getText().toString().trim();
-        if (username.isEmpty() || username.length() < 4) {
+        if (username.isEmpty()) {
             _emailText.setError("Enter a valid Username");
             valid = false;
         } else {
@@ -413,7 +447,7 @@ public class LoginActivity extends BaseActivity {
         }
 
         if (password.isEmpty()) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            _passwordText.setError("Enter between 4 and 10 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);

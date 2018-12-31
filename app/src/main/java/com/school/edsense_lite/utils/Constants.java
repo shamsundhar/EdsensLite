@@ -48,6 +48,7 @@ public class Constants {
     public static final String BUNDLE_KEY_OTP_VERIFIED_MESSAGE = "OTP_VERIFIED_MESSAGE";
 
     public static final String DOMAIN_POSTFIX = ".edsense.co.in";
+    public static final String DOMAIN_POSTFIX_PROD = ".edsense.app";
     public static final String EDSENSE_DATABASE = "EdsenseDB";
     public static final String RECIPIENT_DELIMETER = ";";
     public static final String TEACHER_STRING = "Teacher";
@@ -62,4 +63,5 @@ public class Constants {
     public static final String KEY_PREF_SUBJECT_DATA = "KEY_SUBJECT_DATA";
 
     public static final String PREF_KEY_FCM_TOKEN = "KEY_FCM_TOKEN";
+    public static final String PREF_KEY_TOKEN_IS_REFRESHED = "KEY_IS_TOKEN_REFRESHED";
 }

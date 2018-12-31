@@ -1,6 +1,7 @@
 package com.school.edsense_lite;
 
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,42 +12,40 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.school.edsense_lite.attendance.AttendanceFragment;
 import com.school.edsense_lite.firebase.FCMApi;
 import com.school.edsense_lite.firebase.FcmUnRegRequest;
 import com.school.edsense_lite.firebase.FcmUnRegResponse;
-import com.school.edsense_lite.login.LoginActivity;
-import com.school.edsense_lite.login.LoginResponse;
 import com.school.edsense_lite.messages.MessagesFragment;
+import com.school.edsense_lite.model.db.EdsenseDatabase;
 import com.school.edsense_lite.notes.NotesFragment;
-import com.school.edsense_lite.recomendations.RecomendationFragment;
 import com.school.edsense_lite.today.TodayFragment;
 import com.school.edsense_lite.utils.CircleTransform;
-import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.PreferenceHelper;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_AVATAR_URL;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_BOARD_DATA;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_DISPLAY_NAME;
 import static com.school.edsense_lite.utils.Constants.KEY_PREF_SUBJECT_DATA;
+import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_STUDENT;
+import static com.school.edsense_lite.utils.Constants.KEY_USER_ROLE_TEACHER;
 import static com.school.edsense_lite.utils.Constants.PREF_KEY_BEARER_TOKEN;
 import static com.school.edsense_lite.utils.Constants.PREF_KEY_FCM_TOKEN;
 
@@ -57,6 +56,9 @@ public class NavigationDrawerActivity extends BaseActivity
     TextView profileClassTV;
     TextView profileSubjectsTV;
     PreferenceHelper preferenceHelper;
+    public static EdsenseDatabase mEdsenseDatabase;
+    MenuItem attendanceItem;
+    MenuItem notesItem;
 
     String market_uri = "https://play.google.com/store/apps/details?id=";
     private static final String TODAY_FRAGMENT_TAG = "TODAY_FRAGMENT";
@@ -78,6 +80,10 @@ public class NavigationDrawerActivity extends BaseActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mEdsenseDatabase = Room.databaseBuilder(NavigationDrawerActivity.this, EdsenseDatabase.class, EDSENSE_DATABASE)
+                .allowMainThreadQueries()
+                .build();
+
         ActionBar actionBar = getSupportActionBar();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -88,18 +94,25 @@ public class NavigationDrawerActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        Menu nav_Menu = navigationView.getMenu();
 
-
+        Boolean teacherRole = preferenceHelper.getBoolean(NavigationDrawerActivity.this, KEY_USER_ROLE_TEACHER, false);
+        Boolean studentRole = preferenceHelper.getBoolean(NavigationDrawerActivity.this, KEY_USER_ROLE_STUDENT, false);
+        if(studentRole && !teacherRole) {
+            nav_Menu.findItem(R.id.nav_notes).setVisible(false);
+            nav_Menu.findItem(R.id.nav_attendance).setVisible(false);
+        }
         View headerview = navigationView.getHeaderView(0);
 
         profileAvatar = (ImageView)headerview.findViewById(R.id.profile_avatar);
         profileNameTV = (TextView)headerview.findViewById(R.id.profile_name);
         profileClassTV = (TextView)headerview.findViewById(R.id.profile_class);
         profileSubjectsTV = (TextView)headerview.findViewById(R.id.profile_subjects);
-        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String displayName = preferenceHelper.getString(NavigationDrawerActivity.this, KEY_PREF_DISPLAY_NAME, "");
         String boardData = preferenceHelper.getString(NavigationDrawerActivity.this, KEY_PREF_BOARD_DATA, "");
         String subjectData = preferenceHelper.getString(NavigationDrawerActivity.this, KEY_PREF_SUBJECT_DATA, "");
+
+
         profileNameTV.setText(displayName);
         profileClassTV.setText(boardData);
         profileSubjectsTV.setText("Subject: "+subjectData);
@@ -134,6 +147,7 @@ public class NavigationDrawerActivity extends BaseActivity
 
         displayTodayFragment();
     }
+
     private void setTitle(String title){
         getSupportActionBar().setTitle(title);
     }
@@ -146,37 +160,6 @@ public class NavigationDrawerActivity extends BaseActivity
             super.onBackPressed();
         }
     }
-
-    //    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater menuInflater = getMenuInflater();
-//        menuInflater.inflate(R.menu.navigation_drawer, menu);
-//
-//        MenuItem searchItem = menu.findItem(R.id.action_search);
-//        SearchManager searchManager = (SearchManager) NavigationDrawerActivity.this.getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = null;
-//        if (searchItem != null) {
-//            searchView = (SearchView) searchItem.getActionView();
-//        }
-//        if (searchView != null) {
-//            searchView.setSearchableInfo(searchManager.getSearchableInfo(NavigationDrawerActivity.this.getComponentName()));
-//        }
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
     public void displayProfile(View view){
         setTitle(getString(R.string.text_profile));
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -184,6 +167,38 @@ public class NavigationDrawerActivity extends BaseActivity
 
 
     }
+
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//
+////        Boolean teacherRole = preferenceHelper.getBoolean(NavigationDrawerActivity.this, KEY_USER_ROLE_TEACHER, false);
+////        Boolean studentRole = preferenceHelper.getBoolean(NavigationDrawerActivity.this, KEY_USER_ROLE_STUDENT, false);
+////
+////        if(studentRole && !teacherRole){
+////            //hide attendance and notes.
+////
+////          //  attendanceItem.setEnabled(false);
+////         //   notesItem.setEnabled(false);
+////            attendanceItem.setVisible(false);
+////            notesItem.setVisible(false);
+////        }
+//        return true;
+//    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        Boolean teacherRole = preferenceHelper.getBoolean(NavigationDrawerActivity.this, KEY_USER_ROLE_TEACHER, false);
+//        Boolean studentRole = preferenceHelper.getBoolean(NavigationDrawerActivity.this, KEY_USER_ROLE_STUDENT, false);
+//        MenuInflater inflater = getMenuInflater();
+//        if(studentRole && !teacherRole){
+//            inflater.inflate(R.menu.menu_student, menu);
+//        }
+//        else{
+//            inflater.inflate(R.menu.menu_teacher, menu);
+//        }
+//        return true;
+//    }
+
     public void displayTodayFragment(){
         setTitle(null);
         getSupportFragmentManager()
@@ -214,13 +229,16 @@ public class NavigationDrawerActivity extends BaseActivity
                     .beginTransaction()
                     .replace(R.id.container,  NotesFragment.newInstance(), NOTES_FRAGMENT_TAG)
                     .commit();
-        } else if (id == R.id.nav_recomendation) {
-            //   setTitle(getString(R.string.text_recomendation));
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container, new RecomendationFragment(), RECOMENDATION_FRAGMENT_TAG)
-                    .commit();
-        } else if (id == R.id.nav_messages) {
+        }
+//        else if (id == R.id.nav_recomendation) {
+//            //   setTitle(getString(R.string.text_recomendation));
+////            getSupportFragmentManager()
+////                    .beginTransaction()
+////                    .replace(R.id.container, new RecomendationFragment(), RECOMENDATION_FRAGMENT_TAG)
+////                    .commit();
+//            Toast.makeText(NavigationDrawerActivity.this, "Coming Soon", Toast.LENGTH_SHORT).show();
+//        }
+        else if (id == R.id.nav_messages) {
             //  setTitle(getString(R.string.text_messages));
             getSupportFragmentManager()
                     .beginTransaction()
@@ -308,10 +326,25 @@ public class NavigationDrawerActivity extends BaseActivity
         preferenceHelper.clear(NavigationDrawerActivity.this);
         //clear will clear all data, so after clearing we are setting fcm token again in preferences.
         preferenceHelper.setString(NavigationDrawerActivity.this, PREF_KEY_FCM_TOKEN, fcmToken);
+        clearDB();
         Intent in = new Intent(NavigationDrawerActivity.this, MainActivity.class);
         in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(in);
         finish();
+    }
+    private void clearDB(){
+        mEdsenseDatabase.getScheduleRowDao().deleteAll();
+        mEdsenseDatabase.assignmentDao().deleteAll();
+        mEdsenseDatabase.messagesDao().deleteAll();
+        mEdsenseDatabase.getSectionResponseDao().deleteAll();
+        mEdsenseDatabase.getAttendanceBySectionDao().deleteAll();
+        mEdsenseDatabase.getAttendanceDao().deleteAll();
+        mEdsenseDatabase.getEventsDao().deleteAll();
+        mEdsenseDatabase.getNewsDao().deleteAll();
+        mEdsenseDatabase.getNotesDao().deleteAll();
+        mEdsenseDatabase.getRecomendationDao().deleteAll();
+        mEdsenseDatabase.getUserResponseDao().deleteAll();
+        mEdsenseDatabase.getNotesTagDao().deleteAll();
     }
     @Override
     public void onWindowFocusChanged(boolean hasFocus){

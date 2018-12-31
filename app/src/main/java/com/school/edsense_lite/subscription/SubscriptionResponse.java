@@ -58,6 +58,7 @@ public class SubscriptionResponse {
         private Integer allowedUsersCount;
         private String primaryUrl;
         private String secondaryUrl;
+        private String mobileLogoUrl;
         private String logoUrl;
 
         public Integer getSubscriptionId() {
@@ -91,7 +92,13 @@ public class SubscriptionResponse {
         public void setName(String name) {
             this.name = name;
         }
+        public String getMobileLogoUrl() {
+            return mobileLogoUrl;
+        }
 
+        public void setMobileLogoUrl(String mobileLogoUrl) {
+            this.mobileLogoUrl = mobileLogoUrl;
+        }
         public Integer getAllowedUsersCount() {
             return allowedUsersCount;
         }

@@ -8,8 +8,8 @@ android {
         applicationId "com.school.edsense_lite"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -17,20 +17,29 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug{
+
+        }
     }
-    flavorDimensions "devBackend", "productionBackend"
+    flavorDimensions "devBackend"
     productFlavors {
         devBackend {
             dimension 'devBackend'
 //            applicationIdSuffix ".dev"
             buildConfigField "String", "BASE_URL", "\"https://apitst.edsense.co.in/api/\""
         }
-        productionBackend {
-            dimension 'productionBackend'
-            buildConfigField "String", "BASE_URL", "\"https://apitst.edsense.co.in/api/\""
-        }
+//        uatBackend {
+//            dimension 'uatBackend'
+//            buildConfigField "String", "BASE_URL", "\"https://private.edsense.io/api/\""
+//        }
+//        productionBackend {
+//            dimension 'productionBackend'
+//            buildConfigField "String", "BASE_URL", "\"https://secured.edsense.io/api/\""
+//        }
     }
+    aaptOptions { cruncherEnabled = false }
 }
+
 ext.supportLibVersion = '27.1.1'
 ext.retrofitVersion = '2.2.0'
 ext.okHttpVersion = '3.6.0'

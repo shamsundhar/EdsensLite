@@ -38,6 +38,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private final int ASSIGNMENT_HEADER_ITEM = 2;
     private final int NEWS_EVENTS_LIST_ITEM = 3;
     private final int SCHEDULE_HEADER_ITEM = 4;
+    private final int NO_DATA_ITEM = 6;
     //  private AdapterView.OnItemClickListener listener;
     private ClickListener clickListener;
 
@@ -77,6 +78,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             View v1 = inflater.inflate(R.layout.layout_news_events_item, viewGroup, false);
             viewHolder = new ViewHolder4(v1);
         }
+        else if(viewType == NO_DATA_ITEM){
+            View v1 = inflater.inflate(R.layout.layout_no_data_item, viewGroup, false);
+            viewHolder = new ViewHolder6(v1);
+        }
         return viewHolder;
     }
 
@@ -106,6 +111,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             case NEWS_EVENTS_LIST_ITEM:
                 ViewHolder4 vh4 = (ViewHolder4)viewHolder;
                 configureViewHolder4(vh4, position);
+                break;
+            case NO_DATA_ITEM:
+                ViewHolder6 vh6 = (ViewHolder6)viewHolder;
+                configureViewHolder6(vh6, position);
                 break;
             default:
                 //  RecyclerViewSimpleTextViewHolder vh = (RecyclerViewSimpleTextViewHolder) viewHolder;
@@ -147,6 +156,9 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
         else if(items.get(position) instanceof NewsEvents){
             return NEWS_EVENTS_LIST_ITEM;
+        }
+        else if(items.get(position) instanceof NoData){
+            return NO_DATA_ITEM;
         }
         return -1;
     }
@@ -199,6 +211,13 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             vh5.getTitle().setText(headerModel.getTitle());
 
         }
+    }
+    private void configureViewHolder6(ViewHolder6 vh6, int position) {
+//        Header headerModel = (Header) items.get(position);
+//        if (headerModel != null) {
+//            vh6.getTitle().setText(headerModel.getTitle());
+//
+//        }
     }
     private void configureViewHolder4(ViewHolder4 vh4, int position) {
 //        NewsEventsModel newsEventsModel = (NewsEventsModel) items.get(position);
@@ -385,6 +404,38 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         public ViewHolder5(View v) {
+            super(v);
+            title = (TextView) v.findViewById(R.id.headerTitle);
+            applyFonts(v);
+        }
+        private void applyFonts(View v){
+            // Font path
+            String fontPath = "fonts/bariol_bold-webfont.ttf";
+            // Loading Font Face
+            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
+            title.setTypeface(tf);
+        }
+        public void bind(final Header header, final AdapterView.OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    //listener.onItemClick(schedule.get_section(), schedule.get_time());
+                }
+            });
+        }
+    }
+    class ViewHolder6 extends RecyclerView.ViewHolder {
+
+        private TextView title;
+
+        public TextView getTitle() {
+            return title;
+        }
+
+        public void setTitle(TextView title) {
+            this.title = title;
+        }
+
+        public ViewHolder6(View v) {
             super(v);
             title = (TextView) v.findViewById(R.id.headerTitle);
             applyFonts(v);

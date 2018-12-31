@@ -1,10 +1,13 @@
 package com.school.edsense_lite.subscription;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,6 +36,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.school.edsense_lite.utils.Constants.DOMAIN_POSTFIX;
+import static com.school.edsense_lite.utils.Constants.DOMAIN_POSTFIX_PROD;
 
 public class SubscriptionActivity extends BaseActivity {
     private static final String TAG = "SubscriptionActivity";
@@ -63,7 +67,7 @@ public class SubscriptionActivity extends BaseActivity {
         if(loginToken.isEmpty()){
             setContentView(R.layout.activity_subscription);
             ButterKnife.bind(this);
-            _hostnameText.setText("glendale");
+         //   _hostnameText.setText("glendale");
         }
         else{
             displayLoginActivity();
@@ -85,6 +89,12 @@ public class SubscriptionActivity extends BaseActivity {
     @OnClick(R.id.btn_continue)
     public void login() {
         Log.d(TAG, "Subscription");
+
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
 
         if (!validate()) {
             return;
@@ -162,7 +172,7 @@ public class SubscriptionActivity extends BaseActivity {
                         Integer.toString(subscriptionResponse.getResponse().get(0).getSubscriptionId()));
                 preferenceHelper.setString(SubscriptionActivity.this,
                         Constants.PREF_KEY_LOGO_URL,
-                        subscriptionResponse.getResponse().get(0).getLogoUrl());
+                        subscriptionResponse.getResponse().get(0).getMobileLogoUrl());
                 String primaryUrl = subscriptionResponse.getResponse().get(0).getPrimaryUrl();
                 primaryUrl = replaceLast(primaryUrl, "/","");
                 preferenceHelper.setString(SubscriptionActivity.this,

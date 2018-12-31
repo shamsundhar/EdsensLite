@@ -9,6 +9,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
 import static com.school.edsense_lite.utils.Constants.PREF_KEY_FCM_TOKEN;
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_TOKEN_IS_REFRESHED;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
@@ -36,13 +37,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     }
 
     private void storeRegIdInPref(String token) {
-//        SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
-//        SharedPreferences.Editor editor = pref.edit();
-//        editor.putString("regId", token);
-//        editor.commit();
-
         preferenceHelper.setString(getApplicationContext(), PREF_KEY_FCM_TOKEN, token);
-
+        preferenceHelper.setBoolean(getApplicationContext(), PREF_KEY_TOKEN_IS_REFRESHED, true);
     }
 
 }

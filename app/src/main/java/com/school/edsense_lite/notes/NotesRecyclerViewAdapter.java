@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Object> items;
+    private List<Note> items;
     private final int NOTES_LIST_ITEM = 0;
     private ClickListener clickListener;
     Activity activity;
@@ -33,7 +33,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public void setOnClickListener(ClickListener clickListener){
         this.clickListener = clickListener;
     }
-    public void setItems(List<Object> items) {
+    public void setItems(List<Note> items) {
         this.items = items;
     }
     @Override
@@ -73,20 +73,20 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof GetUserNotesResponse.Response) {
+        if (items.get(position) instanceof Note) {
             return NOTES_LIST_ITEM;
         }
         return -1;
     }
     private void configureViewHolder1(NotesRecyclerViewAdapter.ViewHolder1 vh1, int position) {
-        GetUserNotesResponse.Response notesModel = (GetUserNotesResponse.Response) items.get(position);
+        Note notesModel = (Note) items.get(position);
         if (notesModel != null) {
             vh1.getName().setText(notesModel.getStudentName());
-            List<GetUserNotesResponse.Tag> tags =  notesModel.getTags();
+            List<Tag> tags =  notesModel.getTags();
             String traitsString = "";
             if(tags != null) {
                 for (int i = 0; i < tags.size(); i++) {
-                    GetUserNotesResponse.Tag tag = tags.get(i);
+                    Tag tag = tags.get(i);
                     if (traitsString.isEmpty()) {
                         traitsString = tag.getTagName();
                     } else {
@@ -100,17 +100,17 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             spannable.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.primary)), 0, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             vh1.getTraits().setText(spannable, TextView.BufferType.SPANNABLE);
-          //  vh1.getTraits().setText("Traits: " + traitsString);
+            //  vh1.getTraits().setText("Traits: " + traitsString);
             vh1.getReason().setText("Notes: " + notesModel.getNote());
             vh1.getBy().setText("By: "+notesModel.getCreatedByName());
-            if(notesModel.getGender() == 1){
+            if(notesModel.getGender()!= null && notesModel.getGender().equals("1")){
                 vh1.getAvatar().setImageResource(R.drawable.boy);
             }
             else{
                 vh1.getAvatar().setImageResource(R.drawable.girl);
             }
 
-            if(notesModel.getIsEditable() == 1)
+            if(notesModel.getIsEditable().equals("1"))
             {
                 vh1.getModifyButton().setVisibility(View.VISIBLE);
             }
@@ -187,8 +187,8 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             modifyButton = (ImageView)v.findViewById(R.id.modifyButton);
             //modifyButton.setOnClickListener(this);
         }
-        public void bind(final GetUserNotesResponse.Response notesModel, final ClickListener listener, final int position) {
-            if(notesModel.getIsEditable() == 1)
+        public void bind(final Note notesModel, final ClickListener listener, final int position) {
+            if(notesModel.getIsEditable().equals("1"))
             {
                 modifyButton.setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {

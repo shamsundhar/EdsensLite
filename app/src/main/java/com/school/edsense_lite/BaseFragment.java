@@ -11,6 +11,10 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.school.edsense_lite.firebase.FCMApi;
+import com.school.edsense_lite.firebase.FcmRegRequest;
+import com.school.edsense_lite.firebase.FcmRegResponse;
 import com.school.edsense_lite.injection.components.DaggerFragmentComponent;
 import com.school.edsense_lite.injection.components.FragmentComponent;
 import com.school.edsense_lite.login.LoginActivity;
@@ -28,7 +32,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_BEARER_TOKEN;
 import static com.school.edsense_lite.utils.Constants.PREF_KEY_FCM_TOKEN;
+import static com.school.edsense_lite.utils.Constants.PREF_KEY_TOKEN_IS_REFRESHED;
 
 
 public abstract class BaseFragment extends Fragment {
@@ -36,6 +42,8 @@ public abstract class BaseFragment extends Fragment {
     private FragmentComponent mFragmentComponent;
     @Inject
     LoginApi loginApi;
+    @Inject
+    FCMApi fcmApi;
     @Override
     @CallSuper
     public void onSaveInstanceState(Bundle outState) {
@@ -88,7 +96,7 @@ public abstract class BaseFragment extends Fragment {
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.text_reconnecting));
         progressDialog.show();
-        PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        final PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
 
         String username = preferenceHelper.getString(getActivity(),Constants.PREF_KEY_USERNAME,"");
         String password = preferenceHelper.getString(getActivity(),Constants.PREF_KEY_PASSWORD,"");
@@ -126,6 +134,13 @@ public abstract class BaseFragment extends Fragment {
                         progressDialog.dismiss();
                         if(loginResponse.getIsSuccess().equals("true")) {
                             onLoginSuccess(loginResponse);
+                           Boolean isNewTokenAvailable = preferenceHelper.getBoolean(getActivity(), PREF_KEY_TOKEN_IS_REFRESHED, false);
+                           if(isNewTokenAvailable){
+                               //then sync with server.
+                               String bearerToken = preferenceHelper.getString(getActivity(), PREF_KEY_BEARER_TOKEN, "");
+                               String fcmToken = preferenceHelper.getString(getActivity(), PREF_KEY_FCM_TOKEN, "");
+                               initiateFcmRegistration(bearerToken, fcmToken);
+                           }
                         }
                         else if(!loginResponse.getErrorCode().equals("200")){
                             //display error.
@@ -134,6 +149,45 @@ public abstract class BaseFragment extends Fragment {
                                     R.string.text_login_failed,
                                     loginResponse.getErrorMessage(),
                                     null);
+                        }
+
+                    }
+                });
+    }
+    private void initiateFcmRegistration(String bearerToken, String fcmToken){
+        final PreferenceHelper preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+        if(fcmToken.trim().isEmpty()){
+            fcmToken = FirebaseInstanceId.getInstance().getToken();
+        }
+        FcmRegRequest fcmRegRequest = new FcmRegRequest();
+        fcmRegRequest.setPlatform("gcm");
+        fcmRegRequest.setPushChannel(fcmToken);
+        fcmApi.fcmRegistration(bearerToken, fcmRegRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<FcmRegResponse>() {
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(FcmRegResponse fcmRegResponse){
+                        if(fcmRegResponse.getIsSuccess().equals(true)) {
+                            preferenceHelper.setBoolean(getActivity(), PREF_KEY_TOKEN_IS_REFRESHED, false);
+                        }
+                        else if(!fcmRegResponse.getErrorCode().equals(200)){
+
                         }
 
                     }

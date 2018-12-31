@@ -16,10 +16,10 @@
             android:id="@+id/nav_notes"
             android:icon="@drawable/notes_white"
             android:title="@string/text_notes" />
-        <item
-            android:id="@+id/nav_recomendation"
-            android:icon="@drawable/recommendations_white"
-            android:title="@string/text_recomendation" />
+        <!--<item-->
+            <!--android:id="@+id/nav_recomendation"-->
+            <!--android:icon="@drawable/recommendations_white"-->
+            <!--android:title="@string/text_recomendation" />-->
         <item
             android:id="@+id/nav_messages"
             android:icon="@drawable/messages_white"

@@ -13,21 +13,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".login.LoginActivity"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"/>
         <activity android:name=".login.ForgotPasswordActivity"
             android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".NavigationDrawerActivity"/>
+        <activity android:name=".NavigationDrawerActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".AWFActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:screenOrientation="portrait"/>
         <activity android:name=".subscription.SubscriptionActivity"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"/>
 
         <!--&lt;!&ndash; Firebase Notifications &ndash;&gt;-->
         <meta-data

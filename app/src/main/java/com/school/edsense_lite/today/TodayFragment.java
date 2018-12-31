@@ -216,8 +216,13 @@ public class TodayFragment extends BaseFragment {
                 return 0;
             }
         });
+        if(scheduleRows.size() > 0){
+            objectList.addAll(scheduleRows);
+        }
+        else{
+            objectList.add(new NoData());
+        }
 
-        objectList.addAll(scheduleRows);
 //        for(int i = 0; i<scheduleRows.size(); i++){
 //            objectList.add(scheduleRows.get(i));
 //        }
@@ -225,7 +230,13 @@ public class TodayFragment extends BaseFragment {
         objectList.add(new NewsEvents());
         objectList.add(new Header("Assignments", ASSIGNMENT_HEADER));
         List<AssignmentResponseModel> assignmentResponseList = MessagesFragment.mEdsenseDatabase.assignmentDao().getAllAssignments();
-        objectList.addAll(assignmentResponseList);
+        if(assignmentResponseList.size() > 0){
+            objectList.addAll(assignmentResponseList);
+        }
+        else{
+            objectList.add(new NoData());
+        }
+
 //        for(int i = 0; i<assignmentResponseList.size(); i++){
 //            objectList.add(assignmentResponseList.get(i));
 //        }

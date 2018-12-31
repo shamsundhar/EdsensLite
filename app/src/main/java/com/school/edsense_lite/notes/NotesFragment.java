@@ -134,10 +134,19 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
     @OnClick(R.id.addNotes)
     public void clickOnAddNotes(){
         if(selectedSectionId != null && !selectedSectionId.isEmpty()) {
-            Intent in = new Intent(getActivity(), AWFActivity.class);
-            in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_ADD_NOTES);
-            in.putExtra(BUNDLE_KEY_SECTION_ID, selectedSectionId);
-            getActivity().startActivity(in);
+            if(Common.isNetworkAvailable(getActivity())){
+                Intent in = new Intent(getActivity(), AWFActivity.class);
+                in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_ADD_NOTES);
+                in.putExtra(BUNDLE_KEY_SECTION_ID, selectedSectionId);
+                getActivity().startActivity(in);
+            }
+            else{
+                new CustomAlertDialog().showAlert1(
+                        getActivity(),
+                        R.string.text_warning,
+                        "Network not available",
+                        null);
+            }
         }
         else{
             new CustomAlertDialog().showAlert1(
@@ -363,11 +372,21 @@ public class NotesFragment extends BaseFragment implements DatePickerDialog.OnDa
         chooseSection.setTypeface(tf);
     }
     private void displayEditNotesFragment(Note userNotesModel){
-        Intent in = new Intent(getActivity(), AWFActivity.class);
-        in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_EDIT_NOTES);
-        in.putExtra(BUNDLE_KEY_SECTION_ID, selectedSectionId);
-        in.putExtra(BUNDLE_KEY_NOTES_MODEL, userNotesModel);
-        getActivity().startActivity(in);
+        if(Common.isNetworkAvailable(getActivity())){
+            Intent in = new Intent(getActivity(), AWFActivity.class);
+            in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_EDIT_NOTES);
+            in.putExtra(BUNDLE_KEY_SECTION_ID, selectedSectionId);
+            in.putExtra(BUNDLE_KEY_NOTES_MODEL, userNotesModel);
+            getActivity().startActivity(in);
+        }
+        else{
+            new CustomAlertDialog().showAlert1(
+                    getActivity(),
+                    R.string.text_warning,
+                    "Network not available",
+                    null);
+        }
+
     }
     private void displayNotesPopup(final Note notesModel){
         final Dialog builder = new Dialog(getActivity());
