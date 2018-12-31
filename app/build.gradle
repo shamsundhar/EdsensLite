@@ -21,21 +21,21 @@ android {
 
         }
     }
-    flavorDimensions "devBackend"
+    flavorDimensions "productionBackend"
     productFlavors {
-        devBackend {
-            dimension 'devBackend'
-//            applicationIdSuffix ".dev"
-            buildConfigField "String", "BASE_URL", "\"https://apitst.edsense.co.in/api/\""
-        }
+//        devBackend {
+//            dimension 'devBackend'
+////            applicationIdSuffix ".dev"
+//            buildConfigField "String", "BASE_URL", "\"https://apitst.edsense.co.in/api/\""
+//        }
 //        uatBackend {
 //            dimension 'uatBackend'
 //            buildConfigField "String", "BASE_URL", "\"https://private.edsense.io/api/\""
 //        }
-//        productionBackend {
-//            dimension 'productionBackend'
-//            buildConfigField "String", "BASE_URL", "\"https://secured.edsense.io/api/\""
-//        }
+        productionBackend {
+            dimension 'productionBackend'
+            buildConfigField "String", "BASE_URL", "\"https://secured.edsense.io/api/\""
+        }
     }
     aaptOptions { cruncherEnabled = false }
 }
@@ -59,7 +59,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    implementation 'ch.acra:acra:4.8.5'
+   // implementation 'ch.acra:acra:4.8.5'
 
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"

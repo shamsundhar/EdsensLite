@@ -336,6 +336,7 @@ public class LoginActivity extends BaseActivity {
             preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_STUDENT, true);
 
         }
+        
 
        // preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_TEACHER, false);
       //  preferenceHelper.setBoolean(LoginActivity.this, KEY_USER_ROLE_STUDENT, true);

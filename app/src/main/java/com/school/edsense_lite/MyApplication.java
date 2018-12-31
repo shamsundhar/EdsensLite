@@ -9,15 +9,15 @@ import com.school.edsense_lite.injection.modules.AppModule;
 import com.school.edsense_lite.injection.modules.NetModule;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
-import org.acra.ACRA;
-import org.acra.ReportField;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
+//import org.acra.ACRA;
+//import org.acra.ReportField;
+//import org.acra.ReportingInteractionMode;
+//import org.acra.annotation.ReportsCrashes;
 
-@ReportsCrashes(mailTo = "shyam.kdp@gmail.com", customReportContent = {
-        ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME,
-        ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL,
-        ReportField.CUSTOM_DATA, ReportField.STACK_TRACE, ReportField.LOGCAT}, mode = ReportingInteractionMode.TOAST, resToastText = R.string.crash_toast_text)
+//@ReportsCrashes(mailTo = "mobiledev@edsense.in", customReportContent = {
+//        ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME,
+//        ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL,
+//        ReportField.CUSTOM_DATA, ReportField.STACK_TRACE, ReportField.LOGCAT}, mode = ReportingInteractionMode.TOAST, resToastText = R.string.crash_toast_text)
 public class MyApplication extends Application {
 
     private static MyApplication sInstance = null;
@@ -37,10 +37,12 @@ public class MyApplication extends Application {
 
 
         // The following line triggers the initialization of ACRA for crash Log Reporting
-        if (PreferenceHelper.getPrefernceHelperInstace().getBoolean(
-                this, PreferenceHelper.SUBMIT_LOGS, true)) {
-            ACRA.init(this);
-        }
+        //for prod - make below boolean value as false
+        // for internal - make it as true
+//        if (PreferenceHelper.getPrefernceHelperInstace().getBoolean(
+//                this, PreferenceHelper.SUBMIT_LOGS, false)) {
+//            ACRA.init(this);
+//        }
 
     }
 

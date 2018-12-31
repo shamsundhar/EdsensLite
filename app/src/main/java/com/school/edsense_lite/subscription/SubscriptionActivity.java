@@ -109,7 +109,7 @@ public class SubscriptionActivity extends BaseActivity {
         progressDialog.show();
 
         String hostname = _hostnameText.getText().toString().trim();
-        String domain = hostname + DOMAIN_POSTFIX;
+        String domain = hostname + DOMAIN_POSTFIX_PROD;
 
         subsciptionApi.getSubscriptionInfoByDomain(domain)
                 .subscribeOn(Schedulers.io())

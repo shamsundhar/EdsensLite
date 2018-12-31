@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.school.edsense_lite.model.Row;
 import com.school.edsense_lite.model.db.EdsenseDatabase;
 import com.school.edsense_lite.utils.Common;
 import com.school.edsense_lite.utils.Constants;
-import com.school.edsense_lite.utils.CustomAlertDialog;
 import com.school.edsense_lite.utils.DateTimeUtils;
 import com.school.edsense_lite.utils.PreferenceHelper;
 
@@ -39,9 +37,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -53,7 +49,6 @@ import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMEN
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_EVENTS;
 import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT1;
-import static com.school.edsense_lite.utils.Constants.DATE_FORMAT2;
 import static com.school.edsense_lite.utils.Constants.DATE_FORMAT9;
 import static com.school.edsense_lite.utils.Constants.EDSENSE_DATABASE;
 
