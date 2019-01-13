@@ -199,28 +199,12 @@ public class TodayFragment extends BaseFragment {
         List<Object> objectList = new ArrayList<Object>();
         objectList.add(new Header("My Schedule", SCHEDULE_HEADER));
         List<Row> scheduleRows = MessagesFragment.mEdsenseDatabase.getScheduleRowDao().getAllRows();
-        Collections.sort(scheduleRows, new Comparator<Row>() {
-            public int compare(Row o1, Row o2) {
-                String strDateFormat = "HH:MM a";
-                SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
-                try {
-                    return (sdf.parse(o1.getStartTimeSlot()+" "+o1.getTimePeriod())).compareTo(sdf.parse(o2.getStartTimeSlot()+" "+o2.getTimePeriod()));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-        });
         if(scheduleRows.size() > 0){
             objectList.addAll(scheduleRows);
         }
         else{
             objectList.add(new NoData());
         }
-
-//        for(int i = 0; i<scheduleRows.size(); i++){
-//            objectList.add(scheduleRows.get(i));
-//        }
 
         objectList.add(new NewsEvents());
         objectList.add(new Header("Assignments", ASSIGNMENT_HEADER));

@@ -7,8 +7,12 @@ import android.support.annotation.NonNull;
 
 @Entity(tableName = "table_schedule_row")
 public class Row {
+
+
     @PrimaryKey
     @NonNull
+    @ColumnInfo(name = "schedlue_row_sortID")
+    private Integer SortId;
     @ColumnInfo(name = "schedlue_row_learningObjectID")
     private Integer LearningObjectID;
     @ColumnInfo(name = "schedlue_row_eventId")
@@ -36,15 +40,21 @@ public class Row {
     @ColumnInfo(name = "schedlue_row_sectionName")
     private String SectionName;
 
-    @NonNull
     public Integer getLearningObjectID() {
         return LearningObjectID;
     }
 
-    public void setLearningObjectID(@NonNull Integer learningObjectID) {
+    public void setLearningObjectID(Integer learningObjectID) {
         LearningObjectID = learningObjectID;
     }
+    @NonNull
+    public Integer getSortId() {
+        return SortId;
+    }
 
+    public void setSortId(@NonNull Integer sortId) {
+        SortId = sortId;
+    }
     public String getEventId() {
         return EventId;
     }

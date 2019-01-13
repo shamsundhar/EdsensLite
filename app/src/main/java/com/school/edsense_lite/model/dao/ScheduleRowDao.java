@@ -17,6 +17,6 @@ public interface ScheduleRowDao {
     @Query("DELETE FROM table_schedule_row")
     void deleteAll();
 
-    @Query("SELECT * from table_schedule_row ORDER BY schedlue_row_title ASC")
+    @Query("SELECT * from table_schedule_row ORDER BY schedlue_row_sortID ASC")
     List<Row> getAllRows();
 }
